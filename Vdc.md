@@ -102,7 +102,7 @@ internal functions of the VDC. Next table lists the VDC communications registers
 A detailed description of
 both locations follows.
 
-| Address       | Description                  |
-| ------------- | ---------------------------- |
-| [54784/$D600](D600)   | VDC address/status register  |
-| [54785/$D601](D601)  | VDC data register            |
+| Address                   | Description                  |
+| ------------------------- | ---------------------------- |
+| [54784/$D600](D600)       | VDC address/status register  |
+| [54785/$D601](D600#D601)  | VDC data register            |
