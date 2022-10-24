@@ -2,6 +2,8 @@
 
 ## Index
 
-### $D600-$D601 - VDC (Video Display Controller) Chip Registers
+### Components
 * [VDC](Vdc)
-* [$D600-$D601](D600)
+
+### Memory reference
+* [$D600 - VDC (Video Display Controller) Chip Registers](D600)
