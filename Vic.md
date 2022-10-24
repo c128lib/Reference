@@ -443,4 +443,268 @@ and 193/$C1 all produce the same character (screen code 1,
 the letter A in the standard character set), but each provides a
 different background color for that character.
 
-TBC page 175 https://www.cubic.org/~doj/c64/mapping128.pdf
+## Bitmapped Display Modes
+The VIC provides for two bitmapped modes: standard and
+multicolor. In these modes, the state of each pixel in the
+screen display can be controlled independently. The standard
+bitmapped mode allows you to select one of two colors for
+each pixel, while the multicolor mode allows you to chose
+from among four colors. Both modes are supported by the
+operating system: standard bitmapped mode as GRAPHIC 1 (or,
+with a text window, as GRAPHIC 2) and multicolor bitmapped
+mode as GRAPHIC 3 (or, with a text window, as
+GRAPHIC 4).
+
+Standard bitmapped mode is selected when bit 5 of the
+VIC register at [53271/$D017](D017) is set to %1 (but see the section
+below on the screen editor IRQ for information about the
+shadow for this bit). This mode provides for 320 horizontal
+pixels per line, each of which can be one of two colors.
+A single bit is required to specify the color of each pixel, so 320 *
+200, or 64,000 bits, are required to "map" the entire display
+area. At 8 bits per byte, 8000 bytes are required for the bitmap.
+This is half of the available space in the 16K video bank.
+The starting address of the bitmap is specified in bit 3 of the
+register at [53272/$D018](D018).
+The VIC's scheme for mapping the screen is simple for
+the chip (it's a variation of character mode), but it's rather
+complicated for the programmer. As you would expect, the
+first eight pixels on the screen, starting in the upper left corner
+of the first vertical line, are controlled by the eight bits of the
+first byte of the bitmap. However, the next eight pixels are
+controlled by the bits of the ninth byte. The bits of the second
+through eighth bytes in the bitmap control the leftmost eight
+pixels of the second through eighth vertical lines. This scheme
+is repeated across the screen. Figure 8-4 illustrates the offsets
+from the bitmap starting address for the bytes which control
+the pixels in the upper left corner of the screen.
+
+![Byte Offsets for Bitmapped Screen](./resources/008-04-f-vic-byte-offsets-for-bitmapped-screen.png "Byte Offsets for Bitmapped Screen")
+
+This obviously isn't very convenient. Most programmers
+prefer to use a more familiar ^-coordinate system.
+In this system, the horizontal (x) pixel position
+will be in the range 0-319 and the vertical {y) position will be
+in the range 0-199. In x,y format, the upper left corner of the
+screen is position 0,0 and the lower right corner is position
+319,199. This is also the format used to specify screen
+positions in BASIC statements such as BOX, CIRCLE, and DRAW,
+To determine the byte offset (0-7999) within the bitmap and
+the bit (0-7) within that byte which corresponds to a
+particular ^-coordinate pair, use the following formulae:
+
+byte offset = 40 * (y AND 248) + (x AND 504) + (y AND 7)
+
+bit = 7 - (x AND 7)
+
+where x will have a value in the range 0-319 and y will have
+a value in the range 0-199.
+Each bit in the bitmap can be either %0 or %1, so each
+corresponding pixel on the screen can be one of two colors.
+
+By convention, the color specified by a %0 bit is referred to as the
+background color and the color specified by a %1 bit is
+referred to as the foreground color. The values for both colors
+come from the video matrix, the area used as screen memory
+in the character display modes. (Color memory and the background
+color registers are not used in standard bitmapped
+mode.) The low nybble (bits 0-3) of a video matrix location
+holds the background color value and the high nybble (bits
+4-7) holds the foreground color value. Either foreground or
+background can take any of the 16 colors listed in Table 8-1.
+However, since there are only 1000 video matrix positions, the
+foreground and background color cannot be specified individually
+for each of the 64,000 pixels on the screen. All 64 pixels
+within an 8-pixel X 8-line area will share foreground and
+background colors. The common areas are arranged in the
+same fashion as screen memory: 25 rows X 40 columns.^ To
+determine the video matrix location that holds the color
+information for a particular x,y coordinate, use the following
+formula:
+
+color byte = 40 * INT(y / 8) + INT(x / 8) + screen base address
+
+## Multicolor Bitmapped Mode
+Multicolor bitmapped mode is similar to bitmapped mode, but
+the number of possible colors per common color area is increased
+to four. To select among four different colors, two bits
+are required for each pixel. Since twice as many bits are
+required to specify the color of each horizontal pixel, only half
+as many pixels can be displayed per line; horizontal resolution
+is reduced to 160 pixels per line. The display will still be the
+same size, but each pixel will now be twice as wide.
+
+To determine the byte offset (0-7999) within the bitmap and the bit
+pair (0-3) within that byte which correspond to a particular
+^-coordinate pair, use the following formulae:
+
+byte offset = 40 * (y AND 248) + 2 * (x AND 252) + (y AND 7)
+
+bit pair = 3 - (x AND 3)
+
+where x will have a value in the range 0-159 and y will have
+a value in the range 0-199.
+
+Of the four color sources in multicolor mode, one is common
+to all pixels on the screen and the other three can be
+selected independently for each common color area. Common
+color areas correspond in size {4 pixels X 8 lines) and layout
+(40 X 25) to multicolor character positions. All pixels
+represented by %00 bit patterns in the bitmap will take the color
+specified in the VIC background color register at [53281/$D021](D021).
+
+As in standard bitmapped mode, the video matrix
+(screen memory) area holds color information. In this case, the
+lower nybble (bits 0-3) of each video matrix location specifies
+the color for all %10 bit patterns within the corresponding
+common color area, while the upper nybble (bits 4-7) specifies
+the color for alt %01 bit patterns in the common color area.
+The color for any %11 bit patterns in each common color area
+is determined by the value in the corresponding color memory
+location (55296-56295/$D800-$DBE7). Any of these color
+sources can take any of the 16 vic color values.
+
+## Sprites
+Sprites, which Commodore officially calls movable object
+blocks (MOBs), are a special feature of the VIC. As their
+official name implies, sprites are images that can be easily moved
+about on the screen. Sprites are completely independent of the
+background display, and can be made to appear either in front
+of or behind screen foreground objects. They can move with
+equal ease over character and bitmapped screens. The manipulation
+of sprites consumes a substantial portion of the VIC
+chip's internal hardware. You'll notice in the discussion of VIC
+registers that 34 of the chip's 49 registers are used for some
+sort of sprite manipulation. This section uses the standard VIC
+number designations, 0-7, for the eight sprites. BASIC, on the
+other hand, uses sprite numbers 1-8. Add 1 to the VIC sprite
+number to get the corresponding BASIC sprite number, or
+subtract 1 to convert the BASIC sprite number to a VIC sprite
+number.
+
+Sprites have the same two basic modes as screen displays:
+standard and multicolor. Standard sprites are 24 pixels wide X
+21 scan lines tall, and can have only one color. Multicolor
+sprites are 12 pixels wide X 21 scan lines tall, and can have
+three colors. However, multicolor sprites are the same size as
+standard sprites because the multicolor pixels are twice as
+wide.
+
+Sprites can also be doubled in size horizontally or vertically
+(see the registers at [53271/$D017](D017) and [53277/$D01D](D01D)).
+The rules for defining sprite bit patterns are the same as
+for custom characters in the corresponding screen modes. Each
+standard sprite pixel is represented by one bit in a pattern bitmap,
+while each multicolor sprite pixel requires two bits.
+
+Thus, three bytes are required to define each scan line of the
+pattern, and each sprite pattern definition requires 3 * 21, or
+63 bytes. The rules for calculating byte values are the same as
+for custom character patterns. 
+
+For standard sprites, all pixels represented by %0 bits in
+the definition pattern will be transparent. That is, whatever is
+on the screen behind the sprite will show through. Pixels
+represented by %1 bits take the color specified in the color
+register for that sprite (53287-53294/$D027-$D02E), so each sprite
+can take a different sprite foreground color.
+
+For multicolor
+sprites, pixels represented by %00 bit patterns are transparent.
+Pixels represented by %01 and %11 patterns take the colors
+specified in the sprite multicolor registers (53285/$D025 and
+53286/$D026, respectively). These colors are common to all
+eight sprites. Multicolor pixels represented by %10 bit patterns
+take the color specified in the sprite foreground color registers.
+The 63 data bytes for the sprite pattern can't be placed
+just anywhere in memory.
+
+The definitions must be located
+within the current VIC video bank, and must begin at an address
+which is an exact multiple of 64. A 16K VIC video bank
+has room for 16384 / 64, or 256 sprite patterns. The pattern
+for each of the eight sprites is determined by the value in a
+corresponding sprite pointer. The sprite pointers don't occupy
+any fixed locations.
+
+Rather, they are found at the highest eight
+locations of the current screen memory (video matrix) area, at
+offsets of 1016-1023 bytes from the start of the area. The
+pointer value (0-255) selects one of the 256 sprite pattern
+areas. The relationship between pointer values and definition
+pattern area starting addresses is as follows:
+
+pointer value = pattern starting address / 64
+
+or:
+
+pattern starting address = pointer value * 64
+
+The 128 reserves locations 3584-4095/$0E00-$OFFF in
+block 0 RAM to hold sprite pattern data. This 512-byte area
+provides room for eight patterns, one for each of the eight
+sprites. The sprite pointers are initialized to point to patterns
+in this area as follows:
+
+|Sprite | Pointer value | Pattern address |
+|--|--|--|
+|0| 56/$38| 3584-3647/$0E00-$0E3F
+|1| 57/$39| 3648-371l/$0E40-$0E7F
+|2| 58/$3A| 3712-3775/$0E80-$0EBF
+|3| 59/$3B| 3776-3839/$0ECO-$0EFF
+|4| 60/$3C| 384O-3903/$0F0O-$0F3F
+|5| 61/$3D| 3904-3967/$0F40-$0F7F
+|6| 62/$3E| 3968-403l/$0F80-$0FBF
+|7| 63/$3F| 4032-4095/$0FC0-$0FFF
+
+Even after a sprite is assigned a pattern, it will not appear
+on the screen until it is enabled and moved into the visible
+area of the screen display. Sprites are enabled by setting the
+appropriate bits in the register at [53269/$D015](D015). The position
+of each sprite on the screen is specified by values in the registers
+at 53248-53264/$D000-$D010. Refer to the discussion of
+those registers for details.
+
+When two sprites positions' overlap, one will appear in
+front of the other. The one that appears in front is said to
+have higher priority. The priority of the sprites in relation to
+each other is fixed. Sprite 0 has the highest priority, and will
+appear in front of any other sprites it may overlap. Sprite 1
+has the next highest priority; it can appear in front of any
+sprite except sprite 0. The priority decreases with increasing
+sprite number, down to sprite 7, which appears behind any
+other sprite it may overlap. The priority of sprites in relationship
+to screen foreground objects is programmable; sprites can
+appear to pass either in front of or behind screen foreground
+pixels. See the discussion of the register at [53275/$D01B](D01B) for
+details.
+
+When two sprites overlap, or when a sprite overlaps
+screen foreground pixels, a collision is said to occur. The VIC
+records these collisions automatically, and can generate
+interrupts as a result. See the discussion of the registers at
+53278-53279/$D01E-$D01F.
+
+## Screen IRQ Routines
+The 128 introduces a feature that may be unfamiliar to those
+with previous Commodore experience: shadow registers. A
+shadow register is a RAM memory location that is copied into
+a hardware register at regular intervals. Shadow registers are a
+feature of the system's software, not its hardware. The system
+IRQ interrupt sequence, the collection of routines executed
+every 1/60 second (1/50 second in PAL systems), includes two
+separate sections which affect the VIC chip. The screen editor
+IRQ routine [$C194](C194) controls the screen mode and raster interrupt,
+and the BASIC IRQ routine [$A84D](A84D) controls sprite
+movement, detects sprite collisions, and reads the light pen.
+
+Because these routines maintain shadows of some VIC registers,
+the registers cannot be changed directly while the normal
+interrupt sequence is active. If you try to store a new value in
+a register that has a shadow, the interrupt will replace your
+value with the shadow register contents at the next system
+IRQ interrupt—within 1/60 second. The discussion of the VIC
+registers below notes which registers have shadows and explains
+how to go about changing such registers. Refer to the
+appropriate ROM routine entry for more information on the
+interrupt routines.
