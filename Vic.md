@@ -640,7 +640,7 @@ or:
 
 pattern starting address = pointer value * 64
 
-The 128 reserves locations 3584-4095/$0E00-$OFFF in
+The 128 reserves locations 3584-4095/$0E00-$0FFF in
 block 0 RAM to hold sprite pattern data. This 512-byte area
 provides room for eight patterns, one for each of the eight
 sprites. The sprite pointers are initialized to point to patterns
@@ -649,12 +649,12 @@ in this area as follows:
 |Sprite | Pointer value | Pattern address |
 |--|--|--|
 |0| 56/$38| 3584-3647/$0E00-$0E3F
-|1| 57/$39| 3648-371l/$0E40-$0E7F
+|1| 57/$39| 3648-3711/$0E40-$0E7F
 |2| 58/$3A| 3712-3775/$0E80-$0EBF
 |3| 59/$3B| 3776-3839/$0ECO-$0EFF
 |4| 60/$3C| 384O-3903/$0F0O-$0F3F
 |5| 61/$3D| 3904-3967/$0F40-$0F7F
-|6| 62/$3E| 3968-403l/$0F80-$0FBF
+|6| 62/$3E| 3968-4031/$0F80-$0FBF
 |7| 63/$3F| 4032-4095/$0FC0-$0FFF
 
 Even after a sprite is assigned a pattern, it will not appear
@@ -703,7 +703,9 @@ the registers cannot be changed directly while the normal
 interrupt sequence is active. If you try to store a new value in
 a register that has a shadow, the interrupt will replace your
 value with the shadow register contents at the next system
-IRQ interrupt—within 1/60 second. The discussion of the VIC
+IRQ interrupt—within 1/60 second.
+
+The discussion of the VIC
 registers below notes which registers have shadows and explains
 how to go about changing such registers. Refer to the
 appropriate ROM routine entry for more information on the
