@@ -296,4 +296,151 @@ the following:
 
 ![Vic custom character design grid](./resources/008-02-f-vic-custom-character-design-grid.png "Vic custom character design grid")
 
-TBC (Page 173 - https://www.cubic.org/~doj/c64/mapping128.pdf)
+## Multicolor Character Mode
+Multicolor character mode is similar in operation to standard
+character mode. The difference is that each multicolor character
+position consists of 4 pixels X 8 lines (instead of 8 X 8).
+The number of positions remains the same (25 rows X 40 columns)
+and the positions are the same size, but now each pixel
+is twice as wide (there are only 160 pixels per raster line).
+However, each pixel can be one of four colors instead of just
+one of two colors. Screen memory still holds pointers to pattern
+definitions in character memory, but the pattern information is
+interpreted differently. It now takes two bits per
+pixel to select the color instead of just one, but since there are
+only half as many pixels per pattern, the number of bits required for each definition remains the same (2 bits per pixel *
+4 pixels * 8 lines = 64 bits).
+
+To select multicolor character mode, you must set bit 4 of
+the VIC register at location [53270/$D018](D016). However, there's a
+problem here because the screen editor IRQ routine always resets
+this bit to %0 when setting up the text screen (see the section
+below on the screen editor IRQ routine). To prevent this,
+you must turn off the screen-setup portion of the IRQ by storing
+the value 255/$FF in location 216/$D8. Setting the VIC
+register bit makes it possible to enable multicolor character
+mode for any or all screen positions, but it doesn't actually
+switch any screen positions to multicolor mode.
+
+Multicolor
+mode must be enabled individually for each character position
+on the screen. The controlling factor is **bit 3** of the
+color memory location for each character position. When that bit is %0
+in a color memory position, the corresponding character position
+on the screen remains in standard character mode, so it is
+possible to intermix standard and multicolor character modes
+on the same screen display. However, only **bits 0-2** of the
+color memory location are now available to hold color values,
+so the foreground color for standard mode positions in a multicolor display is limited to the first eight values in Vic color table black-yellow,
+values 1-7.
+
+To select multicolor character mode
+for a screen position, you must set bit 3 of the corresponding
+color memory location to %1 . That is, you must store a value
+of 8 or greater in the location.
+
+When a multicolor character is drawn, all pixels in the
+pattern represented by %00 bit pairs will be drawn in the
+background color specified in the VIC register at [53281/$D021](D021).
+All pixels represented by %01 bit pairs will be drawn
+in the color specified by the value in the register at [53282/$D022](D022),
+and all pixels for %10 bit pairs will be drawn in the
+color specified in the register at [53283/$D023](D023).
+
+All of these
+registers can take any of the 16 standard colors listed in Vic color
+table, but since the registers are common to all positions, the
+color for pixels with %00, %01, and %10 patterns will be the
+same for all characters. However, the color for pixels with
+%11 bit patterns can be specified individually for each screen
+position in the corresponding color memory location. Since bit
+3 of the color memory location is used to specify multicolor
+mode, only bits 0-2 are available to hold color values.
+
+As a result, only the first eight colors are available. But since bit 3
+must be set to %1 , the values you store in color memory to
+achieve these colors are different from the standard values. For
+multicolor character mode, the values to store in color memory
+to select the available colors for %11 bits are as follows:
+
+| Desired %11 bit color | Value to store in color memory |
+| ----------------------| ------------------------------ |
+| black                 |  8/$08                         |
+| white                 |  9/$09                         |
+| red                   | 10/$0A                         |
+| cyan                  | 11/$0B                         |
+| purple                | 12/$0C                         |
+| green                 | 13/$0D                         |
+| blue                  | 14/$0E                         |
+| yellow                | 15/$0F                         |
+
+Because the standard character sets were not designed to
+be displayed in multicolor character mode, any text printed to
+the screen in this mode will be at best barely legible.
+As a result, multicolor mode is practical only when you are
+using custom characters designed specifically for this mode. The rules
+for designing custom characters for multicolor mode are the
+same as for the standard character mode, except that you
+design the characters in a 4 X 8 grid, as shown in Figure 8-3.
+
+![Vic custom character design grid](./resources/008-03-f-vic-multicolor-character-design-grid.png "Vic multicolor character design grid")
+
+Each grid position can hold one of four two-bit values
+representing the four color choices:
+
+| | |
+|-|-|
+| %00 | Background color 0 (common to all characters) |
+| %01 | Background color 1 (common to all characters) |
+| %10 | Background color 2 (common to all characters) |
+| %11 | Foreground color {independently selectable for all characters, but only eight colors are available) |
+
+Once the design is completed, the byte values for the
+character-pattern definition are calculated just as for
+standard character mode.
+
+## Extended Background Color Mode
+The third character mode, extended background color mode, is
+selected by setting bit 6 of the VIC register at [53265/$D011](D011) to
+%1. It also uses the same fundamental elements as standard
+character mode: screen memory, character memory, and color
+memory. As in standard character mode, the extended background color
+mode screen is divided into a 25-row X 40-column
+grid of 8-pixel X 8-line character positions.
+
+As in standard
+character mode, each position has a corresponding screen
+memory location that holds a value indicating which pattern
+from character memory is to be drawn in the position. And, as
+in standard character mode, each character position on the
+screen takes its foreground color (the color for pixels represented
+by %1 bits in the character pattern) from the value in a
+corresponding color memory location. The difference is that
+extended background color mode allows you to select from
+among four different background colors for the pixels represented
+by %0 bits in the character patterns.
+
+The background color for each position is specified by bits
+6-7 of the screen code for the position. These bits select which
+of the four background color registers will specify the background
+color for the position:
+
+|Bits 7-6 | Background color source                   |
+|-------- | ----------------------------------------- |
+|   0 0   | background color register 0 (53281/$D021) |
+|   0 1   | background color register 1 (53282/$D022) |
+|   1 0   | background color register 2 (53283/SD023) |
+|   1 1   | background color register 3 (53284/$D024) |
+
+Since the highest two bits of each screen memory location
+are used to specify background color, only bits 0-5 are available
+to hold screen code data. Thus, there are only 64 different
+unique screen code values (0-63), so only the first 64 eight-bit
+pattern definitions in character memory are used in this mode.
+
+For example, screen memory values of 1/$01, 65/$41, 129/$81,
+and 193/$C1 all produce the same character (screen code 1,
+the letter A in the standard character set), but each provides a
+different background color for that character.
+
+TBC page 175 https://www.cubic.org/~doj/c64/mapping128.pdf
