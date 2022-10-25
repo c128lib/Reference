@@ -121,7 +121,7 @@ both locations follows.
 |7/$07|Vertical sync position|
 |8/$08|Interlace mode control register|
 |9/$09|Number of scan lines per character|
-|10/$OA|Cursor mode control|
+|10/$0A|Cursor mode control|
 |11/$0B|Ending scan line foT cursor|
 |12/$0C|Screen memory starting address (high byte)|
 |13/$0D|Screen memory starting address (low byte)|
@@ -137,7 +137,7 @@ both locations follows.
 |23/$17|Character vertical size control register|
 |24/$18|Vertical smooth scrolling and control register|
 |25/$19|Horizontal smooth scrolling and control register|
-|26/$1A|Fore ground/background color register|
+|26/$1A|Foreground/background color register|
 |27/$1B|Address increment per row|
 |28/$1C|Character set address and memory type register|
 |29/$1D|Underline scan-line-position register|
@@ -149,7 +149,7 @@ both locations follows.
 |35/$23|Ending position for horizontal blanking|
 |36/$24|Number of memory refresh cycles per scan line|
 
-### 0/$00 Total number of horizontal character positions <a name="#00"></a>
+### <a name="#00"></a> 0/$00 Total number of horizontal character positions 
 The value in this register determines the total width (in character
 positions) of each horizontal line of the display. The
 value stored here should be one less than the desired number
@@ -159,7 +159,7 @@ left and right borders, and the horizontal sync width.
 
 The total number of horizontal pixels is given by multiplying the value
 here (plus 1) by the total number of pixels per character position
-(the value in bits 4-7 of register [22/$16](16) plus 1).
+(the value in bits 4-7 of register [22/$16](#16) plus 1).
 The default value for this register, established during the
 IO1NIT routine [$E109], is 126/$7E, This provides 127
 horizontal character positions. You'll need to reduce this by half if
@@ -167,9 +167,9 @@ you enable the pixel double feature (see the entry for bit 4 of
 register 25/$19). You may need to increase the value here
 slightly if you use one of the interlaced modes.
 
-### 1/$01 Number of active horizontal character positions <a name="#01"></a>
+### <a name="#01"></a> 1/$01 Number of active horizontal character positions
 The value in this register determines how many of the horizontal character
-positions specified in register 0/$00 can actually be used to display
+positions specified in register [0/$00](#00) can actually be used to display
 characters. The value stored here
 should be the desired number of columns for the display. The
 value here must be less than the value in register 0/$00. The
@@ -178,24 +178,24 @@ display is an 80-column text screen. The value here also determines
 the width of the bitmap when the VDC is set for graphic
 mode. The bitmap width is given by multiplying the number
 of character positions by the character-position width specified
-in bits 0-3 of register [22/$16](16).
+in bits 0-3 of register [22/$16](#16).
 
 The screen editor routines that support printing to the 80-
 column screen assume that each screen line occupies 80 screen
 memory locations. If you want the screen printing routines to
 continue to function properly after you reduce the number of
 active character positions in this register, you should increase
-the value in register [27/$1B](1B) so that the sum of the value in
+the value in register [27/$1B](#1B) so that the sum of the value in
 that register plus the value in this register remains equal to 80.
 Reducing the value here removes characters from the right of
 the display area. To center the active display area after reducing
 the number of character positions, you must reduce the
-value in register [2/$02](02). The screen editor routines will not
+value in register [2/$02](#02). The screen editor routines will not
 support a display wider than 80 columns, so you'll have to
 write your own text handling routines if you want to use a
 wider display.
 
-### 2/$02 Horizontal sync position <a name="#02"></a>
+### <a name="#02"></a> 2/$02 Horizontal sync position
 The value in this register determines the character position at
 which the vertical sync pulse begins. The value here also
 determines the horizontal position of the active portion of the
@@ -205,7 +205,7 @@ The default value here is
 102/$66. Increasing this value moves the active screen area to
 the left; decreasing it moves the active area to the right.
 
-### 3/$03 Horizontal and vertical sync width <a name="#03"></a>
+### <a name="#03"></a> 3/$03 Horizontal and vertical sync width
 **Bits 0-3**: These bits specify the width of the horizontal sync
 pulse. The value here should be one greater than the desired
 number of character positions for the pulse. The default value
@@ -218,7 +218,7 @@ video mode is being used (in that case, use a value that is
 twice the desired number of scan lines). The default value for
 these bits is 4/$4, for a pulse four scan lines wide.
 
-### 4/$04 Total number of screen rows  <a name="#04"></a>
+### <a name="#04"></a> 4/$04 Total number of screen rows
 This register specifies the total height (in character positions)
 of the VDC display. The value stored here should be one less
 than the desired number of vertical character positions. The
@@ -227,8 +227,8 @@ bottom portions of the border, and the vertical sync width.
 
 To determine the height of the raster in scan lines, multiply the
 value in this register (plus 1) by the number of scan lines per
-character position (the value in register [9/$09](09) plus 1) and add
-any additional scan lines specified in register [5/$05](05).
+character position (the value in register [9/$09](#09) plus 1) and add
+any additional scan lines specified in register [5/$05](#05).
 The proper number of scan lines for the display is a function
 of the video system being used; it's different for NTSC
 (North American) and PAL (European) systems. During the
@@ -246,14 +246,14 @@ the respective total heights are 33 * 8, or 264 lines, for NTSC, and
 should remain constant, so if you increase the character height
 you must decrease the total number of rows, and vice versa.
 
-### 5/$05 Vertical fine adjustment <a name="#05"></a>
+### <a name="#05"></a> 5/$05 Vertical fine adjustment 
 **Bits 0-4**: the total number of scan lines in the VDC's video
 display should be 264 for an NTSC (North American) system
 or 320 for a PAL (European) system. The number of scan lines
 used in the VDC display is given by the total number of vertical
-positions (specified in register [4/$04](04)) multiplied by the
+positions (specified in register [4/$04](#04)) multiplied by the
 number of scan lines per character position (specified in register
-[9/$09](09)). If the result doesn't come out exactly equal to the
+[9/$09](#09)). If the result doesn't come out exactly equal to the
 required 264 or 320, the VDC can add a few extra scan lines at
 the end to achieve the proper result.
 The value in this register
@@ -276,11 +276,11 @@ read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### 6/$06 Number of visible screen rows <a name="#06"></a>
+### <a name="#06"></a> 6/$06 Number of visible screen rows
 The value in this register determines how many of the vertical
-character positions specified in register 4/S04 can actually be
+character positions specified in register [4/$04](#04) can actually be
 used to display characters. The value here must be less than
-the total number specified in register 4/$04. The default value
+the total number specified in register [4/$04](#04). The default value
 established for this register by the Kernal IOINIT routine
 [$E109] is 25/$19, which sets up the standard 25-row display.
 One obstacle to selecting other numbers of rows is that the
@@ -289,22 +289,22 @@ screen.
 
 When decreasing the number of rows, you can make
 the screen editor use the reduced number by storing a value
-equal to the new number of rows minus 1 in location 237/
-$ED, then resetting the output window to full screen size (by
+equal to the new number of rows minus 1 in location 237/$ED,
+then resetting the output window to full screen size (by
 printing two cursor-home characters, for example). The screen
 editor routines will not support a display with more than 25
 rows, so you'll have to provide your own character manipulation
 routines to use such a screen.
 
-### 7/$07 Vertical sync position <a name="#07"></a>
+### <a name="#07"></a> 7/$07 Vertical sync position
 The value in this register determines the vertical character
 position at which the vertical sync signal will be generated. This
 register can be used to adjust the vertical location of the active
 display area within the screen. The default value for this register,
-established by the IOINIT routine [$E109], is 29/S1D for
-NTSC (North American) systems or 32/S20 for PAL (European) systems.
+established by the IOINIT routine [$E109], is 29/$1D for
+NTSC (North American) systems or 32/$20 for PAL (European) systems.
 Decreasing the value here will move the active
 display area down the screen, while increasing the value will
 move the active display area upwards. However, you should
 not increase the value here above the maximum number of
-rows specified in register 4/$04.
+rows specified in register [4/$04](#04).
