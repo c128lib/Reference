@@ -111,45 +111,45 @@ both locations follows.
 
 | | |
 |----|----------|
-|0/$00|Total number of horizontal character positions|
-|1/$01|Number of visible horizontal character positions|
-|2/$02|Horizontal sync position|
-|3/$03|Horizontal and vertical sync width|
-|4/$04|Total number of screen rows|
-|5/$05|Vertical fine adjustment|
-|6/$06|Number of visible screen rows|
-|7/$07|Vertical sync position|
-|8/$08|Interlace mode control register|
-|9/$09|Number of scan lines per character|
-|10/$0A|Cursor mode control|
-|11/$0B|Ending scan line foT cursor|
-|12/$0C|Screen memory starting address (high byte)|
-|13/$0D|Screen memory starting address (low byte)|
-|14/$0E|Cursor position address (high byte)|
-|15/$0F|Cursor position address (low byte)|
-|16/$10|Light pen vertical position|
-|17/$11|Light pen horizontal position|
-|18/$12|Current memory address (high byte)|
-|19/$13|Current memory address (low byte)|
-|20/$14|Attribute memory starting address (high byte)|
-|21/$15|Attribute memory starting address (low byte)|
-|22/$16|Character horizontal size control register|
-|23/$17|Character vertical size control register|
-|24/$18|Vertical smooth scrolling and control register|
-|25/$19|Horizontal smooth scrolling and control register|
-|26/$1A|Foreground/background color register|
-|27/$1B|Address increment per row|
-|28/$1C|Character set address and memory type register|
-|29/$1D|Underline scan-line-position register|
-|30/$1E|Number of bytes for block write or copy|
-|31/$1F|Memory read/write register|
-|32/$20|Block copy source address (high byte)|
-|33/$21|Block copy source address (low byte)|
-|34/$22|Beginning position for horizontal blanking|
-|35/$23|Ending position for horizontal blanking|
-|36/$24|Number of memory refresh cycles per scan line|
+|[0/$00](#00)|Total number of horizontal character positions|
+|[1/$01](#01)|Number of visible horizontal character positions|
+|[2/$02](#02)|Horizontal sync position|
+|[3/$03](#03)|Horizontal and vertical sync width|
+|[4/$04](#04)|Total number of screen rows|
+|[5/$05](#05)|Vertical fine adjustment|
+|[6/$06](#06)|Number of visible screen rows|
+|[7/$07](#07)|Vertical sync position|
+|[8/$08](#08)|Interlace mode control register|
+|[9/$09](#09)|Number of scan lines per character|
+|[10/$0A](#0A)|Cursor mode control|
+|[11/$0B](#0B)|Ending scan line foT cursor|
+|[12/$0C](#0C)|Screen memory starting address (high byte)|
+|[13/$0D](#0D)|Screen memory starting address (low byte)|
+|[14/$0E](#0E)|Cursor position address (high byte)|
+|[15/$0F](#0F)|Cursor position address (low byte)|
+|[16/$10](#10)|Light pen vertical position|
+|[17/$11](#11)|Light pen horizontal position|
+|[18/$12](#12)|Current memory address (high byte)|
+|[19/$13](#13)|Current memory address (low byte)|
+|[20/$14](#14)|Attribute memory starting address (high byte)|
+|[21/$15](#15)|Attribute memory starting address (low byte)|
+|[22/$16](#16)|Character horizontal size control register|
+|[23/$17](#17)|Character vertical size control register|
+|[24/$18](#18)|Vertical smooth scrolling and control register|
+|[25/$19](#19)|Horizontal smooth scrolling and control register|
+|[26/$1A](#1A)|Foreground/background color register|
+|[27/$1B](#1B)|Address increment per row|
+|[28/$1C](#1C)|Character set address and memory type register|
+|[29/$1D](#1D)|Underline scan-line-position register|
+|[30/$1E](#1E)|Number of bytes for block write or copy|
+|[31/$1F](#1F)|Memory read/write register|
+|[32/$20](#20)|Block copy source address (high byte)|
+|[33/$21](#21)|Block copy source address (low byte)|
+|[34/$22](#22)|Beginning position for horizontal blanking|
+|[35/$23](#23)|Ending position for horizontal blanking|
+|[36/$24](#24)|Number of memory refresh cycles per scan line|
 
-### <a name="#00"></a> 0/$00 Total number of horizontal character positions 
+### <a name="00"></a> 0/$00 Total number of horizontal character positions 
 The value in this register determines the total width (in character
 positions) of each horizontal line of the display. The
 value stored here should be one less than the desired number
@@ -167,7 +167,7 @@ you enable the pixel double feature (see the entry for bit 4 of
 register 25/$19). You may need to increase the value here
 slightly if you use one of the interlaced modes.
 
-### <a name="#01"></a> 1/$01 Number of active horizontal character positions
+### <a name="01"></a> 1/$01 Number of active horizontal character positions
 The value in this register determines how many of the horizontal character
 positions specified in register [0/$00](#00) can actually be used to display
 characters. The value stored here
@@ -195,7 +195,7 @@ support a display wider than 80 columns, so you'll have to
 write your own text handling routines if you want to use a
 wider display.
 
-### <a name="#02"></a> 2/$02 Horizontal sync position
+### <a name="02"></a> 2/$02 Horizontal sync position
 The value in this register determines the character position at
 which the vertical sync pulse begins. The value here also
 determines the horizontal position of the active portion of the
@@ -205,7 +205,7 @@ The default value here is
 102/$66. Increasing this value moves the active screen area to
 the left; decreasing it moves the active area to the right.
 
-### <a name="#03"></a> 3/$03 Horizontal and vertical sync width
+### <a name="03"></a> 3/$03 Horizontal and vertical sync width
 **Bits 0-3**: These bits specify the width of the horizontal sync
 pulse. The value here should be one greater than the desired
 number of character positions for the pulse. The default value
@@ -218,7 +218,7 @@ video mode is being used (in that case, use a value that is
 twice the desired number of scan lines). The default value for
 these bits is 4/$4, for a pulse four scan lines wide.
 
-### <a name="#04"></a> 4/$04 Total number of screen rows
+### <a name="04"></a> 4/$04 Total number of screen rows
 This register specifies the total height (in character positions)
 of the VDC display. The value stored here should be one less
 than the desired number of vertical character positions. The
@@ -246,7 +246,7 @@ the respective total heights are 33 * 8, or 264 lines, for NTSC, and
 should remain constant, so if you increase the character height
 you must decrease the total number of rows, and vice versa.
 
-### <a name="#05"></a> 5/$05 Vertical fine adjustment 
+### <a name="05"></a> 5/$05 Vertical fine adjustment 
 **Bits 0-4**: the total number of scan lines in the VDC's video
 display should be 264 for an NTSC (North American) system
 or 320 for a PAL (European) system. The number of scan lines
@@ -276,7 +276,7 @@ read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### <a name="#06"></a> 6/$06 Number of visible screen rows
+### <a name="06"></a> 6/$06 Number of visible screen rows
 The value in this register determines how many of the vertical
 character positions specified in register [4/$04](#04) can actually be
 used to display characters. The value here must be less than
@@ -296,7 +296,7 @@ editor routines will not support a display with more than 25
 rows, so you'll have to provide your own character manipulation
 routines to use such a screen.
 
-### <a name="#07"></a> 7/$07 Vertical sync position
+### <a name="07"></a> 7/$07 Vertical sync position
 The value in this register determines the vertical character
 position at which the vertical sync signal will be generated. This
 register can be used to adjust the vertical location of the active
