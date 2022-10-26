@@ -17,7 +17,7 @@ and columns in the screen display, and even over the number
 of pixels and scan lines in each character position.
 
 Although the VDC does have a graphic mode (see the entry for
-bit 7 of register 25/$19), it is primarily used for text
+bit 7 of register [25/$19](#19)), it is primarily used for text
 displays. In this mode, it uses the same basic elements as the
 VIC: screen memory, character memory, and attribute memory
 (which corresponds to the VIC's color memory).
@@ -35,7 +35,8 @@ the screen code serves as an index into character memory to
 select the pattern to be displayed in the position. All character
 patterns are in RAM. The VDC has no character ROM of its
 own, so the contents of the VIC's character ROM is copied
-into VDC RAM during system initialization. Redefining characters for the VDC is as simple as storing the new pattern in
+into VDC RAM during system initialization. Redefining characters
+for the VDC is as simple as storing the new pattern in
 the proper area of character memory.
 
 Each character definition
@@ -51,7 +52,8 @@ formula from the following:
   address = (screen code * 16) + 12288
 
 The remaining memory area is attribute memory, which
-determines the display characteristics for the character specified in screen memory.
+determines the display characteristics for the character
+specified in screen memory.
 It is called attribute memory to distinguish it from simple color
 memory because each attribute
 memory location specifies more than just the color. Next figure
@@ -80,7 +82,7 @@ shows the use of each bit of attribute memory
 
 **Bit 4** selects the flash attribute, causing the character in
 the corresponding character position to blink at the rate specified
-in bit 5 of internal register 24/$18.
+in bit 5 of internal register [24/$18](#18).
 
 **Bit 5** selects the underline attribute, but the line can be moved to any
 scan line of the character position.
@@ -98,7 +100,8 @@ position.
 The register structure of the VDC chip is rather unusual. It
 has only two registers visible in the normal system address
 space. You must go through these registers to access any of the
-internal functions of the VDC. Next table lists the VDC communications registers visible to the processor.
+internal functions of the VDC. Next table lists the VDC communications
+registers visible to the processor.
 A detailed description of
 both locations follows.
 
@@ -308,3 +311,236 @@ display area down the screen, while increasing the value will
 move the active display area upwards. However, you should
 not increase the value here above the maximum number of
 rows specified in register [4/$04](#04).
+
+### <a name="08"></a> 8/$08 Interlace mode control
+**Bits 0-1**: The value in these bits controls the interlace mode of
+the screen. The complete standard for NTSC video calls for a
+frame (raster) of 525 lines to be redrawn 30 times per second,
+while the PAL standard calls for 625 lines redrawn 25 times
+per second. The full screen isn't drawn all at once; instead, it's
+drawn in two passes with half the lines for the frame drawn
+on each pass. The lines for the second pass of the frame are
+drawn between the lines for the first. Like most computer displays,
+the VDC normally takes a shortcut and draws half the
+full number of lines at twice the rate. This noninterlaced display
+provides sufficiently sharp output for most uses.
+However, the VDC is also capable of producing two interlaced
+display modes. The modes are selected as follows:
+
+|Bits 1-0| Value|Interlace mode|
+|--------|------|--------------|
+|x 0|0 or 2|noninterlaced|
+|0 1|1|interlaced sync|
+|1 1|3|interlaced sync and video|
+
+The default value is 0/$00, which selects the standard
+noninterlaced mode. The system never uses any other mode.
+In the interlaced sync mode, the number of scan lines is doubled.
+Each horizontal scan line is drawn twice, once on the
+first pass and very slightly lower on the second pass. The result
+should be greatly improved vertical resolution, but you'll
+probably be disappointed.
+
+Remember that each tiny dot on the
+screen glows only very briefly after being struck by the raster
+video beam. Since this mode must draw twice as many lines,
+it draws each line only half as often. On most video monitors,
+the first set of lines will have started to fade before the second
+set is completely drawn. As a result, the screen will appear to
+jitter annoyingly in this mode.
+The remaining choice is interlaced sync and video mode.
+In this case, the VDC also draws twice as many lines as noninterlaced
+mode, but the alternating half-frames are independent, so you can use
+twice as many horizontal lines per frame
+(the maximum screen height in scan lines is double that of the
+noninterlaced mode). This creates the tantalizing prospect of
+an 80-column X 50-line text screen. The following routine
+sets up such a display:
+<pre>
+10 WR=DEC("CDCC")
+20 SYS WR,3,8
+30 SYS WR,64,4
+40 SYS WR,50,6
+50 SYS WR,58,7
+60 SYS WR,128,0
+</pre>
+However, this setup does have limitations. It suffers from the
+same jitter problems as the other interlaced mode. Furthermore,
+the screen editor routines that control printing to the screen
+will not support a display longer than 25 lines, so
+you'll have to write your own text manipulation routines to
+handle the extra 25. Nevertheless, this mode has interesting
+possibilities.
+
+**Bits 2-7**: These bits are unused; writing to them has no effect,
+and they always return %1 when read. Thus, the value you
+read from this register will always be at least 252/$FC. To
+mask off these bits and see only the valid bits of the register,
+use AND 3 in BASIC or AND #$03 in machine language,
+
+### <a name="09"></a> 9/$09 Total number of scan lines per character
+**Bits 0-4**: These bits determine the total vertical height (in scan
+lines) of each character position. The value stored here should
+be one less than the desired number of scan lines. The total
+vertical height value includes the scan lines for the active
+portion of each character position, plus any desired number of
+blank scan lines for intercharacter vertical spacing. The height
+of the active portion of the character position is determined by
+the value in register [23/$17](#17).
+
+The default value for this register, established during the
+IOINIT routine [SE109], is 7/$07, for a total character-position
+height of eight scan lines. In this case, there will be no vertical
+intercharacter spacing because this is less than the active character
+height. (In the default character set, intercharacter spacing
+is achieved by leaving the bottom row of the character pattern
+blank.) The five available bits allow values up to %11111 =
+31/$1F, for character-position heights of up to 32 scan lines.
+However, when changing this value to allow for greater vertical
+resolution, you must keep in mind that the value here multiplied
+by the total number of rows specified in register [4/$04](#04)
+(and plus the number of extra scan lines specified in register
+[5/$05](#05)) determines the number of scan lines in the display.
+This total should always be 264 lines for NTSC (North American)
+systems or 320 lines for PAL (European) systems.
+
+The value here also determines how much memory is required for
+character pattern memory. While the value here is
+less than or equal to 15 (while the character height is 16 or
+fewer scan lines), each character pattern is allocated 16 bytes.
+Since the VDC supports two complete 256-character sets, a total of
+512 * 16, or 8192 bytes, are required for character memory.
+However, if the character height exceeds 16 scan lines (if
+the value here is greater than 15), then 32 bytes are allocated
+for each character pattern. In this case, 512 * 32, or 16,384
+bytes, are required for character memory. Note that this is all
+the memory available to the VDC.
+
+**Bits 5-7**: These bits are unused; writing to them has no effect,
+and they always return %1 when read. Thus, the value you
+read from this register will always be at least 224/$E0. To
+mask off these bits and see only the valid bits of the register,
+use AND 31 in BASIC or AND #$1F in machine language.
+
+### <a name="0A"></a> 10/$0A Cursor mode control
+The value in this register cannot be changed directly while the
+standard screen editor ROM routines are used for printing.
+The contents of a shadow location at 2603/$OA2B are copied
+to this register each time the cursor position is updated. Thus,
+to change the value in this register, you must store the desired
+value in the shadow location rather than in the register.
+
+**Bits 0-4**: The value in these bits determines the scan line
+within each character position for the top of the cursor. Scan
+lines within character positions are numbered beginning with
+0 for the top line of the position. Bits 0-4 of register [11/$0B](#0B)
+determine the bottom line, and together these registers determine
+the height of the cursor. The available five bits allow
+starting row numbers as large as %11111 = 31/$1F. The default value
+for these bits is %00000, to start the cursor at character scan line
+0, the top line of the character, for the standard
+full-height block cursor. The operating system also supports
+an underline cursor, selected by printing ESC U [$CAFE], In
+this case, the value here is changed to %00111 (7) to start the
+cursor on the bottom line of the standard character position.
+The value for the top scan line should be no greater than the
+maximum number of scan lines specified in register [9/$09](#09), or
+else the cursor will not be visible.
+
+**Bits 5-6**: These bits control the type of cursor provided. Unlike
+the VIC, where the cursor is an effect maintained by software,
+the VDC has hardware to generate a cursor automatically. The
+possible modes are as follows:
+
+|Bit values|Cursor mode|
+|-|-|
+|0/$00 |solid (nonblinking) cursor|
+|32/$20|no cursor|
+|64/$40|blinking at 1/16 screen refresh rate|
+|96/$60|blinking at 1/32 screen refresh rate|
+
+The default setting for these bits is %11, specifying a cursor
+blinking at the slower of the two rates. The operating system
+also supports a nonblinking cursor, selected by printing ESC E
+[$CB0B]. In this case, the bits are changed to %00. To rum the
+cursor off when the system is not accepting input (as when a
+program is running), these bits are reset to %01 [$CD9F].
+
+**Bit 7**: This bit is unused; writing to it has no effect, and it
+always returns %1 when read. Thus, the value you read from
+this register will always be at least 128/$80. To mask off this
+bit and see only the valid bits of the register, use AND 127 in
+BASIC or AND #$7F in machine language.
+
+### <a name="0B"></a> 11/$0B Bottom scan line for cursor
+**Bits 0-4**: These bits determine the scan line within a character
+position for the bottom of the cursor. Together with bits 0-4
+of register [10/$0A](#0A), this serves to determine the height of the
+cursor. The value here should be one greater than the desired
+bottom scan line (scan-line numbering starts with 0 for the top
+scan line of the character position). The five available bits
+allow values up to % 11111 = 31/$1F, so the cursor can go as
+low as scan line 30, However, the actual displayed cursor
+height will never be greater than the character-position height
+specified in register [9/$09](#09). The default value for this register,
+established by the IOINIT routine [$E109], is 7/$07, so the
+normal bottom scan line of the cursor is scan line 6 of the
+character position.
+
+**Bits 5-7**: These bits are unused; writing to them has no effect,
+and they always return %1 when read. Thus, the value you
+read from this register will always be at least 224/$E0, To
+mask off these bits and see only the valid bits of the register,
+use AND 31 in BASIC or AND #$1F in machine language.
+
+### <a name="0C"></a><a name="0D"></a> 12/$0C 13/$0D Starting address for screen memory
+For standard text mode, the value in this register pair determines
+the starting address for screen memory, the area which
+holds screen codes specifying which character will be displayed
+in each screen position. The size of the screen memory area is
+determined by the number of active horizontal positions (specified in
+register [1/$01](#01)) multiplied by the number of active rows
+(specified in register [6/$06](#06)) and the address increment per
+row (specified in register [27/$1B](#1B)).
+
+The order of bytes for the
+pair is opposite that normally used in the 128 system: The first
+register (12/$0C) holds the high byte and the second (13/$0D)
+holds the low byte. Unlike VIC screen memory, which must
+begin on an even 1K address boundary, VDC screen memory
+can begin at any address in the VDC's address space. 
+
+DETERMINE WHICH FIGURE
+
+See Figure 8-16 for a diagram of the VDC's memory configuration.
+
+For graphic mode, the value in this register pair determines the
+starting address for the bitmap of the graphic
+screen. The amount of memory required for the bitmap is
+found by multiplying the number of horizontal character positions
+(from register [1/$01](#01)) by the number of vertical character
+positions (in register [6/$06](#06)) times the total height of each
+character position (from register [9/$09](#09) plus 1). The bitmap
+can be started at any address in the VDC address space.
+Even if you change the value here, the screen editor ROM
+routines will continue to assume that screen memory is located
+in its default position unless you also change the value in the
+screen memory starting-page pointer at 2606/$0A2E.
+
+### <a name="0E"></a><a name="0F"></a> 14/$0E 15/$0F Address of current cursor position
+For the VIC chip's display, the cursor is an effect laboriously
+maintained by software. The VDC, by contrast, has hardware
+to maintain the cursor for its display automatically. The cursor
+will appear at the character position with the screen memory
+location specified in this register pair.
+
+If the address specified
+here is outside the area of VDC memory currently being used
+for screen memory, no cursor will be visible. Other characteristics
+of the cursor such as its blinking status and position within
+the character are specified in registers 10/$0A and 11/$0B.
+The value in these registers cannot be changed directly
+while the normal screen editor 80-column printing routines are
+in use. The printing routines update the cursor position after
+each character is printed so that these registers always hold
+the address of the next available character position.
