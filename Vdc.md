@@ -390,7 +390,7 @@ of the active portion of the character position is determined by
 the value in register [23/$17](#17).
 
 The default value for this register, established during the
-IOINIT routine [SE109], is 7/$07, for a total character-position
+IOINIT routine [$E109], is 7/$07, for a total character-position
 height of eight scan lines. In this case, there will be no vertical
 intercharacter spacing because this is less than the active character
 height. (In the default character set, intercharacter spacing
@@ -670,8 +670,8 @@ the attribute starting-page pointer at 2607/$0A2F.
 ### <a name="16"></a> 22/$16 Character horizontal size control
 **Bits 0-3**: the value in these bits determines how many of the
 total horizontal pixels in the character position will be used to
-display character pattern data. (The total number is specified
-in bits 4-7 of this register.) If the number of active pixels is
+display character pattern data. The total number is specified
+in bits 4-7 of this register. If the number of active pixels is
 less than the total number of pixels, the extra pixels will be
 blank for intercharacter spacing. If you specify a value here
 that is greater than the total number of pixels available for the
@@ -705,14 +705,14 @@ the total number of character positions (from register [0/$00](#00)).
 **Bits 0-4**: The value in these bits determines how many of the
 total scan lines for each character position (specified in register
 [9/$09](#09)) will be used to display character pattern data. The
-available five bits allow you to specify values up to % 11111
+available five bits allow you to specify values up to %11111
 = 31/$1F. If the value here is less than the total number of
 scan lines for the character position, the extra lines will be
 blank for intercharacter spacing. If the value here is greater
 than the total number of scan lines, only the total number of
 scan lines will be displayed. For graphic mode, the value here
 should be at least equal to the total number of scan lines (the
-value in register 9/$09 plus 1); otherwise there will be gaps in
+value in register [9/$09](#09) plus 1); otherwise there will be gaps in
 the display.
 The default value stored in this register is 8/$08, for eight
 active scan lines per character position. This is equal to the
@@ -932,7 +932,8 @@ COLOR 6, color number. However, the values for the color
 number parameter are not the same as the color values shown in
 Vdc color table. Refer to the description of the COLOR statement in
 the System Guide that came with your 128 for more information.
-Bits 4-7: When attributes are disabled (by setting bit 6 of register
+
+**Bits 4-7**: when attributes are disabled (by setting bit 6 of register
 [25/$19](#19) to %0), the value in these bits specifies the foreground
 color for the display. For text mode, this is the color
 for all pixels represented by %1 bits in the pattern definitions
@@ -946,16 +947,16 @@ between bit values and colors is as shown in Vdc color table.
 
 ### <a name="1B"></a> 27/$1B Address increment per row of characters
 The value in this register will be added to the value in register
-[01/$01](#01) to determine the amount by which to increase the screen
+[1/$01](#01) to determine the amount by which to increase the screen
 memory address for each new row of the display. This allows
 you to set up a virtual screen wider than the actual screen.
 You can scroll back and forth across the virtual screen by adjusting
-the screen starting address in registers [12-13/$$0C-$0D](#0C).
-The default value for this register is [00/$00](#00), since no extra
+the screen starting address in registers [12-13/$0C-$0D](#0C).
+The default value for this register is [0/$00](#00), since no extra
 columns are used with the 80-column text display. The screen
 editor routines that support printing to the VDC screen all
 assume an 80-column screen line. If you reduce the number of
-active columns in register [01/$01](#01), you should increase the value
+active columns in register [1/$01](#01), you should increase the value
 in this register correspondingly so that the total remains 80.
 
 ### <a name="1C"></a> 28/$1C Character pattern address and memory type
@@ -965,7 +966,7 @@ read from this register will always be at least 15/SOF. To mask
 off these bits and see only the valid bits of the register, use
 AND 240 in BASIC or AND #$F0 in machine language.
 
-**Bit 4**: This bit specifies the type of RAM chip used for VDC
+**Bit 4**: this bit specifies the type of RAM chip used for VDC
 video memory. When the bit is %0, the VDC is configured for
 4416 chips (16K X 4 bits). When the bit is %1, the VDC is
 configured for 4164 chips (64K X 1 bit). Since the 16K VDC
@@ -983,7 +984,7 @@ most certainly void any warranty on your 128.
 **Bits 5-7**: these bits determine where within VDC memory the
 character pattern definitions will be located. The amount of
 memory required for the character set depends on the value in
-register [09/$09](#09). If the character height is 16 or fewer scan lines,
+register [9/$09](#09). If the character height is 16 or fewer scan lines,
 each character set requires 4K (4096 bytes). Character heights
 of 17-32 scan lines require 8K (8192-byte) character sets.
 
@@ -1009,9 +1010,9 @@ set pairs):
 |1 1 1|57344/$E000|
 
 Since the 128 has only 16K of RAM for the VDC, only the
-first two settings are currently valid. (Note that there is
+first two settings are currently valid. Note that there is
 insufficient room in the 128's 16K of VDC video memory for a 16K
-character set plus screen and attribute memory.) These bits are
+character set plus screen and attribute memory. These bits are
 initialized to %001 by the IOINIT routine [$E109], part of the
 reset and RUN/STOP-RESTORE sequences, so the default
 character set starting address is 8192/$2000.
@@ -1023,7 +1024,7 @@ characters. This step is performed during the IOINIT routine
 by calling the screen editor INIT80 routine [$CE0C].
 
 ### <a name="1D"></a> 29/$1D Underline scan-line control
-**Bits 0-4**: The value in these bits determines which scan line
+**Bits 0-4**: the value in these bits determines which scan line
 within the character position will be filled for any characters
 with the underline attribute. A character position has the
 underline attribute when the corresponding attribute memory
@@ -1040,7 +1041,7 @@ $1F. However, the underline will not be visible if the value is
 greater than the maximum character-position height in bits
 4-7 of register [22/$16](#16).
 
-**Bits 5-7**: These bits are unused; writing to them has no effect,
+**Bits 5-7**: these bits are unused; writing to them has no effect,
 and they always return %1 when read. Thus, the value you
 read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
@@ -1059,7 +1060,7 @@ or a fill.
 The operations require different preparatory steps, as
 outlined below:
 For a fill operation:
-1. Set bit 7 of register 24/$18 to %0 to indicate a fill
+1. Set bit 7 of register [24/$18](#18) to %0 to indicate a fill
 operation.
 2. Load registers [18-19/$12-$13](#12) with the starting address of
 the area to be filled (the destination area).
@@ -1115,7 +1116,7 @@ after each read or write.
 ### <a name="20"></a> 32-33/$20-$21 Source address for block copy
 The VDC has the capability to copy blocks of data up to 255
 bytes long from one area of memory to another (see the entry
-for register 3O/$1E for details). The value in this register pair
+for register [30/$1E](#1E) for details). The value in this register pair
 determines the source address for copy operations, the address
 from which data will be copied. Like all other address register
 pairs in the VDC, the first register (32/$20) holds the high
@@ -1140,7 +1141,7 @@ blanked area is only covered, not erased. The value in register
 value in register 35/$23 determines the leftmost blanked column.
 The blanked area extends the entire height of the screen
 The value in register 34/$22 must be less than the value
-in register [00/$00](#00); otherwise, the entire display will be
+in register [0/$00](#00); otherwise, the entire display will be
 blanked. The value in 34/$22 here must also be greater than
 the value in register 35/$23 to prevent an entirely blank display.
 
