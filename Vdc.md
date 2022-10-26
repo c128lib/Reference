@@ -544,3 +544,101 @@ while the normal screen editor 80-column printing routines are
 in use. The printing routines update the cursor position after
 each character is printed so that these registers always hold
 the address of the next available character position.
+
+### <a name="10"></a><a name="11"></a> 16/$10 17/$11 Light pen vertical and horizontal positions
+Whenever the LP input line to the VDC chip is brought to a
+low (0 volts) state, the row and column values for the current
+position of the raster beam are latched into these registers. The
+vertical (row) number will be latched into register 16/$10, and
+the horizontal (column) number will be latched into register
+17/$11. To signal that a value has been latched, the LP flag
+(bit 6 of the external register at 54784/$D600) will be set to
+%1. That bit will remain at %1 until either of these registers is
+read, at which time it will be reset to %0. However, reading
+these registers does not clear them; the latched values will be
+retained until the LP line is brought low again.
+
+The VDC's LP line is connected to pin 6 of control port 1
+(control port 2 does not support a light pen). A light pen has
+at its tip an electronic device known as a phototransistor,
+which is connected so as to cause a low pulse whenever the
+video beam moves past the pen. Note that the pen will not be
+triggered if the screen position is black or one of the other
+dark colors. Only positions which have bright characters can
+be read. The ideal character to read with a light pen is a white
+re verse-video space.
+
+When a light pen is used, the range of values in these
+registers depends on the screen width and height selected by
+other VDC registers. Unlike the VIC chip, whose light pen
+registers return scan line and dot position values, these
+registers return row and column numbers corresponding to the
+light pen position. This makes the results much easier to
+interpret, but does not allow precise positioning, so it is unlikely
+that you'll see any 80-column drawing programs using the
+light pen as an input device. For the standard 80-column X
+25-line screen, the value in register 16/$10 corresponds very
+closely to the row number: ranging from 1/$01 at the top of
+the screen to 25/$19 at the bottom. Actually, you may find
+that if you position the pen slightly below the bottom screen
+line you can get a reading of 26/$1A.
+While the vertical resolution is good, the horizontal resolution
+is quite poor. The horizontal reading won't correspond
+to the row number (1-80). Instead, it corresponds approximately
+to the absolute horizontal character position, which includes
+the border areas on the left and right edges of the
+screen. You should find that when the pen is pointed at the
+leftmost character position, you get a reading of about 27-29
+in register 17/$11. This implies that the rightmost character
+position should give readings of about 106-108. Actually, you
+may get higher readings—120 or more. In fact, even if you
+hold the pen perfectly stil] you may see the character position
+vary up or down by 4 or 5. The moral is that the light pen is
+much better at reading vertical than horizontal positions.
+You'll have better luck if you limit yourself to checking
+whether the pen is within a range of horizontal positions. For
+example, if you read the horizontal position and store the
+result in the variable H, then an expression such as
+
+H = INT((H — 30) / 8)
+
+will return a range of values 0-9 indicating
+roughly which one of ten eight-column horizontal areas the
+pen is pointing to.
+You should be aware that these registers can be tricked
+into reading false values. Pin 6 of control port 1 is also used
+for light pen input for the VIC chip, and a light pen signal
+generated on the 40-column screen will latch meaningless values
+in these registers. In lieu of a light pen, several other
+events can cause a pulse on the LP line. That control port pin
+is also used for the joystick fire button, so pressing the button
+of a joystick plugged into port 1 will also latch values in these
+registers. Because of this joystick button function, the port line
+is also connected to the line from row 4 of the keyboard matrix.
+This has two consequences. First, pressing any of the following
+keys with no light pen connected will latch meaningless
+values: F1, Z, C, B, M, period, right SHIFT, space, the 2 and
+ENTER keys on the numeric keypad, and the ^ key in the
+cursor group. More significantly, while a light pen is connected,
+all of these keys will be "dead" and cannot be typed.
+
+### <a name="12"></a><a name="13"></a> 18/$12 19/$13 Current memory address
+This register pair specifies which address in the VDC's private
+block of RAM will be referenced by the next read or store operation
+involving register [31/$1F](#1F). As with the other VDC address register
+pairs, the first register (18/$12) holds the high
+byte of the address and the second (19/$13) holds the low
+byte. A value stored in register [31/$1F](#1F) is transferred to the
+VDC memory location specified in this register pair. Reading
+register [31/$1F](#1F) returns the value in the location in VDC memory
+with the address specified in this register pair. For copy or
+fill operations, the value in these registers determines the destination
+address for the operation. These registers are autoincrementing,
+meaning that the address value here is automatically increased
+by 1 after each read or store to register [31/$1F](#1F).
+
+Thus, when you wish to read or load a continuous series of
+VDC memory locations you only need to set the memory address in
+these registers before the first read or store.
+After that, you can just read from or write to register [31/$1F](#1F)
+and the address will be handled automatically.
