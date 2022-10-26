@@ -581,7 +581,7 @@ light pen as an input device. For the standard 80-column X
 closely to the row number: ranging from 1/$01 at the top of
 the screen to 25/$19 at the bottom. Actually, you may find
 that if you position the pen slightly below the bottom screen
-line you can get a reading of 26/$1A.
+line you can get a reading of [26/$1A](#1A).
 While the vertical resolution is good, the horizontal resolution
 is quite poor. The horizontal reading won't correspond
 to the row number (1-80). Instead, it corresponds approximately
@@ -592,7 +592,7 @@ leftmost character position, you get a reading of about 27-29
 in register 17/$11. This implies that the rightmost character
 position should give readings of about 106-108. Actually, you
 may get higher readings—120 or more. In fact, even if you
-hold the pen perfectly stil] you may see the character position
+hold the pen perfectly still you may see the character position
 vary up or down by 4 or 5. The moral is that the light pen is
 much better at reading vertical than horizontal positions.
 You'll have better luck if you limit yourself to checking
@@ -642,3 +642,25 @@ VDC memory locations you only need to set the memory address in
 these registers before the first read or store.
 After that, you can just read from or write to register [31/$1F](#1F)
 and the address will be handled automatically.
+
+### <a name="20"></a><a name="21"></a> 20/$14 21/$15 Starting address for attribute memory
+When attributes are activated, this register pair determines the
+starting address for attribute memory, the area which holds
+attribute values for each active character position on the
+screen (attributes can be turned on and off by setting bit 6 of
+register [25/$19](#19)). The size of the attribute memory area depends on
+the number of active rows and columns specified in
+registers [2/$02](#02) and [6/$06](#06), and will be the same as the size of
+the screen memory area.
+
+See the discussion of attributes in the
+introduction to this section for more information.
+These locations are initialized to 2048/$0800, the default
+starting address for attribute memory. Like the other address
+pairs in the VDC, the first register [20/$14](#14) holds the high
+byte and the second [21/$15](#15) holds the low byte. Attribute
+memory can start at any address within the VDC's address
+space. Even if you change the value here, the screen editor
+ROM routines will continue to assume that attribute memory
+is in its default position unless you also change the value in
+the attribute starting-page pointer at 2607/$0A2F.
