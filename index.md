@@ -3,8 +3,9 @@
 ## Index
 
 ### Components
-* [VDC](Vdc)
-* [VIC](Vic)
+* [VDC (Video Display Controller)](Vdc)
+* [VIC (Video Interface Controller)](Vic)
 
 ### Memory reference
-* [$D600 - VDC (Video Display Controller) Chip Registers](D600)
+* [$D000-$D030 - VIC Chip Registers](D000)
+* [$D600-$D601 - VDC Chip Registers](D600)
