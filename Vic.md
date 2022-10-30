@@ -161,7 +161,7 @@ follows:
 | Bank | Base address   |
 | ---- | -------------- |
 |  0   |     0/$0000    |
-|  1   | 16384/S4000    |
+|  1   | 16384/$4000    |
 |  2   | 32768/$8000    |
 |  3   | 49152/$C000    |
 
@@ -429,7 +429,7 @@ color for the position:
 |-------- | ----------------------------------------- |
 |   0 0   | background color register 0 (53281/$D021) |
 |   0 1   | background color register 1 (53282/$D022) |
-|   1 0   | background color register 2 (53283/SD023) |
+|   1 0   | background color register 2 (53283/$D023) |
 |   1 1   | background color register 3 (53284/$D024) |
 
 Since the highest two bits of each screen memory location

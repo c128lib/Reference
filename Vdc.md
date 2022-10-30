@@ -962,7 +962,7 @@ in this register correspondingly so that the total remains 80.
 ### <a name="1C"></a> 28/$1C Character pattern address and memory type
 **Bits 0-3**: these bits are unused; writing to them has no effect,
 and they always return %1 when read. Thus, the value you
-read from this register will always be at least 15/SOF. To mask
+read from this register will always be at least 15/$0F. To mask
 off these bits and see only the valid bits of the register, use
 AND 240 in BASIC or AND #$F0 in machine language.
 
