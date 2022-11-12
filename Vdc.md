@@ -110,9 +110,9 @@ both locations follows.
 | [54784/$D600](D600)       | VDC address/status register  |
 | [54785/$D601](D600#D601)  | VDC data register            |
 
-## VDC Internal Registers
+## VDC Internal Registers <a name="vdcinternalregister"></a>
 
-| | |
+|Register number|Description|
 |----|----------|
 |[0/$00](#00)|Total number of horizontal character positions|
 |[1/$01](#01)|Number of visible horizontal character positions|
@@ -167,7 +167,7 @@ The default value for this register, established during the
 IO1NIT routine [$E109], is 126/$7E, This provides 127
 horizontal character positions. You'll need to reduce this by half if
 you enable the pixel double feature (see the entry for bit 4 of
-register 25/$19). You may need to increase the value here
+register [25/$19](#19)). You may need to increase the value here
 slightly if you use one of the interlaced modes.
 
 ### <a name="01"></a> 1/$01 Number of active horizontal character positions
@@ -292,7 +292,7 @@ screen.
 
 When decreasing the number of rows, you can make
 the screen editor use the reduced number by storing a value
-equal to the new number of rows minus 1 in location 237/$ED,
+equal to the new number of rows minus 1 in location [237/$ED](0000#ED),
 then resetting the output window to full screen size (by
 printing two cursor-home characters, for example). The screen
 editor routines will not support a display with more than 25
@@ -426,7 +426,7 @@ use AND 31 in BASIC or AND #$1F in machine language.
 ### <a name="0A"></a> 10/$0A Cursor mode control
 The value in this register cannot be changed directly while the
 standard screen editor ROM routines are used for printing.
-The contents of a shadow location at 2603/$OA2B are copied
+The contents of a shadow location at 2603/$0A2B are copied
 to this register each time the cursor position is updated. Thus,
 to change the value in this register, you must store the desired
 value in the shadow location rather than in the register.
@@ -1058,7 +1058,8 @@ register [24/$18](#18) determines whether the operation will be a copy
 or a fill.
 
 The operations require different preparatory steps, as
-outlined below:
+outlined below.
+
 For a fill operation:
 1. Set bit 7 of register [24/$18](#18) to %0 to indicate a fill
 operation.
