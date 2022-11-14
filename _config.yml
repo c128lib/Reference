@@ -1,0 +1,31 @@
+# Setup
+title: C128 reference
+url: https://c128lib.github.io/Reference/
+paginate: 1
+baseurl: ""
+permalink: pretty
+
+# Gems
+plugins:
+  - jekyll-gist
+  - jekyll-paginate
+  - jekyll-seo-tag
+
+# Optimize Jekyll
+exclude:
+  - .editorconfig
+  - .git
+  - .jekyll-cache
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE.md
+  - README.md
+
+sass:
+  sass_dir: _sass
+  style: :compressed
+
+author:
+  name: C128lib
+  url: https://c128lib.github.io
+  email: raffaele.intorcia@gmail.com
