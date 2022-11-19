@@ -3,7 +3,8 @@
 ## Index
 
 ### Components
-* [SID (Sound Interface Device))](Sid)
+* [CIA (Complex Interface Adapter)](Cia)
+* [SID (Sound Interface Device)](Sid)
 * [VDC (Video Display Controller)](Vdc)
 * [VIC (Video Interface Controller)](Vic)
 
