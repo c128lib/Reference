@@ -261,7 +261,7 @@ required 264 or 320, the VDC can add a few extra scan lines at
 the end to achieve the proper result.
 The value in this register
 specifies the number of extra scan lines to add. The available
-five bits allow up to % 11111 = 31/$1F additional scan lines.
+five bits allow up to %11111 = 31/$1F additional scan lines.
 The default character height of eight scan lines is an exact
 multiple of both 264 and 320 (33 * 8 = 264 and 40 * 8 =
 320). Thus, no extra scan lines are required, so this register is
@@ -356,6 +356,7 @@ twice as many horizontal lines per frame
 noninterlaced mode). This creates the tantalizing prospect of
 an 80-column X 50-line text screen. The following routine
 sets up such a display:
+
 ``` BASIC
 10 WR=DEC("CDCC")
 20 SYS WR,3,8
@@ -746,7 +747,7 @@ rates are about four times per second when the bit is %0 and
 about twice per second when the bit is %1 .
 The default setting for this bit is %1 , for the slower blinking rate.
 This is established during the IOINIT routine [$E109],
-part of both the reset and RUN/STOP-RE STORE sequences.
+part of both the reset and RUN/STOP-RESTORE sequences.
 This setting is not changed by any other ROM routine.
 
 **Bit 6**: this bit controls a special VDC feature known as reverse
@@ -918,7 +919,7 @@ color of the display. For text mode, this is the color of all
 pixels represented by %0 bits in the pattern definition for the
 character in each screen position. For graphic mode with
 attribute memory disabled, the value here determines the color
-°f all pixels represented by %0 bits in the bitmap. The
+of all pixels represented by %0 bits in the bitmap. The
 correspondence between register value and background color is
 as shown in Table 8-5. For graphic mode with attribute memory
 enabled, the value here determines the color of the screen
@@ -952,7 +953,7 @@ memory address for each new row of the display. This allows
 you to set up a virtual screen wider than the actual screen.
 You can scroll back and forth across the virtual screen by adjusting
 the screen starting address in registers [12-13/$0C-$0D](#0C).
-The default value for this register is [0/$00](#00), since no extra
+The default value for this register is 0/$00, since no extra
 columns are used with the 80-column text display. The screen
 editor routines that support printing to the VDC screen all
 assume an 80-column screen line. If you reduce the number of
