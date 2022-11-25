@@ -10,6 +10,7 @@
 
 ### Memory reference
 * [$0000-$00FF - Zero Page](0000)
+* [$C000-$CFFF - Screen editor ROM](C000)
 * [$D000-$D030 - VIC Chip Registers](D000)
 * [$D400-$D41C - SID Chip Registers](D400)
 * [$D600-$D601 - VDC Chip Registers](D600)
