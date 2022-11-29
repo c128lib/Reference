@@ -35,3 +35,8 @@ RS-232 interface. It also provides programmable I/O lines at
 the user port for custom interfacing projects. Another vital
 function of this unit is to select which area of memory is used
 aS the current VIC video bank.
+
+## See also
+
+* [$DC00-$DC0F - CIA 1 (Complex Interface Adapter)](DC00)
+* [$DD00-$DD0F - CIA 2 (Complex Interface Adapter)](DD00)

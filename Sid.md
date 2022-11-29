@@ -121,3 +121,7 @@ sound routine should also work in Commodore 128 mode. In
 addition to being loaded directly, some of these registers can
 also be loaded indirectly from shadow registers as part of the
 BASIC IRQ service routine.
+
+## See also
+
+* [$D400-$D41C - SID Chip Registers](D400)
