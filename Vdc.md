@@ -4,7 +4,7 @@ The VDC (video display controller), officially designated the
 8563, is a custom chip designed by Commodore's engineers
 especially to provide the 80-column display for the 128.
 
-The VDC provides a digital RGBI signal requiring a special monitor, 
+The VDC provides a digital RGBI signal requiring a special monitor,
 but other than that the fundamentals of its video display
 are similar to those described for the VIC chip.
 
@@ -152,7 +152,8 @@ both locations follows.
 |[35/$23](#23)|Ending position for horizontal blanking|
 |[36/$24](#24)|Number of memory refresh cycles per scan line|
 
-### <a name="00"></a> 0/$00 Total number of horizontal character positions 
+## <a name="00"></a> 0 $00
+### Total number of horizontal character positions
 The value in this register determines the total width (in character
 positions) of each horizontal line of the display. The
 value stored here should be one less than the desired number
@@ -164,13 +165,14 @@ The total number of horizontal pixels is given by multiplying the value
 here (plus 1) by the total number of pixels per character position
 (the value in bits 4-7 of register [22/$16](#16) plus 1).
 The default value for this register, established during the
-IO1NIT routine [$E109], is 126/$7E, This provides 127
+IOINIT routine [$E109], is 126/$7E, This provides 127
 horizontal character positions. You'll need to reduce this by half if
 you enable the pixel double feature (see the entry for bit 4 of
 register [25/$19](#19)). You may need to increase the value here
 slightly if you use one of the interlaced modes.
 
-### <a name="01"></a> 1/$01 Number of active horizontal character positions
+## <a name="01"></a> 1 $01
+### Number of active horizontal character positions
 The value in this register determines how many of the horizontal character
 positions specified in register [0/$00](#00) can actually be used to display
 characters. The value stored here
@@ -198,7 +200,8 @@ support a display wider than 80 columns, so you'll have to
 write your own text handling routines if you want to use a
 wider display.
 
-### <a name="02"></a> 2/$02 Horizontal sync position
+## <a name="02"></a> 2 $02
+### Horizontal sync position
 The value in this register determines the character position at
 which the vertical sync pulse begins. The value here also
 determines the horizontal position of the active portion of the
@@ -208,7 +211,8 @@ The default value here is
 102/$66. Increasing this value moves the active screen area to
 the left; decreasing it moves the active area to the right.
 
-### <a name="03"></a> 3/$03 Horizontal and vertical sync width
+## <a name="03"></a> 3 $03
+### Horizontal and vertical sync width
 **Bits 0-3**: These bits specify the width of the horizontal sync
 pulse. The value here should be one greater than the desired
 number of character positions for the pulse. The default value
@@ -221,7 +225,8 @@ video mode is being used (in that case, use a value that is
 twice the desired number of scan lines). The default value for
 these bits is 4/$4, for a pulse four scan lines wide.
 
-### <a name="04"></a> 4/$04 Total number of screen rows
+## <a name="04"></a> 4 $04
+### Total number of screen rows
 This register specifies the total height (in character positions)
 of the VDC display. The value stored here should be one less
 than the desired number of vertical character positions. The
@@ -249,7 +254,8 @@ the respective total heights are 33 * 8, or 264 lines, for NTSC, and
 should remain constant, so if you increase the character height
 you must decrease the total number of rows, and vice versa.
 
-### <a name="05"></a> 5/$05 Vertical fine adjustment 
+## <a name="05"></a> 5 $05
+### Vertical fine adjustment
 **Bits 0-4**: the total number of scan lines in the VDC's video
 display should be 264 for an NTSC (North American) system
 or 320 for a PAL (European) system. The number of scan lines
@@ -279,7 +285,8 @@ read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### <a name="06"></a> 6/$06 Number of visible screen rows
+## <a name="06"></a> 6 $06
+### Number of visible screen rows
 The value in this register determines how many of the vertical
 character positions specified in register [4/$04](#04) can actually be
 used to display characters. The value here must be less than
@@ -299,7 +306,8 @@ editor routines will not support a display with more than 25
 rows, so you'll have to provide your own character manipulation
 routines to use such a screen.
 
-### <a name="07"></a> 7/$07 Vertical sync position
+## <a name="07"></a> 7 $07
+### Vertical sync position
 The value in this register determines the vertical character
 position at which the vertical sync signal will be generated. This
 register can be used to adjust the vertical location of the active
@@ -312,7 +320,8 @@ move the active display area upwards. However, you should
 not increase the value here above the maximum number of
 rows specified in register [4/$04](#04).
 
-### <a name="08"></a> 8/$08 Interlace mode control
+## <a name="08"></a> 8 $08
+### Interlace mode control
 **Bits 0-1**: The value in these bits controls the interlace mode of
 the screen. The complete standard for NTSC video calls for a
 frame (raster) of 525 lines to be redrawn 30 times per second,
@@ -380,7 +389,8 @@ read from this register will always be at least 252/$FC. To
 mask off these bits and see only the valid bits of the register,
 use AND 3 in BASIC or AND #$03 in machine language,
 
-### <a name="09"></a> 9/$09 Total number of scan lines per character
+## <a name="09"></a> 9 $09
+### Total number of scan lines per character
 **Bits 0-4**: These bits determine the total vertical height (in scan
 lines) of each character position. The value stored here should
 be one less than the desired number of scan lines. The total
@@ -424,7 +434,8 @@ read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### <a name="0A"></a> 10/$0A Cursor mode control
+## <a name="0A"></a> 10 $0A
+### Cursor mode control
 The value in this register cannot be changed directly while the
 standard screen editor ROM routines are used for printing.
 The contents of a shadow location at 2603/$0A2B are copied
@@ -474,7 +485,8 @@ this register will always be at least 128/$80. To mask off this
 bit and see only the valid bits of the register, use AND 127 in
 BASIC or AND #$7F in machine language.
 
-### <a name="0B"></a> 11/$0B Bottom scan line for cursor
+## <a name="0B"></a> 11 $0B
+### Bottom scan line for cursor
 **Bits 0-4**: These bits determine the scan line within a character
 position for the bottom of the cursor. Together with bits 0-4
 of register [10/$0A](#0A), this serves to determine the height of the
@@ -495,7 +507,8 @@ read from this register will always be at least 224/$E0, To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### <a name="0C"></a><a name="0D"></a> 12/$0C 13/$0D Starting address for screen memory
+## <a name="0C"></a><a name="0D"></a> 12 $0C 13 $0D
+###Starting address for screen memory
 For standard text mode, the value in this register pair determines
 the starting address for screen memory, the area which
 holds screen codes specifying which character will be displayed
@@ -510,7 +523,7 @@ pair is opposite that normally used in the 128 system: The first
 register (12/$0C) holds the high byte and the second (13/$0D)
 holds the low byte. Unlike VIC screen memory, which must
 begin on an even 1K address boundary, VDC screen memory
-can begin at any address in the VDC's address space. 
+can begin at any address in the VDC's address space.
 
 DETERMINE WHICH FIGURE
 
@@ -529,7 +542,8 @@ routines will continue to assume that screen memory is located
 in its default position unless you also change the value in the
 screen memory starting-page pointer at 2606/$0A2E.
 
-### <a name="0E"></a><a name="0F"></a> 14/$0E 15/$0F Address of current cursor position
+## <a name="0E"></a><a name="0F"></a> 14 $0E 15 $0F
+### Address of current cursor position
 For the VIC chip's display, the cursor is an effect laboriously
 maintained by software. The VDC, by contrast, has hardware
 to maintain the cursor for its display automatically. The cursor
@@ -547,14 +561,15 @@ in use. The printing routines update the cursor position after
 each character is printed so that these registers always hold
 the address of the next available character position.
 
-### <a name="10"></a><a name="11"></a> 16/$10 17/$11 Light pen vertical and horizontal positions
+## <a name="10"></a><a name="11"></a> 16 $10 17 $11
+### Light pen vertical and horizontal positions
 Whenever the LP input line to the VDC chip is brought to a
 low (0 volts) state, the row and column values for the current
 position of the raster beam are latched into these registers. The
 vertical (row) number will be latched into register 16/$10, and
 the horizontal (column) number will be latched into register
 17/$11. To signal that a value has been latched, the LP flag
-(bit 6 of the external register at 54784/$D600) will be set to
+(bit 6 of the external register at [54784/$D600](D600)) will be set to
 %1. That bit will remain at %1 until either of these registers is
 read, at which time it will be reset to %0. However, reading
 these registers does not clear them; the latched values will be
@@ -592,7 +607,7 @@ to the absolute horizontal character position, which includes
 the border areas on the left and right edges of the
 screen. You should find that when the pen is pointed at the
 leftmost character position, you get a reading of about 27-29
-in register 17/$11. This implies that the rightmost character
+in register [17/$11](#11). This implies that the rightmost character
 position should give readings of about 106-108. Actually, you
 may get higher readings—120 or more. In fact, even if you
 hold the pen perfectly still you may see the character position
@@ -625,7 +640,8 @@ ENTER keys on the numeric keypad, and the ^ key in the
 cursor group. More significantly, while a light pen is connected,
 all of these keys will be "dead" and cannot be typed.
 
-### <a name="12"></a><a name="13"></a> 18/$12 19/$13 Current memory address
+## <a name="12"></a><a name="13"></a> 18 $12 19 $13
+### Current memory address
 This register pair specifies which address in the VDC's private
 block of RAM will be referenced by the next read or store operation
 involving register [31/$1F](#1F). As with the other VDC address register
@@ -646,7 +662,8 @@ these registers before the first read or store.
 After that, you can just read from or write to register [31/$1F](#1F)
 and the address will be handled automatically.
 
-### <a name="14"></a><a name="15"></a> 20/$14 21/$15 Starting address for attribute memory
+## <a name="14"></a><a name="15"></a> 20 $14 21 $15
+### Starting address for attribute memory
 When attributes are activated, this register pair determines the
 starting address for attribute memory, the area which holds
 attribute values for each active character position on the
@@ -668,7 +685,8 @@ ROM routines will continue to assume that attribute memory
 is in its default position unless you also change the value in
 the attribute starting-page pointer at 2607/$0A2F.
 
-### <a name="16"></a> 22/$16 Character horizontal size control
+## <a name="16"></a> 22 $16
+### Character horizontal size control
 **Bits 0-3**: the value in these bits determines how many of the
 total horizontal pixels in the character position will be used to
 display character pattern data. The total number is specified
@@ -702,7 +720,8 @@ pixels per character position. The total number of horizontal
 pixels is determined by multiplying the value here (plus 1) by
 the total number of character positions (from register [0/$00](#00)).
 
-### <a name="17"></a> 23/$17 Character vertical size control
+## <a name="17"></a> 23 $17
+### Character vertical size control
 **Bits 0-4**: The value in these bits determines how many of the
 total scan lines for each character position (specified in register
 [9/$09](#09)) will be used to display character pattern data. The
@@ -728,7 +747,8 @@ read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### <a name="18"></a> 24/$18 Vertical smooth scrolling and control
+## <a name="18"></a> 24 $18
+### Vertical smooth scrolling and control
 **Bits 0-4**: these bits can be used to smoothly scroll the screen
 vertically upward. The value here specifies the number of scan
 lines the display should be shifted upward. Although five bits
@@ -774,7 +794,8 @@ to %1 specifies a copy operation. See the entry for register
 bit is set to %0 when the register is initialized during the
 IOINIT routine [$E109].
 
-### <a name="19"></a> 25/$19 Horizontal smooth scrolling and control
+## <a name="19"></a> 25 $19
+### Horizontal smooth scrolling and control
 **Bits 0-3**: these bits can be used to smoothly scroll the screen
 horizontally. The use of these bits depends on the version of
 the VDC in your 128. The version number can be determined
@@ -882,8 +903,7 @@ drawing program for the VDC. Use a joystick in port 2 to
 sketch. Pressing the B key will change the background color
 and pressing the F key will change the foreground color
 (attribute memory is turned off, so all character positions use
-the same foreground and background colors). The CLR/
-HOME key can be used to move the drawing point back to its
+the same foreground and background colors). The CLR/HOME key can be used to move the drawing point back to its
 home position in the center of the screen, and SHIFT -
 CLR/HOME will clear the display.
 
@@ -913,7 +933,8 @@ IF X>639 THEN X=0
 270 GOTO 170
 ```
 
-### <a name="1A"></a> 26/$1A Background and foreground colors
+## <a name="1A"></a> 26 $1A
+### Background and foreground colors
 **Bits 0-3**: the value in these bits determines the background
 color of the display. For text mode, this is the color of all
 pixels represented by %0 bits in the pattern definition for the
@@ -946,7 +967,8 @@ instead determine the color for all pixels represented by %0
 bits in the character pattern or bitmap. The correspondence
 between bit values and colors is as shown in Vdc color table.
 
-### <a name="1B"></a> 27/$1B Address increment per row of characters
+## <a name="1B"></a> 27 $1B
+### Address increment per row of characters
 The value in this register will be added to the value in register
 [1/$01](#01) to determine the amount by which to increase the screen
 memory address for each new row of the display. This allows
@@ -960,7 +982,8 @@ assume an 80-column screen line. If you reduce the number of
 active columns in register [1/$01](#01), you should increase the value
 in this register correspondingly so that the total remains 80.
 
-### <a name="1C"></a> 28/$1C Character pattern address and memory type
+## <a name="1C"></a> 28 $1C
+### Character pattern address and memory type
 **Bits 0-3**: these bits are unused; writing to them has no effect,
 and they always return %1 when read. Thus, the value you
 read from this register will always be at least 15/$0F. To mask
@@ -1024,7 +1047,8 @@ this area of memory if the VDC is to display recognizable
 characters. This step is performed during the IOINIT routine
 by calling the screen editor INIT80 routine [$CE0C].
 
-### <a name="1D"></a> 29/$1D Underline scan-line control
+## <a name="1D"></a> 29 $1D
+### Underline scan-line control
 **Bits 0-4**: the value in these bits determines which scan line
 within the character position will be filled for any characters
 with the underline attribute. A character position has the
@@ -1048,7 +1072,8 @@ read from this register will always be at least 224/$E0. To
 mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
-### <a name="1E"></a> 30/$1E Number of bytes to copy or fill
+## <a name="1E"></a> 30 $1E
+### Number of bytes to copy or fill
 The VDC has the capability to copy blocks of data up to 255
 characters long from one area of VDC memory to another, and
 to fill areas up to 255 bytes long with a specified value. The
@@ -1098,7 +1123,8 @@ block. For multiple fill operations, the instruction above to
 subtract 1 from the desired number of bytes to fill applies only
 for the first block.
 
-### <a name="1F"></a> 31/$1F Memory read/write
+## <a name="1F"></a> 31 $1F
+### Memory read/write
 This register is the gateway between the VDC's private block
 of RAM and the rest of the 128 system. When read, this
 location reflects the contents of the VDC memory location
@@ -1106,7 +1132,7 @@ addressed in registers [18-19/$12-$13](#12). Writing a value to this
 register will cause the value to be transferred to the location
 addressed in registers [18-19/$12-$13](#12).
 
-For both reading and writing, the address in registers 
+For both reading and writing, the address in registers
 [18-19/$12-$13](#12) will automatically be incremented after this
 register is accessed. Thus, to
 read or write a sequential series of locations you need only
@@ -1115,7 +1141,8 @@ You can then read or write repeatedly to register
 [31/$1F](#1F); the destination address will automatically increment
 after each read or write.
 
-### <a name="20"></a> 32-33/$20-$21 Source address for block copy
+## <a name="20"></a> 32-33 $20-$21
+### Source address for block copy
 The VDC has the capability to copy blocks of data up to 255
 bytes long from one area of memory to another (see the entry
 for register [30/$1E](#1E) for details). The value in this register pair
@@ -1133,7 +1160,8 @@ it is possible to copy blocks of more than 255 successive bytes
 by using repeated copy operations without reloading these
 registers.
 
-### <a name="22"></a> 34-35/$22-$23 Horizontal blanking positions
+## <a name="22"></a> 34-35 $22-$23
+### Horizontal blanking positions
 The VDC can adjust its horizontal blanking interval to blank a
 portion of the screen. These locations control the horizontal
 width and position of the blanked area. If the blanked area extends
@@ -1154,7 +1182,8 @@ an area of the screen, a value of 6/$06 in these registers
 corresponds to the leftmost column of the standard screen and a
 value of 85/$55 corresponds to the rightmost column.
 
-### <a name="24"></a> 36/$25 Number of memory refresh cycles per scan line
+## <a name="24"></a> 36 $24
+Number of memory refresh cycles per scan line
 **Bits 0-3**: the value in these bits determines the number of
 memory refresh cycles per scan line. The RAM chip used for
 the VDC's video memory is a type known as dynamic RAM.
@@ -1183,3 +1212,7 @@ six-bit register number, these register addresses can also be
 specified. However, none of these internal registers are used,
 and writing to them has no effect. All register numbers in this
 range return the value 255/$FF when read.
+
+## See also
+
+* [$D600-$D601 - VDC Chip Registers](D600)
