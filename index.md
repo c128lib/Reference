@@ -5,6 +5,7 @@
 ### Components
 * [CIA (Complex Interface Adapter)](Cia)
 * [SID (Sound Interface Device)](Sid)
+* [Screen editor ROM](ScreenEditorRom)
 * [VDC (Video Display Controller)](Vdc)
 * [VIC (Video Interface Controller)](Vic)
 
