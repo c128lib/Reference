@@ -5,9 +5,9 @@ The CIA (complex interface adapter) chips perform the majority of the
 CIAs are responsible for handling communications with the
 keyboard, joysticks, the serial bus (where disk drives and
 printers are connected), the RS-232 port (where modems are
-connected), and the user port. In fact—with the exception of
+connected), and the user port. In fact-with the exception of
 video output provided by the [Vic](Vic) and [Vdc](Vdc) chips and the audio output
-provided by the [Sid](Sid) chip—the list of I/O functions
+provided by the [Sid](Sid) chip-the list of I/O functions
 performed by devices other than the CIAs is quite short: the
 [Vic](Vic) and [Vdc](Vdc) chips handle light pen input for their respective
 displays, the [Sid](Sid) chip reads paddle controllers (although a
