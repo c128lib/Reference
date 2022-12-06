@@ -4,6 +4,7 @@
 
 ### Components
 * [CIA (Complex Interface Adapter)](Cia)
+* [Kernal](Kernal)
 * [SID (Sound Interface Device)](Sid)
 * [Screen editor ROM](ScreenEditorRom)
 * [VDC (Video Display Controller)](Vdc)
