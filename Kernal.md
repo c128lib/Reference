@@ -16,11 +16,68 @@ $A04 bit 7 = 0 -> Full initialization (set INIT_STATUS bit 7)
 </pre>
 You should be sure IRQ's are disabled before calling IOINIT to avoid interrupts while the various I/O devices are bing initialized.
 
+## 65415 $FF87 RAMTAS <a name="FF87"></a>
+RAMTAS clears all page-zero RAM, allocates the cassette and RS-232 buffers, sets pointers to the top and bottom of system RAM (RAM 0) and points the SYSTEM_VECTOR ($0A00) to BASIC cold start ($4000). Finally, it sets a flag, DEJAVU ($0A02), to indicate to other routines that system RAM has been initialized and that the SYSTEM_VECTOR is valid. It should be noted that the C128 RAMTAS routine does not in any way test RAM.
+
+## 65418 $FF8A RESTOR <a name="FF8A"></a>
+RESTOR restores the default values of all the Kernal indirect vectors from the Kernal ROM list. It does not affect any other vectors, such as those used by the Editor (see CINT) and BASIC. Because it is possible for an interrupt (IRQ or NMI) to occur during the updating of the interrupt indirect vectors, you should disable interrupts prior to calling RESTOR. Seee also the VECTOR call.
+
+## 65421 $FF8D VECTOR <a name="FF8D"></a>
+VECTOR reads or writes the Kernal RAM indirect vectors. Calling VECTOR with the carry status set stores the current contents of the indirect vectors to the RAM address passed in the X and Y registers (to the current RAM bank). Calling VECTOR with the carry status clear updates the Kernal indirect vectors from the user list passed in the X and Y registers (from the current RAM bank). Interrupts (IRQ and NMI) should be disabled when updating the indirects. See also the RESTOR call.
+
+## 65424 $FF90 SETMSG <a name="FF90"></a>
+SETMSG updates the Kernal message flag byte MSGFLG ($9D) that determines whether system error and/or control messages will be displayed. BASIC normally disables error messages always and disables control messages in Run mode. Note that the Kernal error messages are not the verbose ones printed by BASIC, but simply the I/O ERROR # message that you see when in the Monitor, for example. Examples of Kernal control messages are LOADING, FOUND, and PRESS PLAY ON TAPE. The MSGFLG control bits are:
+<pre>
+MSGFLG bit 7 = 1 -> enable CONTROL messages
+       bit 6 = 1 ->> enable ERROR messages
+</pre>
+
+## 65427 $FF93 SECOND <a name="FF93"></a>
+SECOND is a low-level serial routine used to send a secondary address (SA) to a LISTENing device (see LISTEN Kernal call). An SA is usually used to provide setup information to a device before the actual data I/O operation begins. Attention is released after a call to SECOND. SECOND is not used to send an SA to a TALKing device (see TKSA). (Most applications should use the higher level I/O routines: see OPEN and CHKOUT).
+
+## 65430 $FF96 TKSA <a name="FF96"></a>
+TKSA is a low-level serial routine used to send a secondary address (SA) to a device commanded to TALK (see TALK Kernal call). An SA is usually used to provide setup information to a device before the actual data I/O operation begins. (Most applications should use the higher-level I/O routines; see OPEN and CHKIN).
+
 ## 65433 $FF99 MEMTOP <a name="FF99"></a>
 MEMTOP is used to read or set the top of system RAM, pointed to by MEMSIZE ($0A07). This call is included in the C128 for completeness, but neither the Kernal nor BASIC utilizes MEMTOP since it has little meaning in the banked memory environment of the C128 (even the RS-232 buffers are permanently allocated). Nonetheless, set the carry status to load MEMSIZE into X and Y, and clear it to update the pointer from X and Y. Note that MEMSIZE references only system RAM (RAM0). The Kernal initially sets MEMSIZE to $FF00 (MMU and Kernal RAM code start here).
 
 ## 65436 $FF9C MEMBOT <a name="FF9C"></a>
-MEMBOT is used to read or set the bottom of system RAM, pointed to by MEMSTR ($0A05). This call is included in the C128 for completeness, but neither the Kernal nor BASIC utilizes MEMBOT since it has little meaning in the backed memory environment of the C128. Nonetheless, set the carry status to load MEMSTR into .X and .Y, and clear it to update the pointer from X and Y. Note that MEMSTR references only system RAM (RAM0). The Kernal initially sets MEMSTR to $1000 (BASIC text starts here).
+MEMBOT is used to read or set the bottom of system RAM, pointed to by MEMSTR ($0A05). This call is included in the C128 for completeness, but neither the Kernal nor BASIC utilizes MEMBOT since it has little meaning in the backed memory environment of the C128. Nonetheless, set the carry status to load MEMSTR into X and Y, and clear it to update the pointer from X and Y. Note that MEMSTR references only system RAM (RAM0). The Kernal initially sets MEMSTR to $1000 (BASIC text starts here).
+
+## 65439 $FF9F SCNKEY <a name="FF9F"></a>
+SCNKEY is an Editor routine that scans the entire C128 keyboard (except the 40/80 key). It distinguishes between ASCII keys, control keys, and programmable keys, setting keyboard status bytes and managing the keyboard buffer. After decoding the key, SCNKEY will manage such features as toggling cases, pauses or delays, and key repeats. It is normally called by the operating system during the 60Hz IRQ processing. Upon conclusion, SCNKEY leaves the keyboard hardware driving the keyline on which the STOP key is located.
+
+There are two indirect RAM jumps encountered during a keyscan: KEYVEC ($33A) and KEYCHK ($33C). KEYVEC (alias KEYLOG) is taken whenever a key depression is discovered, before the key in A has been decoded. KEYCHK is taken after the key has been decoded, just before putting it into the key buffer. KEYCHK carries the ASCII character in A, the keycode in Y, and the skiftkey status in X.
+
+The keyboard decode matrices are addressed via indirect RAM vectors as well, located at DECODE ($33E).
+
+The following table describes them:
+<pre>
+$33E	Mode 1	->	normal keys
+$340	Mode 2	->	SHIFT keys
+$342	Mode 3	->	C= keys
+$344	Mode 4	->	CONTROL keys
+$346	Mode 5	->	CAPS LOCK keys
+$348	Mode 6	->	ALT keys
+</pre>
+The following list briefly describes some of the more vital variables utilized or maintained by SCNKEY:
+<pre>
+ROWS	$DC01	->	I/O port outputting keys
+COLM	$DC00	->	I/O port driving C64 keys
+VIC #47	$D02F	->	I/O port driving new keys
+8502 P6	$0001	->	I/O port sensing CAPS key
+NDX	$D0	->	keyboard buffer index
+KEYD	$34A	->	keyboard buffer
+XMAX	$A20	->	keyboard buffer size
+SHFLAG	$D3	->	shift key status
+RPTFLG	$A22	->	repeat key enables
+LOCKS	$F7	->	pause, mode disables
+</pre>
+
+SCNKEY is also found in the Editor jump table at $C012.
+
+## 65442 $FFA2 SETTMO <a name="FFA2"></a>
+SETTMO is not used in the C128 but is included for compatibility and completeness. It is used in the C64 by the IEEE communication cartridge to disable I/O timeouts.
 
 ## 65445 $FFA5 ACPTR <a name="FFA5"></a>
 ACPTR is a low-level serial I/O utility to accept a single byte from the current serial bus TALKer using full handshaking. To prepare for this routine, a device must first have been established as a TALKer (see [TALK](#FFB4)) and passed a secondary address if necessary (see [TKSA](#FF96)). The byte is returned in A. Most applications should use the higher-level I/O routines; see BASIN and GETIN.
@@ -28,16 +85,34 @@ ACPTR is a low-level serial I/O utility to accept a single byte from the current
 ## 65448 $FFA8 CIOUT <a name="FFA8"></a>
 CIOUT is a low-level serial I/O utility to transmit a single byte to the current serial bus LISTENer using full handshaking. To prepare for this routine, a device must first have been established as a LISTENer (see [LISTEN](##FFB4)) and passed a secondary address if necessary (see [SECOND](#FF93)). The byte is passed in A. Serial output data is buffered by one character, with the last character being transmitted with EOI after a call to [UNLSN](#FFAE). Most applications should use the higher level I/O routines; see BSOUT.
 
+## 65451 $FFAB UNTLK <a name="FFAB"></a>
+UNTLK is a low-level Kernal serial bus routine that sends and UNTALK command to all serial bus devices. It commands all TALKing devices to sop sending data. (Most applications should us the higher-level I/O routines; see CLRCHN).
+
+## 65454 $FFAE UNLSN <a name="FFAE"></a>
+UNLSN is a low-level Kernal serial bus routine that sends an UNLISTEN command to all serial bus devices. It commands all LISTENing devices to stop reading data. (Most applications should us the higher-level I/O routines; see CLRCHN)
+
 ## 65457 $FFB1 LISTEN <a name="FFB1"></a>
-LISTEN is a low-level Kernal serial bus routine that sends a LISTEN command to the serial bus device in .A. It commands the device to start reading data. Most applications should use the higher-level I/O routines; see CHKOUT.
+LISTEN is a low-level Kernal serial bus routine that sends a LISTEN command to the serial bus device in A. It commands the device to start reading data. Most applications should use the higher-level I/O routines; see CHKOUT.
+
+## 65460 $FFB4 TALK <a name="FFB4"></a>
+TALK is a low-level Kernal serial bus routine that sends a TALK command to the serial bus device in A. It commands the device to start sending data. (Most applications should use the higher-level I/O routines; see CHKIN.)
+
+## 65463 $FFB7 READST <a name="FFB7"></a>
+READST (alias READSS) returns the status byte associated with the last I/O operation (serial, cassette or RS-232) performed. Serial and cassette tape operations update STATUS ([144/$90](0000#90)) and RS-232 I/O updates RSSTAT ($0A14). Note that to simulate an ACIA, RSSTAT is cleared after it is read via READST. The last I/O operation is determined by the contents of FA ([186/$BA](0000#BA)); thus applications that drive I/O devices using the lower-level Kernal calls should not use READST.
+
+## 65466 $FFBA SETLFS <a name="FFBA"></a>
+SETLFS sets the logical file number (LA, $B8), device number (FA, $BA) and secondary address (SA, $B9) for the higher-level Kernal I/O routines. The LA must be unique among OPENed files and is used to identify specific files for I/O operations. The device number rangs is 0 to 31 and is used to target I/O. The SA is a command to be sent to the indicated device, usually to place it in a particular mode. If the SA is not needed, the Y register should pass $FF. SETLFS is often used along with SETNAM and SETBNK calls prior to OPENs. See the Kernal OPEN, LOAD and SAVE calls for examples.
+
+## 65466 $FFBD SETNAM <a name="FFBd"></a>
+SETNAM sets up the filename or command string for higher-level Kernal I/O calls such as OPEN, LOAD and SAVE. The string (filename or command) length is passed in A and updates FNLEN ($B7). The address of the string is passed in X (low) and Y (high). See the companion call, SETBNK, which specifies in which RAM bank the string is found. If there is no string, SETNAM should still be called and a null ($00) length specified (the address does not matter). SETNAM is often used along with SETBNK and SETLFS calls prior to OPENs. See the Kernal OPEN, LOAD and SAVE calls for examples.
 
 ## 65472 $FFC0 OPEN <a name="FFC0"></a>
-OPEN prepares a logical file for I/O operations. It creates a unique entry in the Kernal logical file tables LAT ($0362), FAT ($36C) and SAT ($0376) using its index LDTND ([152/$98](0000#98)) and data supplied by the user via SETLFS. There can be up to then logical files OPENed simultaneously. OPEN performs device-specific opening tasks for serial, cassette and RS-232 devices, including clearing the previous status and transmitting any given filename or command string supplied by the user via SETNAM and SETBNK. The I/O status is updated appropriately and can be read via READST.
+OPEN prepares a logical file for I/O operations. It creates a unique entry in the Kernal logical file tables LAT ($0362), FAT ($036C) and SAT ($0376) using its index LDTND ([152/$98](0000#98)) and data supplied by the user via SETLFS. There can be up to then logical files OPENed simultaneously. OPEN performs device-specific opening tasks for serial, cassette and RS-232 devices, including clearing the previous status and transmitting any given filename or command string supplied by the user via SETNAM and SETBNK. The I/O status is updated appropriately and can be read via READST.
 
 The path to OPEN is through an indirect RAM vector at $031A. Applications may therefor provide their own OPEN procedures or supplement the system's by redirecting this vector to their own routine.
 
 ## 65475 $FFC3 CLOSE <a name="FFC3"></a>
-CLOSE removes the logical file (LA) passed in .A from the logical file tables and performs device-specific closing tasks. Keyboard, screen and any unOPENed files pass through. Cassette files opened for output are closed by writing the last buffer and (optionally) an EOT mark. RS-232 I/O devices are reset, losing any buffered data. Serial files are closed by transmitting a CLOSE command (if an SA was given when it was opened), sending any buffered character, and UNLSNing the bus.
+CLOSE removes the logical file (LA) passed in A from the logical file tables and performs device-specific closing tasks. Keyboard, screen and any unOPENed files pass through. Cassette files opened for output are closed by writing the last buffer and (optionally) an EOT mark. RS-232 I/O devices are reset, losing any buffered data. Serial files are closed by transmitting a CLOSE command (if an SA was given when it was opened), sending any buffered character, and UNLSNing the bus.
 There is a special provision incorporated into the CLOSE routine of systems featuring a BASIC DOS command. If the following conditions are all true, a full CLOSE is not performed; the table entry is removed but a CLOSE command is not transmitted to the device. This allows the disk command channel to be properly OPENed and CLOSEd without the disk operating system closing all files on its end:
 <pre>
 .C = 1	->	indicates special CLOSE
@@ -77,7 +152,7 @@ CHRIN (alias BASIN) reads a character from the current input device (DFLTN [153/
 The path to CHKIN is through an indirect RAM vector at $0324. Applications may therefore provide their own BASIN procedures or supplement the system's by redirecting this vector to their own routine.
 
 ## 65490 $FFD2 CHROUT/BSOUT <a name="FFD2"></a>
-CHROUT (alias BSOUT) writes the character in .A to the current output device (DFLTO [154/$9A](0000#9A)). Output to devices other than the screen (the default output device) must be OPENed and CKOUTed. The character is written to the output buffer associated with the current output channel:
+CHROUT (alias BSOUT) writes the character in A to the current output device (DFLTO [154/$9A](0000#9A)). Output to devices other than the screen (the default output device) must be OPENed and CKOUTed. The character is written to the output buffer associated with the current output channel:
 
 * Cassette data is put a character at a time into the cassette buffer at $0B00, with tape blocks being written when necessary.
 * RS-232 data is put a character at a time into the RS-232 output buffer at $0D00, waiting until there is room if necessary.
@@ -90,48 +165,109 @@ The path to CHROUT is through an indirect RAM vector at $0326. Applications may 
 ## 65493 $FFD5 LOAD <a name="FFD5"></a>
 This routine LOADs data from an input device into C128 memory. It can also be used to VERIFY that data in memory matches that in a file. LOAD performs device-specific tasks for serial and cassette LOADs. You cannot LOAD from RS-232 devices, the screen or the keyboard. While LOAD performs all the tasks of an OPEN, it does not create any logical files as an OPEN does. Also note that LOAD cannot "wrap" memory banks. As with any FO, the I/O status is updated appropriately and can be read via READSS. LOAD has two options that the user must select:
 
-* LOAD vs. VERIFY: The contents of A passed at the call to LOAD deter- mines which mode is in effect. If A is zero, a LOAD operation will be performed and memory will be overwritten. If .A is nonzero, a VERIFY operation will be performed and the result passed via the error mechanism.
-* LOAD ADDRESS: the secondary address (SA) setup by the call to SETLFS determines where the LOAD starting address comes from. If the SA is zero, the user wants the address in .X and .Y at the time of the call to be used. If the SA is nonzero, the LOAD starting address is read from the file header itself and the file is loaded into the same place from which it was SAVEd.
+* LOAD vs. VERIFY: The contents of A passed at the call to LOAD deter- mines which mode is in effect. If A is zero, a LOAD operation will be performed and memory will be overwritten. If A is nonzero, a VERIFY operation will be performed and the result passed via the error mechanism.
+* LOAD ADDRESS: the secondary address (SA) setup by the call to SETLFS determines where the LOAD starting address comes from. If the SA is zero, the user wants the address in X and Y at the time of the call to be used. If the SA is nonzero, the LOAD starting address is read from the file header itself and the file is loaded into the same place from which it was SAVEd.
 
 The C128 serial LOAD routine automatically attempts to BURST load a file, and resorts to the normal load mechanism (but still using the FAST serial routines) if the BURST handshake is not returned.
 
 The path to LOAD is through an indirect RAM vector at $330. Applications may therefore provide their own LOAD procedures or supplement the system procedures by redirecting this vector to their own routine.
 
 ### Example
-EXAMPLE:
 ```Assembly
-  LDA	#length		;fnlen
+  LDA	#length		    // fnlen
   LDX	#filename
-  JSR	$FFBD		;SETNAM
+  JSR	$FFBD		      // SETNAM
 
-  LDA	#0		;load/verify bank (RAM0)
-  LDX	#0		;fnbank (RAM0)
-  JSR	$FF68		;SETBNK
+  LDA	#0		        // load/verify bank (RAM0)
+  LDX	#0		        // fnbank (RAM0)
+  JSR	$FF68		      // SETBNK
 
-  LDA	#0		;la (not used)
-  LDX	#8		;fa
-  LDY	#$FF		;sa (SA>0 normal load)
-  JSR	$FFBA		;SETLFS
+  LDA	#0		        // la (not used)
+  LDX	#8		        // fa
+  LDY	#$FF		      // sa (SA>0 normal load)
+  JSR	$FFBA		      // SETLFS
 
-  LDA	#0		;load, not verify
-  LDX	#<load adr	;(used only if SA = 0)
-  LDY	#>load adr	;(used only if SA = 0)
-  JSR	$FFD5		;LOAD
+  LDA	#0		        //  load, not verify
+  LDX	#<load adr	  // (used only if SA = 0)
+  LDY	#>load adr	  // (used only if SA = 0)
+  JSR	$FFD5		      // LOAD
   BCS	error
   STX	end_lo
   STY	end_hi
 ```
 
+## 65496 $FFD8 SAVE <a name="FFD8"></a>
+This routine SAVEs data from C128 memory to an output device. SAVE per- forms device-specific tasks for serial and cassette SAVEs. You cannot SAVE from RS-232 devices, the screen or the keyboard. While SAVE performs all the tasks of an OPEN, it does not create any logical files as an OPEN does. The starting address of the area to be SAVEd must be placed in a zero-page vector and the address of this vector passed to SAVE in A at the time of the call. The address of the last byte to be SAVEd PLUS ONE is passed in X and Y at the same time. Cassette SAVEs utilize the secondary address (SA) to specify the type of tape header(s) to be generated:
+<pre>
+SA (bit 0) = 0 -> relocatable  (blf) file
+           = 1 -> absolute     (plf) file
+SA (bit 1) = 0 -> normal end
+           = 1 -> write EOT header at end
+</pre>
+There is no BURST save; the normal FAST serial routines are used. As with any I/O, the I/O status will be updated appropriately and can be read via READST.
+
+The path to SAVE is through an indirect RAM vector at $0332. Applications may therefore provide their own SAVE procedures or supplement the system's by redirecting this vector to their own routine.
+
+### Example
+
+```
+// SAVE "program",8
+	LDA	#length		  // fnlen
+	LDX	#<filename	// fnadr
+	LDY	#>filename
+	JSR	$FFBD		    // SETNAM
+
+	LDA	#0		      // save from bank (RAM0)
+	LDX	#0		      // fnbank (RAM0)
+	JSR	$FF68		    // SETBNK
+
+	LDA	#0		      // la (not used)
+	LDX	#8		      // fa
+	LDY	#0		      // sa (cassette only)
+	JSR	$FFBA		    // SETLFS
+
+	LDA	#start		  // pointer to start address
+	LDX	end		      // ending address lo
+	LDY	end+1		    // ending adr hi
+	JSR	$FFD8		    // SAVE
+	BCS	error
+filename  .BYTE "program
+length    = 7
+start     .WORD address1		// page-0
+end	      .WORD address2
+```
+
+## 65499 $FFDB SETTIM <a name="FFDB"></a>
+SETTIM sets the system software (jiffie) clock, which counts sixtieths (1/60) of a second. The timer is incremented during system IRQ processing (see UDTIM), and reset at the 24-hour point. SETTIM disables IRQ's, updates the three-byte timer with the contents of A, X and Y, and re-enables IRQ's.
+
+## 65502 $FFDE RDTIM <a name="FFDE"></a>
+RDTIM reads the system software (jiffie) clock, which counts sixtieths (1/60) of a second. The timer is incremented during system IRQ processing (see UDTIM), and reset at the 24-hour point. RDTIM disables IRQ's, loads A, X and Y with the contents of the 3-byte timer, and re-enables IRQ's.
+
+## 65505 $FFE1 STOP <a name="FFE1"></a>
+STOP checks a Kernal variable STKEY ($91), which is updated by UDTIM during normal IRQ processing and contains the last scan of keyboard column C7. The STOP key is bit 7, which will be 0 if the key is down. If it is, default I/O channels are restored via CLRCH and the keyboard queue is flushed by resetting NDX ($D0). The keys on keyboard line C7 are:
+
+|Bit|7|6|5|4|3|2|1|0|
+|-|-|-|-|-|-|-|-|-|
+|Key|STOP|Q|C=|SPACE|2|CTRL|<-|1|
+
+The path to STOP is through an indirect RAM vector at $0328. Applications may therefore provide their own STOP procedures or supplement the system's by redirecting this vector to their own routine.
+
 ## 65508 $FFE4 GETIN <a name="FFE4"></a>
 GETIN reads a character from the current input device (DFLTN [153/$99](0000#99)) buffer and returns it in A. Input from devices other than the keyboard (the default input device) must be OPENed and CHKINed. The character is read from the input buffer associated with the current input channel:
 
-* Keyboard input: A character is removed from the keyboard buffer and passed in .A. If the buffer is empty, a null ($00) is returned.
-* RS-232 input: A character is removed from the RS-232 input buffer at $0C00 and passed in .A. If the buffer is empty, a null ($00) is returned (use READST to check validity).
+* Keyboard input: A character is removed from the keyboard buffer and passed in A. If the buffer is empty, a null ($00) is returned.
+* RS-232 input: A character is removed from the RS-232 input buffer at $0C00 and passed in A. If the buffer is empty, a null ($00) is returned (use READST to check validity).
 * Serial input: GETIN automaticallyjumps to BASIN. See BASIN serial I/O.
 * Cassette input: GETIN automatically jumps to BASIN. See BASIN cassette I/O.
 * Screen input: GETIN automaticallyjumps to BASIN. See BASIN serial I/O.
 
 The path to GETIN is through an indirect RAM vector at $032A. Applications may therefore provide their own GETIN procedures or supplement the system's by redirecting this vector to their own routine.
+
+## 65514 $FFEA UDTIM <a name="FFEA"></a>
+UDTIM increments the system software (jiffie) clock, which counts sixtieths (1/60) of a second when called by the system 60Hz IRQ. TIME, a 3-byte counter located at $A0, is reset at the 24-hour point. UDTIM also decrements TIMER, also a 3-byte counter, located at $AlD (BASIC uses this for the SLEEP command, for example). You should be sure IRQ's are disabled before calling UDTIM to prevent system calls to UDTIM while you are modifying TIME and TIMER. UDTIM also scans key line C7, on which the STOP key lies, and stores the result in STKEY ($91). The Kernal routine STOP utilizes this variable.
+
+## 65517 $FFED SCRORG <a name="FFED"></a>
+SCRORG is an Editor routine that has been slightly changed from previous CBM systems. Instead of returning the maximum SCREEN dimensions in X and Y, the C128 SCRORG returns the current WINDOW dimensions. It does return the maximum SCREEN width in A. These changes make it possible for applications to "fit" themselves on the current screen window. SCRORG is also an Editor jump table entry ($C00F).
 
 ## 65511 $FFE7 CLALL <a name="FFE7"></a>
 CLALL deletes all logical file table entries by resetting the table index, LDTND ([152/$98](0000#98)). It clears current serial channels (if any) and restores the default I/O channels via CLRCHN. The path to CLALL is through an indirect RAM vector at $032C. Applications may therefore provide their own CLALL procedures or supplement the system's by redirecting this vector to their own routine.
