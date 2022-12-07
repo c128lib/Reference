@@ -1,5 +1,265 @@
 # Kernal
 
+## 65351 $FF47 SPIN SPOUT <a name="FF47"></a>
+The C128/1571 fast serial protocol utilizes CIA 1 (6526 at $DC00) and a special driver circuit controlled in part by the MMU (at $D500). SPINP and SPOUT are routines used by the system to set up the CIA and fast serial driver circuit for input or output. SPINP sets up CRA (CIA 1 register 14) and clears the FSDIR bit (MMU register 5) for input. SPOUT sets up CRA, ICR (CIA 1 register 13), timer A (CIA 1 registers 4 and 5), and sets the FSDIR bit for output. Note the state of the TODIN bit of CRA is always preserved, but the state of the GAME, EXROM and SENSE40 outputs of the MMU are not (reading these ports return the state of the port and not the register values consequently they cannot be preserved). These routines are required only by applications driving the fast serial bus themselves from the lowest level.
+
+## 65354 $FF4A CLOSE ALL <a name="FF4A"></a>
+The FAT is searched for the given FA. A proper CLOSE is performed for all matches. If one of the CLOSEd channels is the current I/O channel, then the default channel is restored. This call is utilized, for example, by the BASIC command DCLOSE. It is also called by the Kernal BOOT routine.
+
+## 65357 $FF4D C64MODE <a name="FF4D"></a>
+There is no returnfrom this routine. The 8502 DDR and port are initialized, and the VIC is set to 1MHz (slow) mode. Control is passed to code in common (shared) RAM, which sets the MMU mode register (#5) to C64 mode. From this point on, the MMU and C128 ROMs are not accessible. The routine exits via an indirect jump through the C64 RESET vector.
+
+Since C64 operation does not allow for MMU access, all MMU registers must be configured for proper operation before the C64 mode bit is set. Similarly, because the start-up of the C64 operating system is not from a true hardware reset, there is the possibility that unusual I/O states in effect prior to C64MODE calls can cause unpredictable and presumably undesirable situations once in C64 mode.
+
+There is no way to switch from C64 mode back to C128 mode; only a hardware reset or power off/on will restore the C128 mode of operation. A reset will always initiate C128 mode, although altering the SYSTEM vector beforehand is one way to automatically "throw" a system back to C64 mode.
+
+## 65360 $FF50 DMA CALL <a name="FF50"></a>
+DMA CALL is designed to communicate with an external expansion car- tridge capable of DMA and mapped into system memory at 102 ($DFxx). The DMA CALL converts the logical C128 bank parameter to MMU configuration via GETCFG, OR's in the I/O enable bit, and transfers control to RAM code at $3F0. Here the C128 bank specified is brought into context, and the user's command is issued to the DMA controller. The actual DMA transfer is performed at this point, with the 8502 kept off the bus in a wait state. As soon as the DMA controller releases the processor, memory is reconfigured to the state it was in at the time of the call and control is returned to the caller. The user must analyze the completion status by reading the DMA status register at $DF00.
+Care should be taken in the utilization of the C128 RAM expansion product by any application using the built-in Kernal interface. This includes especially the use of the C128 BASIC commands FETCH, STASH and SWAP. In the routine that prepares a DMA request for the user, the Kernal forces the I/O block to be always in context. Consequently, data from the DMA device is likely to corrupt sensitive I/O devices. Users should either bypass the Kernal DMA routine by providing their own interface, or limit the DMA data transfers to the areas above and below the I/O block. Only strict observance of the latter will guarantee proper utilization of the BASIC commands. The following code, used instead of the DMA CALL in the above example, illustrates a work-around:
+
+```Assembly
+	LDX	#$00	;C128 bank
+	LDY	#$84	;DMA command to "STASH"
+	JSR	$FF6B	;GETCFG
+	TAX
+	JSR	$3F0	;execute DMA command
+```
+
+### Example
+
+```Assembly
+	LDA	#$00	// setup C128 base address
+	STA	$DF02	// low
+	LDA	#$20
+	STA	$DF03	// high
+
+	LDA	#$00	// setup expansion RAM address
+	STA	$DF04	// low
+	STA	$DF05	// high
+	STA	$DF06	// bank (0-n, where n = 3 if 256K)
+
+	LDA	#$40	// setup number of bytes
+	STA	$DF07	// low
+	LDA	#$1F
+	STA	$DF08	// high
+
+	LDX	#$00	// C128 bank
+	LDY	#$84	// DMA command to "STASH"
+	JSR	$FF50	// execute DMA command
+```
+
+## 65363 $FF53 BOOT CALL <a name="FF53"></a>
+BOOT CALL attempts to load and execute the boot sector from an auto-boot disk in the given drive and device. The BOOT protocol is as follows:
+
+* Close all open files on boot device.
+* Read track 1 sector 0 into TBUFFR ($B00).
+* Check for auto-boot header, RTS if not.
+* If (blk# > 0), BLOCK READ sequential sectors into RAM at given (adrl, adrh, bank) location.
+* If LEN(filename) > 0, LOAD file into RAM-0 (normal load).
+* JSR to user code at location C above.
+
+On any error, the BOOT operation is aborted and the UI command is issued to the disk. A return may or may not be made to the caller depending upon the completion status and the BOOTed code. The BOOT sector has the following layout:
+
+|$00|$01|$02|$03|$04|$05|$06|A|B|C|
+|-|-|-|-|-|-|-|-|-|-|
+|C|B|M|adrl|adrh|bank|blk#|title|0|file|0|code|
+<pre>
+where: A = $07 + LEN(title)
+       B =   A + LEN(filename)
+       C =   B + 1
+</pre>
+
+The following examples illustrate the flexibility of this layout. This loads and runs a BASIC program:
+<pre>
+$00	->	CBM	:key
+$03	->	$00,$00,$00,$00	:no other BOOT sector
+$07	->	NAME,$00	:message "NAME"
+$0C	->	$00	:no filename
+$0D	->	$A2,$13,$A0,$0B
+$4C,$A5,$AF	:code
+$14	->	RUN"PROGRAM"	:data (BASIC stmt)
+$20	->	$00	
+</pre>
+This results in the message Booting NAME... being displayed and, utilizing a C128 BASIC jump table entry that finds and executes a BASIC statement, loads and runs the BASIC program named " P R O G R A M . " The same header can be used to load and execute a binary (machine code) program by simply changing RUN to BOOT. (While the file auto-load feature of the boot header could be used to load binary files simply by furnishing a filename, to execute it you must know the starting address and JMP to it. BASIC's BOOT command does that, and allows a more generic mechanism.) In the next example, a menu is displayed and you are asked to select the operating mode. Nothing else is loaded in this "configure"-type header:
+<pre>
+$00	->	CBM	:key
+$03	->	$00,$00,$00,$00	:no other BOOT sector
+$07	->	$00	:no message
+$0C	->	$00	:no filename
+$0D	->	$20,$7D, $FF,$0D, $53, $45,$4C, $45
+$43, $54, $20,$4D, $4F, $44, $45,$3A
+$0D,$0D, $20, $31,$2E, $20, $43, $36
+$34, $20, $20, $42, $41, $53, $49, $43
+$0D, $20, $32,$2E, $20, $43, $31, $32
+$38, $20, $42, $41, $53, $49, $43,$0D
+$20, $33,$2E, $20, $43, $31, $32, $38
+$20,$4D, $4F, $4E, $49, $54, $4F, $52
+$0D,$0D, $00, $20,$E4,$FF,$C9, $31
+$D0, $03,$4C,$4D,$FF,$C9, $32,$D0
+$03,$4C, $03, $40,$C9, $33,$DO, $E3
+$4C, $00,$B0	
+</pre>
+The loading of sequential sectors is designed primarily for specialized applications (such as CP/M or games) that do not need a disk directory entry.
+
+## 65366 $FF56 PHOENIX <a name="FF56"></a>
+The C128 Kernal initialization routine POLL creates a Physical Address Table (PAT) containing the ID's of all installed function ROM cartridges. PHOENIX calls each logged cartridge's cold-start entry in the order: external low/high, and internal low/high. After calling the cartridges (if any), PHOENIX calls the Kernal BOOT routine to look for an auto-boot disk in drive 0 of device 8 (see BOOT CALL). Control may or may not be returned to the user. PHOENIX is called by BASIC at the conclusion of its cold initialization.
+
+## 65369 $FF59 LKUPLA <a name="FF59"></a>
+LKUPLA is a Kernal routine used primarily by BASIC DOS commands to work around a user's open disk channels. The Kernal requires unique logical device numbers (LA's), and the disk requires unique secondary addresses (SA's); therefore BASIC must find alternative unused values whenever it needs to establish a disk channel.
+
+## 65372 $FF5C LKUPLA <a name="FF5C"></a>
+LKUPSA is a Kernal routine used primarily by BASIC DOS commands to work around a user's open disk channels. The Kernal requires unique logical device numbers (LA's), and the disk requires unique secondary addresses (SA's); therefore BASIC must find alternative unused values whenever it needs to establish a disk channel.
+
+## 65375 $FF5F SWAPPER <a name="FF5F"></a>
+SWAPPER is an Editor utility used to switch between the 40-column VIC (composite) video display and the 80-column 8563 (RGBI) video display. The routine simply swaps local (associated with a particular screen) variables, TAB tables and line wrap maps with those describing the other screen. The MSB of MODE, location $D7, is toggled by SWAPPER to indicate the current display mode: $80= 80-column, $00= 40-column.
+
+## 65378 $FF62 DLCHR <a name="FF62"></a>
+DLCHR (alias INIT80) is an Editor utility to copy the VIC character definitions from ROM ($D000-$DFFF, bank 14) to 8563 display RAM ($2000-$3FFF, local to 8563-not in processor address space). The 8 by 8 VIC character cells are padded with nulls ($00) to fill out the 8 by 16 8563 character cells. Refer to Chapter 10 in Commodore 128 Programmers Reference Guide, Programming the 80-Column (8563) Chip for details concerning the 8563 font layout.
+
+## 65381 $FF65 PFKEY <a name="FF65"></a>
+PFKEY (alias KEYSET) is an Editor utility to replace a C128 function key string with a user's string. Keys 1-8 are F1-F8, 9 is the SHIFT RUN string, and 10 is the HELP string. The example below replaces the "help" RETURN string assigned at system initialization to the H E L P key with the string "string." Both the key length table, PKYBUF ($1000-$1009), and the definition area, PKYDEF ($100A-$10FF) are compressed and updated. The maximum length of all ten strings is 246 characters. No change is made if there is insufficient room for a new definition.
+
+## 65384 $FF68 SETBNK <a name="FF68"></a>
+SETBNK is a prerequisite for any memory I/O operations, and must be used along with SETLFS and SETNAM prior to OPENing files, etc. BA ($C6) sets the current 64KB memory bank for LOAD/SAVE/VERIFY operations. FNBANK ($C7) indicates the bank in which the filename string is found. The Kernal routine GETCFG is used to translate the given logical bank numbers (0-15). SETBNK is often used along with SETNAM and SETLFS calls prior to OPEN's. See the Kernal OPEN, LOAD and SAVE calls for examples.
+
+## 65387 $FF6B GETCFG <a name="FF6B"></a>
+GETCFG allows a universal, logical approach to physical bank numbers by providing a simple lookup conversion for obtaining the actual MMU configuration data. In all cases where a bank number 0-15 is required, you can expect GETCFG to be called to convert that number accordingly. There is no error checking; if the given logical bank number is out of range the result is invalid. Refer to the Memory Management Unit in the Commodore 128 section later in this chapter for details concern- ing memory configuration. The C128 Kernal memory banks are assigned as follows:
+0.	%00111111	:RAM 0 only
+1.	%01111111	:RAM 1 only
+2.	%10111111	:RAM 2 only
+3.	%11111111	:RAM 3 only
+4.	%00010110	:INT ROM, RAM 0, I/O
+5.	%01010110	:INT ROM, RAM 1, I/O
+6.	%10010110	:INT ROM, RAM 2, I/O
+7.	%11010110	:INT ROM, RAM 3, I/O
+8.	%00101010	:EXT ROM, RAM 0, I/O
+9.	%01101010	:EXT ROM, RAM 1, I/O
+10.	%10101010	:EXT ROM, RAM 2, I/O
+11.	%11101010	:EXT ROM, RAM 3, I/O
+12.	%00000110	:KERNAL, INT LO, RAM 0, I/O
+13.	%00001010	:KERNAL, EXT LO, RAM 0, I/O
+14.	%00000001	:KERNAL, BASIC, RAM 0, CHAR ROM
+15.	%00000000	:KERNAL, BASIC, RAM 0, I/O
+
+## 65390 $FF6E JSRFAR <a name="FF6E"></a>
+The routine JSRFAR, enable code executing in the system bank of memory to call a routine in any other bank. In the case of JSRFAR, a return will be made to the caller's bank. It should be noted that JSRFAR calls JMPFAR, which calls GETCFG. When calling a non-system bank, the user should take necessary precautions to ensure that interrupts (IRQ's and NMI's) will be handled properly (or disabled beforehand). Both JSRFAR and JMPFAR are RAM-based routines located in common (shared) RAM at $2CD and $2E3 respectively.
+
+The following code illustrates how to call a subroutine in the second RAM bank from the system bank. Note that we need not worry about IRQ's and NMI's in this case because the system will handle them properly in any configuration that has the Kernal ROM or any valid RAM bank in context at the top page of memory.
+
+### Example
+```Assebmly
+	STY	$08	  // assumes registers and status
+	STX	$07	  // already setup for call
+	STA	$06
+	PHP
+	PLA
+	STA	$05
+	
+	LDA	#1	  // want to call $2000 in bank 1
+	LDY	#$20
+	LDX	#$00
+	STA	$02
+	STY	$03
+	STX	$04
+
+	JSR	$FF6E	// JSRFAR
+
+	LDA	$05	  // restore status and registers
+	PHA
+	LDA	$06
+	LDX	$07
+	LDY	$08
+	PLP
+```
+
+## 65393 $FF71 JMPFAR <a name="FF71"></a>
+The routine JMPFAR, enable code executing in the system bank of memory to JMP to a routine in any other bank. It should be noted that JSRFAR calls JMPFAR, which calls GETCFG. When calling a non-system bank, the user should take necessary precautions to ensure that interrupts (IRQ's and NMI's) will be handled properly (or disabled beforehand). Both JSRFAR and JMPFAR are RAM-based routines located in common (shared) RAM at $2CD and $2E3 respectively.
+
+The following code illustrates how to call a subroutine in the second RAM bank from the system bank. Note that we need not worry about IRQ's and NMI's in this case because the system will handle them properly in any configuration that has the Kernal ROM or any valid RAM bank in context at the top page of memory.
+
+### Example
+```Assebmly
+	STY	$08	  // assumes registers and status
+	STX	$07	  // already setup for call
+	STA	$06
+	PHP
+	PLA
+	STA	$05
+	
+	LDA	#1	  // want to call $2000 in bank 1
+	LDY	#$20
+	LDX	#$00
+	STA	$02
+	STY	$03
+	STX	$04
+
+	JSR	$FF6E	// JSRFAR
+
+	LDA	$05	  // restore status and registers
+	PHA
+	LDA	$06
+	LDX	$07
+	LDY	$08
+	PLP
+```
+
+## 65396 $FF74 INDFET <a name="FF74"></a>
+INDFET enables applications to read data from any other bank. It sets up FETVEC ($2AA), calls GETCFG to convert the bank number, and JMPs to code in common (shared) RAM at $2A2 which switches banks, loads the data, restores the user's bank, and returns. When calling a non-system bank, the user should take necessary precautions to ensure that interrupts (IRQ's and NMI's) will be handled properly (or disabled beforehand).
+
+### Example
+
+```Assembly
+	LDA	#$00	  // setup to read $2000
+	STA	$FA
+	LDA	#$20
+	STA	$FB
+	LDA	#$FA
+	LDX	#$01	  // in bank 1
+	LDY	#$00
+	JSR	$FF74	  // LDA ($FA,RAM 1),Y
+	BEQ	etc
+```
+
+## 65399 $FF77 INDSTA <a name="FF77"></a>
+INDSTA enables applications to write data to any other bank. After you set up STAVEC ($2B9), it calls GETCFG to convert the bank number and JMPs to code in common (shared) RAM at $2AF which switches banks, stores the data, restores your bank, and returns. When calling a nonsystem bank, the user should take necessary precautions to ensure that interrupts (IRQ's and NMI's) will be handled properly (or disabled beforehand).
+
+### Example
+
+```Assembly
+	LDA	#$00	    // setup write to $2000
+	STA	$FA
+	LDA	#$20
+	STA	$FB
+	LDA	#$FA
+	STA	$2B9
+	LDA	data
+	LDX	#$01	    // in bank 1
+	LDY	#$00
+	JSR	$FF77	    // STA ($FA,RAM 1),Y
+```
+
+## 65402 $FF7A INDCMP <a name="FF7A"></a>
+INDCMP enables applications to compare data to any other bank. After you set up CMPVEC ($2C8), it calls GETCFG to convert the bank number and JMP's to code in common (shared) RAM at $2BE which switches banks, compares the data, restores your bank, and returns. When calling a nonsystem bank, the user should take necessary precautions to ensure that interrupts (IRQ's and NMI's) will be handled properly (or disabled beforehand).
+
+### Example
+
+```Assembly
+	LDA	#$00	  // setup to verify $2000
+	STA	$FA
+	LDA	#$20
+	STA	$FB
+	LDA	#$FA
+	STA	$2C3
+	LDA	data
+	LDX	#$01	  // in bank 1
+	LDY	#$00
+	JSR	$FF7A	  // CMP ($FA,RAM 1),Y
+	BEQ	same
+```
+
+## 65405 $FF7D PRIMM <a name="FF7D"></a>
+PRIMM is a Kernal utility used to print (to the default output device) an ASCII string which immediately follows the call. The string must be no longer than 255 characters and is terminated by a null ($00) character. It cannot contain any embedded null characters. Because PRIMM uses the system stack to find the string and a return address, you must not JMP to PRIMM. There must be a valid address on the stack.
+
 ## 65409 $FF81 CINT <a name="FF81"></a>
 CINT is the Editor's initialization routine. Both 40- and 80-column display modes are prepared, editor indirect vectors installed, programmable key definitions asigned, and the 40/80 key scanned for default display determination. CINT sets the VIC bank and VIC nybble bank, enables the character ROM, resets SID volume, places both 40- and 80-column screens and clears them. The only thing it does not do that pertains to the Editor is I/O initialization, which is needed for IRQ's (keyscan, VIC cursor blink, split screen modes), key lines, screen background colors, etc. (see IOINIT). Because CINT updates Editor indirect vectors that are used during IRQ processing, you should disable IRQ's prior to callint it. CINT utilizes the status byte INIT_STATUS ($A04) as follows:
 <pre>
