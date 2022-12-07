@@ -18,34 +18,34 @@ DMA CALL is designed to communicate with an external expansion car- tridge capab
 Care should be taken in the utilization of the C128 RAM expansion product by any application using the built-in Kernal interface. This includes especially the use of the C128 BASIC commands FETCH, STASH and SWAP. In the routine that prepares a DMA request for the user, the Kernal forces the I/O block to be always in context. Consequently, data from the DMA device is likely to corrupt sensitive I/O devices. Users should either bypass the Kernal DMA routine by providing their own interface, or limit the DMA data transfers to the areas above and below the I/O block. Only strict observance of the latter will guarantee proper utilization of the BASIC commands. The following code, used instead of the DMA CALL in the above example, illustrates a work-around:
 
 ```Assembly
-	LDX	#$00	;C128 bank
-	LDY	#$84	;DMA command to "STASH"
-	JSR	$FF6B	;GETCFG
-	TAX
-	JSR	$3F0	;execute DMA command
+  LDX	#$00	// C128 bank
+  LDY	#$84	// DMA command to "STASH"
+  JSR	$FF6B	// GETCFG
+  TAX
+  JSR	$3F0	// execute DMA command
 ```
 
 ### Example
 
 ```Assembly
-	LDA	#$00	// setup C128 base address
-	STA	$DF02	// low
-	LDA	#$20
-	STA	$DF03	// high
+  LDA	#$00	// setup C128 base address
+  STA	$DF02	// low
+  LDA	#$20
+  STA	$DF03	// high
 
-	LDA	#$00	// setup expansion RAM address
-	STA	$DF04	// low
-	STA	$DF05	// high
-	STA	$DF06	// bank (0-n, where n = 3 if 256K)
+  LDA	#$00	// setup expansion RAM address
+  STA	$DF04	// low
+  STA	$DF05	// high
+  STA	$DF06	// bank (0-n, where n = 3 if 256K)
 
-	LDA	#$40	// setup number of bytes
-	STA	$DF07	// low
-	LDA	#$1F
-	STA	$DF08	// high
+  LDA	#$40	// setup number of bytes
+  STA	$DF07	// low
+  LDA	#$1F
+  STA	$DF08	// high
 
-	LDX	#$00	// C128 bank
-	LDY	#$84	// DMA command to "STASH"
-	JSR	$FF50	// execute DMA command
+  LDX	#$00	// C128 bank
+  LDY	#$84	// DMA command to "STASH"
+  JSR	$FF50	// execute DMA command
 ```
 
 ## 65363 $FF53 BOOT CALL <a name="FF53"></a>
@@ -63,6 +63,7 @@ On any error, the BOOT operation is aborted and the UI command is issued to the 
 |$00|$01|$02|$03|$04|$05|$06|A|B|C|
 |-|-|-|-|-|-|-|-|-|-|
 |C|B|M|adrl|adrh|bank|blk#|title|0|file|0|code|
+
 <pre>
 where: A = $07 + LEN(title)
        B =   A + LEN(filename)
@@ -148,28 +149,28 @@ The following code illustrates how to call a subroutine in the second RAM bank f
 
 ### Example
 ```Assebmly
-	STY	$08	  // assumes registers and status
-	STX	$07	  // already setup for call
-	STA	$06
-	PHP
-	PLA
-	STA	$05
-	
-	LDA	#1	  // want to call $2000 in bank 1
-	LDY	#$20
-	LDX	#$00
-	STA	$02
-	STY	$03
-	STX	$04
+  STY	$08	  // assumes registers and status
+  STX	$07	  // already setup for call
+  STA	$06
+  PHP
+  PLA
+  STA	$05
+  
+  LDA	#1	  // want to call $2000 in bank 1
+  LDY	#$20
+  LDX	#$00
+  STA	$02
+  STY	$03
+  STX	$04
 
-	JSR	$FF6E	// JSRFAR
+  JSR	$FF6E	// JSRFAR
 
-	LDA	$05	  // restore status and registers
-	PHA
-	LDA	$06
-	LDX	$07
-	LDY	$08
-	PLP
+  LDA	$05	  // restore status and registers
+  PHA
+  LDA	$06
+  LDX	$07
+  LDY	$08
+  PLP
 ```
 
 ## 65393 $FF71 JMPFAR <a name="FF71"></a>
@@ -179,28 +180,28 @@ The following code illustrates how to call a subroutine in the second RAM bank f
 
 ### Example
 ```Assebmly
-	STY	$08	  // assumes registers and status
-	STX	$07	  // already setup for call
-	STA	$06
-	PHP
-	PLA
-	STA	$05
-	
-	LDA	#1	  // want to call $2000 in bank 1
-	LDY	#$20
-	LDX	#$00
-	STA	$02
-	STY	$03
-	STX	$04
+  STY	$08	  // assumes registers and status
+  STX	$07	  // already setup for call
+  STA	$06
+  PHP
+  PLA
+  STA	$05
+  
+  LDA	#1	  // want to call $2000 in bank 1
+  LDY	#$20
+  LDX	#$00
+  STA	$02
+  STY	$03
+  STX	$04
 
-	JSR	$FF6E	// JSRFAR
+  JSR	$FF6E	// JSRFAR
 
-	LDA	$05	  // restore status and registers
-	PHA
-	LDA	$06
-	LDX	$07
-	LDY	$08
-	PLP
+  LDA	$05	  // restore status and registers
+  PHA
+  LDA	$06
+  LDX	$07
+  LDY	$08
+  PLP
 ```
 
 ## 65396 $FF74 INDFET <a name="FF74"></a>
@@ -209,15 +210,15 @@ INDFET enables applications to read data from any other bank. It sets up FETVEC 
 ### Example
 
 ```Assembly
-	LDA	#$00	  // setup to read $2000
-	STA	$FA
-	LDA	#$20
-	STA	$FB
-	LDA	#$FA
-	LDX	#$01	  // in bank 1
-	LDY	#$00
-	JSR	$FF74	  // LDA ($FA,RAM 1),Y
-	BEQ	etc
+  LDA	#$00	  // setup to read $2000
+  STA	$FA
+  LDA	#$20
+  STA	$FB
+  LDA	#$FA
+  LDX	#$01	  // in bank 1
+  LDY	#$00
+  JSR	$FF74	  // LDA ($FA,RAM 1),Y
+  BEQ	etc
 ```
 
 ## 65399 $FF77 INDSTA <a name="FF77"></a>
@@ -226,16 +227,16 @@ INDSTA enables applications to write data to any other bank. After you set up ST
 ### Example
 
 ```Assembly
-	LDA	#$00	    // setup write to $2000
-	STA	$FA
-	LDA	#$20
-	STA	$FB
-	LDA	#$FA
-	STA	$2B9
-	LDA	data
-	LDX	#$01	    // in bank 1
-	LDY	#$00
-	JSR	$FF77	    // STA ($FA,RAM 1),Y
+  LDA	#$00	    // setup write to $2000
+  STA	$FA
+  LDA	#$20
+  STA	$FB
+  LDA	#$FA
+  STA	$2B9
+  LDA	data
+  LDX	#$01	    // in bank 1
+  LDY	#$00
+  JSR	$FF77	    // STA ($FA,RAM 1),Y
 ```
 
 ## 65402 $FF7A INDCMP <a name="FF7A"></a>
@@ -244,17 +245,17 @@ INDCMP enables applications to compare data to any other bank. After you set up 
 ### Example
 
 ```Assembly
-	LDA	#$00	  // setup to verify $2000
-	STA	$FA
-	LDA	#$20
-	STA	$FB
-	LDA	#$FA
-	STA	$2C3
-	LDA	data
-	LDX	#$01	  // in bank 1
-	LDY	#$00
-	JSR	$FF7A	  // CMP ($FA,RAM 1),Y
-	BEQ	same
+  LDA	#$00	  // setup to verify $2000
+  STA	$FA
+  LDA	#$20
+  STA	$FB
+  LDA	#$FA
+  STA	$2C3
+  LDA	data
+  LDX	#$01	  // in bank 1
+  LDY	#$00
+  JSR	$FF7A	  // CMP ($FA,RAM 1),Y
+  BEQ	same
 ```
 
 ## 65405 $FF7D PRIMM <a name="FF7D"></a>
@@ -272,7 +273,7 @@ CINT is also an Editor jump table entry ($C00).
 IOINIT is perhaps the major function of the Reset handler. It initializes both CIA's (timers, keyboard, serial port, user port, cassette) and the 8502 port (keyboard, cassette, VIC bank). It distinguishes a PAL system from and NTSC one and sets PALCNT ($0A03) if PAL. The VIC, SID and 8563 devices are initialized, including the downloading of character definitions to 8563 display RAM (if necessary). The system 60Hz IRQ source, the VIC raster, is started (pending IRQs are cleared). IOINIT utilizes the status byte INIT_STATUS ($0A04) as follows:
 <pre>
 $A04 bit 7 = 0 -> Full initialization (set INIT_STATUS bit 7)
-       1 -> Partial initialization. (not 8563 character definitions)
+             1 -> Partial initialization. (not 8563 character definitions)
 </pre>
 You should be sure IRQ's are disabled before calling IOINIT to avoid interrupts while the various I/O devices are bing initialized.
 
@@ -286,10 +287,10 @@ RESTOR restores the default values of all the Kernal indirect vectors from the K
 VECTOR reads or writes the Kernal RAM indirect vectors. Calling VECTOR with the carry status set stores the current contents of the indirect vectors to the RAM address passed in the X and Y registers (to the current RAM bank). Calling VECTOR with the carry status clear updates the Kernal indirect vectors from the user list passed in the X and Y registers (from the current RAM bank). Interrupts (IRQ and NMI) should be disabled when updating the indirects. See also the RESTOR call.
 
 ## 65424 $FF90 SETMSG <a name="FF90"></a>
-SETMSG updates the Kernal message flag byte MSGFLG ($9D) that determines whether system error and/or control messages will be displayed. BASIC normally disables error messages always and disables control messages in Run mode. Note that the Kernal error messages are not the verbose ones printed by BASIC, but simply the I/O ERROR # message that you see when in the Monitor, for example. Examples of Kernal control messages are LOADING, FOUND, and PRESS PLAY ON TAPE. The MSGFLG control bits are:
+SETMSG updates the Kernal message flag byte MSGFLG ([157/$9D](0000#9D)) that determines whether system error and/or control messages will be displayed. BASIC normally disables error messages always and disables control messages in Run mode. Note that the Kernal error messages are not the verbose ones printed by BASIC, but simply the I/O ERROR # message that you see when in the Monitor, for example. Examples of Kernal control messages are LOADING, FOUND, and PRESS PLAY ON TAPE. The MSGFLG control bits are:
 <pre>
 MSGFLG bit 7 = 1 -> enable CONTROL messages
-       bit 6 = 1 ->> enable ERROR messages
+       bit 6 = 1 -> enable ERROR messages
 </pre>
 
 ## 65427 $FF93 SECOND <a name="FF93"></a>
@@ -307,7 +308,7 @@ MEMBOT is used to read or set the bottom of system RAM, pointed to by MEMSTR ($0
 ## 65439 $FF9F SCNKEY <a name="FF9F"></a>
 SCNKEY is an Editor routine that scans the entire C128 keyboard (except the 40/80 key). It distinguishes between ASCII keys, control keys, and programmable keys, setting keyboard status bytes and managing the keyboard buffer. After decoding the key, SCNKEY will manage such features as toggling cases, pauses or delays, and key repeats. It is normally called by the operating system during the 60Hz IRQ processing. Upon conclusion, SCNKEY leaves the keyboard hardware driving the keyline on which the STOP key is located.
 
-There are two indirect RAM jumps encountered during a keyscan: KEYVEC ($33A) and KEYCHK ($33C). KEYVEC (alias KEYLOG) is taken whenever a key depression is discovered, before the key in A has been decoded. KEYCHK is taken after the key has been decoded, just before putting it into the key buffer. KEYCHK carries the ASCII character in A, the keycode in Y, and the skiftkey status in X.
+There are two indirect RAM jumps encountered during a keyscan: KEYVEC ($033A) and KEYCHK ($033C). KEYVEC (alias KEYLOG) is taken whenever a key depression is discovered, before the key in A has been decoded. KEYCHK is taken after the key has been decoded, just before putting it into the key buffer. KEYCHK carries the ASCII character in A, the keycode in Y, and the skiftkey status in X.
 
 The keyboard decode matrices are addressed via indirect RAM vectors as well, located at DECODE ($33E).
 
@@ -322,16 +323,16 @@ $348	Mode 6	->	ALT keys
 </pre>
 The following list briefly describes some of the more vital variables utilized or maintained by SCNKEY:
 <pre>
-ROWS	$DC01	->	I/O port outputting keys
-COLM	$DC00	->	I/O port driving C64 keys
+ROWS	$DC01	  ->	I/O port outputting keys
+COLM	$DC00	  ->	I/O port driving C64 keys
 VIC #47	$D02F	->	I/O port driving new keys
 8502 P6	$0001	->	I/O port sensing CAPS key
-NDX	$D0	->	keyboard buffer index
-KEYD	$34A	->	keyboard buffer
-XMAX	$A20	->	keyboard buffer size
-SHFLAG	$D3	->	shift key status
+NDX	$D0	      ->	keyboard buffer index
+KEYD	$34A	  ->	keyboard buffer
+XMAX	$A20	  ->	keyboard buffer size
+SHFLAG	$D3	  ->	shift key status
 RPTFLG	$A22	->	repeat key enables
-LOCKS	$F7	->	pause, mode disables
+LOCKS	$F7	    ->	pause, mode disables
 </pre>
 
 SCNKEY is also found in the Editor jump table at $C012.
@@ -343,7 +344,7 @@ SETTMO is not used in the C128 but is included for compatibility and completenes
 ACPTR is a low-level serial I/O utility to accept a single byte from the current serial bus TALKer using full handshaking. To prepare for this routine, a device must first have been established as a TALKer (see [TALK](#FFB4)) and passed a secondary address if necessary (see [TKSA](#FF96)). The byte is returned in A. Most applications should use the higher-level I/O routines; see BASIN and GETIN.
 
 ## 65448 $FFA8 CIOUT <a name="FFA8"></a>
-CIOUT is a low-level serial I/O utility to transmit a single byte to the current serial bus LISTENer using full handshaking. To prepare for this routine, a device must first have been established as a LISTENer (see [LISTEN](##FFB4)) and passed a secondary address if necessary (see [SECOND](#FF93)). The byte is passed in A. Serial output data is buffered by one character, with the last character being transmitted with EOI after a call to [UNLSN](#FFAE). Most applications should use the higher level I/O routines; see BSOUT.
+CIOUT is a low-level serial I/O utility to transmit a single byte to the current serial bus LISTENer using full handshaking. To prepare for this routine, a device must first have been established as a LISTENer (see [LISTEN](#FFB4)) and passed a secondary address if necessary (see [SECOND](#FF93)). The byte is passed in A. Serial output data is buffered by one character, with the last character being transmitted with EOI after a call to [UNLSN](#FFAE). Most applications should use the higher level I/O routines; see BSOUT.
 
 ## 65451 $FFAB UNTLK <a name="FFAB"></a>
 UNTLK is a low-level Kernal serial bus routine that sends and UNTALK command to all serial bus devices. It commands all TALKing devices to sop sending data. (Most applications should us the higher-level I/O routines; see CLRCHN).
@@ -425,32 +426,32 @@ The path to CHROUT is through an indirect RAM vector at $0326. Applications may 
 ## 65493 $FFD5 LOAD <a name="FFD5"></a>
 This routine LOADs data from an input device into C128 memory. It can also be used to VERIFY that data in memory matches that in a file. LOAD performs device-specific tasks for serial and cassette LOADs. You cannot LOAD from RS-232 devices, the screen or the keyboard. While LOAD performs all the tasks of an OPEN, it does not create any logical files as an OPEN does. Also note that LOAD cannot "wrap" memory banks. As with any FO, the I/O status is updated appropriately and can be read via READSS. LOAD has two options that the user must select:
 
-* LOAD vs. VERIFY: The contents of A passed at the call to LOAD deter- mines which mode is in effect. If A is zero, a LOAD operation will be performed and memory will be overwritten. If A is nonzero, a VERIFY operation will be performed and the result passed via the error mechanism.
+* LOAD vs. VERIFY: The contents of A passed at the call to LOAD determines which mode is in effect. If A is zero, a LOAD operation will be performed and memory will be overwritten. If A is nonzero, a VERIFY operation will be performed and the result passed via the error mechanism.
 * LOAD ADDRESS: the secondary address (SA) setup by the call to SETLFS determines where the LOAD starting address comes from. If the SA is zero, the user wants the address in X and Y at the time of the call to be used. If the SA is nonzero, the LOAD starting address is read from the file header itself and the file is loaded into the same place from which it was SAVEd.
 
 The C128 serial LOAD routine automatically attempts to BURST load a file, and resorts to the normal load mechanism (but still using the FAST serial routines) if the BURST handshake is not returned.
 
-The path to LOAD is through an indirect RAM vector at $330. Applications may therefore provide their own LOAD procedures or supplement the system procedures by redirecting this vector to their own routine.
+The path to LOAD is through an indirect RAM vector at $0330. Applications may therefore provide their own LOAD procedures or supplement the system procedures by redirecting this vector to their own routine.
 
 ### Example
 ```Assembly
-  LDA	#length		    // fnlen
+  LDA	#length       // fnlen
   LDX	#filename
-  JSR	$FFBD		      // SETNAM
+  JSR	$FFBD         // SETNAM
 
-  LDA	#0		        // load/verify bank (RAM0)
-  LDX	#0		        // fnbank (RAM0)
-  JSR	$FF68		      // SETBNK
+  LDA	#0            // load/verify bank (RAM0)
+  LDX	#0            // fnbank (RAM0)
+  JSR	$FF68         // SETBNK
 
-  LDA	#0		        // la (not used)
-  LDX	#8		        // fa
-  LDY	#$FF		      // sa (SA>0 normal load)
-  JSR	$FFBA		      // SETLFS
+  LDA	#0            // la (not used)
+  LDX	#8            // fa
+  LDY	#$FF          // sa (SA>0 normal load)
+  JSR	$FFBA         // SETLFS
 
-  LDA	#0		        //  load, not verify
-  LDX	#<load adr	  // (used only if SA = 0)
-  LDY	#>load adr	  // (used only if SA = 0)
-  JSR	$FFD5		      // LOAD
+  LDA	#0            //  load, not verify
+  LDX	#<load adr    // (used only if SA = 0)
+  LDY	#>load adr    // (used only if SA = 0)
+  JSR	$FFD5         // LOAD
   BCS	error
   STX	end_lo
   STY	end_hi
@@ -472,29 +473,29 @@ The path to SAVE is through an indirect RAM vector at $0332. Applications may th
 
 ```
 // SAVE "program",8
-	LDA	#length		  // fnlen
-	LDX	#<filename	// fnadr
-	LDY	#>filename
-	JSR	$FFBD		    // SETNAM
+  LDA #length     // fnlen
+  LDX #<filename  // fnadr
+  LDY #>filename
+  JSR $FFBD       // SETNAM
 
-	LDA	#0		      // save from bank (RAM0)
-	LDX	#0		      // fnbank (RAM0)
-	JSR	$FF68		    // SETBNK
+  LDA #0          // save from bank (RAM0)
+  LDX #0          // fnbank (RAM0)
+  JSR $FF68       // SETBNK
 
-	LDA	#0		      // la (not used)
-	LDX	#8		      // fa
-	LDY	#0		      // sa (cassette only)
-	JSR	$FFBA		    // SETLFS
+  LDA #0          // la (not used)
+  LDX #8          // fa
+  LDY #0          // sa (cassette only)
+  JSR $FFBA       // SETLFS
 
-	LDA	#start		  // pointer to start address
-	LDX	end		      // ending address lo
-	LDY	end+1		    // ending adr hi
-	JSR	$FFD8		    // SAVE
-	BCS	error
+  LDA #start      // pointer to start address
+  LDX end         // ending address lo
+  LDY end+1       // ending adr hi
+  JSR $FFD8       // SAVE
+  BCS error
 filename  .BYTE "program
 length    = 7
 start     .WORD address1		// page-0
-end	      .WORD address2
+end       .WORD address2
 ```
 
 ## 65499 $FFDB SETTIM <a name="FFDB"></a>
@@ -504,7 +505,7 @@ SETTIM sets the system software (jiffie) clock, which counts sixtieths (1/60) of
 RDTIM reads the system software (jiffie) clock, which counts sixtieths (1/60) of a second. The timer is incremented during system IRQ processing (see UDTIM), and reset at the 24-hour point. RDTIM disables IRQ's, loads A, X and Y with the contents of the 3-byte timer, and re-enables IRQ's.
 
 ## 65505 $FFE1 STOP <a name="FFE1"></a>
-STOP checks a Kernal variable STKEY ($91), which is updated by UDTIM during normal IRQ processing and contains the last scan of keyboard column C7. The STOP key is bit 7, which will be 0 if the key is down. If it is, default I/O channels are restored via CLRCH and the keyboard queue is flushed by resetting NDX ($D0). The keys on keyboard line C7 are:
+STOP checks a Kernal variable STKEY ([145/$91](0000#91)), which is updated by UDTIM during normal IRQ processing and contains the last scan of keyboard column C7. The STOP key is bit 7, which will be 0 if the key is down. If it is, default I/O channels are restored via CLRCH and the keyboard queue is flushed by resetting NDX ($D0). The keys on keyboard line C7 are:
 
 |Bit|7|6|5|4|3|2|1|0|
 |-|-|-|-|-|-|-|-|-|
@@ -524,39 +525,38 @@ GETIN reads a character from the current input device (DFLTN [153/$99](0000#99))
 The path to GETIN is through an indirect RAM vector at $032A. Applications may therefore provide their own GETIN procedures or supplement the system's by redirecting this vector to their own routine.
 
 ## 65514 $FFEA UDTIM <a name="FFEA"></a>
-UDTIM increments the system software (jiffie) clock, which counts sixtieths (1/60) of a second when called by the system 60Hz IRQ. TIME, a 3-byte counter located at $A0, is reset at the 24-hour point. UDTIM also decrements TIMER, also a 3-byte counter, located at $AlD (BASIC uses this for the SLEEP command, for example). You should be sure IRQ's are disabled before calling UDTIM to prevent system calls to UDTIM while you are modifying TIME and TIMER. UDTIM also scans key line C7, on which the STOP key lies, and stores the result in STKEY ($91). The Kernal routine STOP utilizes this variable.
-
-## 65517 $FFED SCRORG <a name="FFED"></a>
-SCRORG is an Editor routine that has been slightly changed from previous CBM systems. Instead of returning the maximum SCREEN dimensions in X and Y, the C128 SCRORG returns the current WINDOW dimensions. It does return the maximum SCREEN width in A. These changes make it possible for applications to "fit" themselves on the current screen window. SCRORG is also an Editor jump table entry ($C00F).
+UDTIM increments the system software (jiffie) clock, which counts sixtieths (1/60) of a second when called by the system 60Hz IRQ. TIME, a 3-byte counter located at $A0, is reset at the 24-hour point. UDTIM also decrements TIMER, also a 3-byte counter, located at $AlD (BASIC uses this for the SLEEP command, for example). You should be sure IRQ's are disabled before calling UDTIM to prevent system calls to UDTIM while you are modifying TIME and TIMER. UDTIM also scans key line C7, on which the STOP key lies, and stores the result in STKEY ([145/$91](0000#91)). The Kernal routine STOP utilizes this variable.
 
 ## 65511 $FFE7 CLALL <a name="FFE7"></a>
 CLALL deletes all logical file table entries by resetting the table index, LDTND ([152/$98](0000#98)). It clears current serial channels (if any) and restores the default I/O channels via CLRCHN. The path to CLALL is through an indirect RAM vector at $032C. Applications may therefore provide their own CLALL procedures or supplement the system's by redirecting this vector to their own routine.
 
+## 65517 $FFED SCRORG <a name="FFED"></a>
+SCRORG is an Editor routine that has been slightly changed from previous CBM systems. Instead of returning the maximum SCREEN dimensions in X and Y, the C128 SCRORG returns the current WINDOW dimensions. It does return the maximum SCREEN width in A. These changes make it possible for applications to "fit" themselves on the current screen window. SCRORG is also an Editor jump table entry ($C00F).
+
 ## 65520 $FFF0 PLOT <a name="FFF0"></a>
 PLOT is an Editor routine that has been slightly changed from previous CBM systems. Instead of using absolute coordinates when referencing the cursor position, PLOT now uses relative coordinates, based upon the current screen window. The following local Editor variables are useful:
 
-* SCBOT	$E4	->	window bottom
-* SCTOP	$E5	->	Window top
-* SCLF	$E6	->	window left side
-* SCRT	$E7	->	window right side
-* TBLX	$EB	->	cursor line
-* PNTR	$EC	->	cursor column
-* LINES	$ED	->	maximum screen height
-* COLUMNS	$EE	->	maximum screen width
+* SCBOT   $E4 -> window bottom
+* SCTOP   $E5 -> window top
+* SCLF    $E6 -> window left side
+* SCRT    $E7 -> window right side
+* TBLX    $EB -> cursor line
+* PNTR    $EC -> cursor column
+* LINES   $ED -> maximum screen height
+* COLUMNS $EE -> maximum screen width
 
 When called with the carry status set, PLOT returns the current cursor position relative to the current window origin (not screen origin). When called with the carry status clear, PLOT attempts to move the cursor to the indicated line and column relative to the current window origin (not screen origin). PLOT will return a clear carry status if the cursor was moved, and a set carry status if the requested position was outside the current window (no change has been made).
 
 ### Example
 ```Assembly
   SEC
-  JSR	$FFF0   //read current position
-  INX		      // move down one line
-  INY		      // move right one space
+  JSR $FFF0   // read current position
+  INX         // move down one line
+  INY         // move right one space
   CLC
-  JSR	$FFF0	  // set cursor position
-  BCS	error	  // new position outside window
+  JSR $FFF0   // set cursor position
+  BCS error   // new position outside window
 ```
 
 ## 65523 $FFF3 IOBASE <a name="FFF3"></a>
 IOBASE is not used in the C128 but is included for compatibility and completeness. It returns the address of the I/O block in X and Y.
-
