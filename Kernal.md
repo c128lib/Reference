@@ -14,7 +14,7 @@ Since C64 operation does not allow for MMU access, all MMU registers must be con
 There is no way to switch from C64 mode back to C128 mode; only a hardware reset or power off/on will restore the C128 mode of operation. A reset will always initiate C128 mode, although altering the SYSTEM vector beforehand is one way to automatically "throw" a system back to C64 mode.
 
 ## 65360 $FF50 DMA CALL <a name="FF50"></a>
-DMA CALL is designed to communicate with an external expansion car- tridge capable of DMA and mapped into system memory at 102 ($DFxx). The DMA CALL converts the logical C128 bank parameter to MMU configuration via GETCFG, OR's in the I/O enable bit, and transfers control to RAM code at $3F0. Here the C128 bank specified is brought into context, and the user's command is issued to the DMA controller. The actual DMA transfer is performed at this point, with the 8502 kept off the bus in a wait state. As soon as the DMA controller releases the processor, memory is reconfigured to the state it was in at the time of the call and control is returned to the caller. The user must analyze the completion status by reading the DMA status register at $DF00.
+DMA CALL is designed to communicate with an external expansion cartridge capable of DMA and mapped into system memory at 102 ($DFxx). The DMA CALL converts the logical C128 bank parameter to MMU configuration via GETCFG, OR's in the I/O enable bit, and transfers control to RAM code at $03F0. Here the C128 bank specified is brought into context, and the user's command is issued to the DMA controller. The actual DMA transfer is performed at this point, with the 8502 kept off the bus in a wait state. As soon as the DMA controller releases the processor, memory is reconfigured to the state it was in at the time of the call and control is returned to the caller. The user must analyze the completion status by reading the DMA status register at $DF00.
 Care should be taken in the utilization of the C128 RAM expansion product by any application using the built-in Kernal interface. This includes especially the use of the C128 BASIC commands FETCH, STASH and SWAP. In the routine that prepares a DMA request for the user, the Kernal forces the I/O block to be always in context. Consequently, data from the DMA device is likely to corrupt sensitive I/O devices. Users should either bypass the Kernal DMA routine by providing their own interface, or limit the DMA data transfers to the areas above and below the I/O block. Only strict observance of the latter will guarantee proper utilization of the BASIC commands. The following code, used instead of the DMA CALL in the above example, illustrates a work-around:
 
 ```Assembly
@@ -60,8 +60,8 @@ BOOT CALL attempts to load and execute the boot sector from an auto-boot disk in
 
 On any error, the BOOT operation is aborted and the UI command is issued to the disk. A return may or may not be made to the caller depending upon the completion status and the BOOTed code. The BOOT sector has the following layout:
 
-|$00|$01|$02|$03|$04|$05|$06|A|B|C|
-|-|-|-|-|-|-|-|-|-|-|
+|$00|$01|$02|$03|$04|$05|$06||A||B|C|
+|-|-|-|-|-|-|-|-|-|-|-|-|
 |C|B|M|adrl|adrh|bank|blk#|title|0|file|0|code|
 
 <pre>
@@ -121,7 +121,7 @@ DLCHR (alias INIT80) is an Editor utility to copy the VIC character definitions 
 PFKEY (alias KEYSET) is an Editor utility to replace a C128 function key string with a user's string. Keys 1-8 are F1-F8, 9 is the SHIFT RUN string, and 10 is the HELP string. The example below replaces the "help" RETURN string assigned at system initialization to the H E L P key with the string "string." Both the key length table, PKYBUF ($1000-$1009), and the definition area, PKYDEF ($100A-$10FF) are compressed and updated. The maximum length of all ten strings is 246 characters. No change is made if there is insufficient room for a new definition.
 
 ## 65384 $FF68 SETBNK <a name="FF68"></a>
-SETBNK is a prerequisite for any memory I/O operations, and must be used along with SETLFS and SETNAM prior to OPENing files, etc. BA ($C6) sets the current 64KB memory bank for LOAD/SAVE/VERIFY operations. FNBANK ($C7) indicates the bank in which the filename string is found. The Kernal routine GETCFG is used to translate the given logical bank numbers (0-15). SETBNK is often used along with SETNAM and SETLFS calls prior to OPEN's. See the Kernal OPEN, LOAD and SAVE calls for examples.
+SETBNK is a prerequisite for any memory I/O operations, and must be used along with SETLFS and SETNAM prior to OPENing files, etc. BA ([198/$C6](0000#C6)) sets the current 64KB memory bank for LOAD/SAVE/VERIFY operations. FNBANK ([199/$C7](0000#C7)) indicates the bank in which the filename string is found. The Kernal routine GETCFG is used to translate the given logical bank numbers (0-15). SETBNK is often used along with SETNAM and SETLFS calls prior to OPEN's. See the Kernal OPEN, LOAD and SAVE calls for examples.
 
 ## 65387 $FF6B GETCFG <a name="FF6B"></a>
 GETCFG allows a universal, logical approach to physical bank numbers by providing a simple lookup conversion for obtaining the actual MMU configuration data. In all cases where a bank number 0-15 is required, you can expect GETCFG to be called to convert that number accordingly. There is no error checking; if the given logical bank number is out of range the result is invalid. Refer to the Memory Management Unit in the Commodore 128 section later in this chapter for details concern- ing memory configuration. The C128 Kernal memory banks are assigned as follows:
@@ -163,7 +163,7 @@ The following code illustrates how to call a subroutine in the second RAM bank f
   STY	$03
   STX	$04
 
-  JSR	$FF6E	// JSRFAR
+  JSR	$FF6E // JSRFAR
 
   LDA	$05	  // restore status and registers
   PHA
@@ -194,7 +194,7 @@ The following code illustrates how to call a subroutine in the second RAM bank f
   STY	$03
   STX	$04
 
-  JSR	$FF6E	// JSRFAR
+  JSR	$FF6E // JSRFAR
 
   LDA	$05	  // restore status and registers
   PHA
@@ -210,15 +210,15 @@ INDFET enables applications to read data from any other bank. It sets up FETVEC 
 ### Example
 
 ```Assembly
-  LDA	#$00	  // setup to read $2000
-  STA	$FA
-  LDA	#$20
-  STA	$FB
-  LDA	#$FA
-  LDX	#$01	  // in bank 1
-  LDY	#$00
-  JSR	$FF74	  // LDA ($FA,RAM 1),Y
-  BEQ	etc
+  LDA #$00    // setup to read $2000
+  STA $FA
+  LDA #$20
+  STA $FB
+  LDA #$FA
+  LDX #$01    // in bank 1
+  LDY #$00
+  JSR $FF74   // LDA ($FA,RAM 1),Y
+  BEQ etc
 ```
 
 ## 65399 $FF77 INDSTA <a name="FF77"></a>
@@ -227,16 +227,16 @@ INDSTA enables applications to write data to any other bank. After you set up ST
 ### Example
 
 ```Assembly
-  LDA	#$00	    // setup write to $2000
-  STA	$FA
-  LDA	#$20
-  STA	$FB
-  LDA	#$FA
-  STA	$2B9
-  LDA	data
-  LDX	#$01	    // in bank 1
-  LDY	#$00
-  JSR	$FF77	    // STA ($FA,RAM 1),Y
+  LDA #$00      // setup write to $2000
+  STA $FA
+  LDA #$20
+  STA $FB
+  LDA #$FA
+  STA $2B9
+  LDA data
+  LDX #$01      // in bank 1
+  LDY #$00
+  JSR $FF77     // STA ($FA,RAM 1),Y
 ```
 
 ## 65402 $FF7A INDCMP <a name="FF7A"></a>
@@ -245,17 +245,17 @@ INDCMP enables applications to compare data to any other bank. After you set up 
 ### Example
 
 ```Assembly
-  LDA	#$00	  // setup to verify $2000
-  STA	$FA
-  LDA	#$20
-  STA	$FB
-  LDA	#$FA
-  STA	$2C3
-  LDA	data
-  LDX	#$01	  // in bank 1
-  LDY	#$00
-  JSR	$FF7A	  // CMP ($FA,RAM 1),Y
-  BEQ	same
+  LDA #$00    // setup to verify $2000
+  STA $FA
+  LDA #$20
+  STA $FB
+  LDA #$FA
+  STA $2C3
+  LDA data
+  LDX #$01    // in bank 1
+  LDY #$00
+  JSR $FF7A   // CMP ($FA,RAM 1),Y
+  BEQ same
 ```
 
 ## 65405 $FF7D PRIMM <a name="FF7D"></a>
@@ -323,16 +323,16 @@ $348	Mode 6	->	ALT keys
 </pre>
 The following list briefly describes some of the more vital variables utilized or maintained by SCNKEY:
 <pre>
-ROWS	$DC01	  ->	I/O port outputting keys
-COLM	$DC00	  ->	I/O port driving C64 keys
-VIC #47	$D02F	->	I/O port driving new keys
-8502 P6	$0001	->	I/O port sensing CAPS key
-NDX	$D0	      ->	keyboard buffer index
-KEYD	$34A	  ->	keyboard buffer
-XMAX	$A20	  ->	keyboard buffer size
-SHFLAG	$D3	  ->	shift key status
-RPTFLG	$A22	->	repeat key enables
-LOCKS	$F7	    ->	pause, mode disables
+ROWS    $DC01 ->  I/O port outputting keys
+COLM    $DC00 ->  I/O port driving C64 keys
+VIC #47 $D02F ->  I/O port driving new keys
+8502 P6 $0001 ->  I/O port sensing CAPS key
+NDX     $D0   ->  keyboard buffer index
+KEYD    $34A  ->  keyboard buffer
+XMAX    $A20  ->  keyboard buffer size
+SHFLAG  $D3   ->  shift key status
+RPTFLG  $A22  ->  repeat key enables
+LOCKS   $F7   ->  pause, mode disables
 </pre>
 
 SCNKEY is also found in the Editor jump table at $C012.
@@ -362,10 +362,10 @@ TALK is a low-level Kernal serial bus routine that sends a TALK command to the s
 READST (alias READSS) returns the status byte associated with the last I/O operation (serial, cassette or RS-232) performed. Serial and cassette tape operations update STATUS ([144/$90](0000#90)) and RS-232 I/O updates RSSTAT ($0A14). Note that to simulate an ACIA, RSSTAT is cleared after it is read via READST. The last I/O operation is determined by the contents of FA ([186/$BA](0000#BA)); thus applications that drive I/O devices using the lower-level Kernal calls should not use READST.
 
 ## 65466 $FFBA SETLFS <a name="FFBA"></a>
-SETLFS sets the logical file number (LA, $B8), device number (FA, $BA) and secondary address (SA, $B9) for the higher-level Kernal I/O routines. The LA must be unique among OPENed files and is used to identify specific files for I/O operations. The device number rangs is 0 to 31 and is used to target I/O. The SA is a command to be sent to the indicated device, usually to place it in a particular mode. If the SA is not needed, the Y register should pass $FF. SETLFS is often used along with SETNAM and SETBNK calls prior to OPENs. See the Kernal OPEN, LOAD and SAVE calls for examples.
+SETLFS sets the logical file number (LA, [184/$B8](0000#B8)), device number (FA, [186/$BA](0000#BA)) and secondary address (SA, [185/$B9](0000#B9)) for the higher-level Kernal I/O routines. The LA must be unique among OPENed files and is used to identify specific files for I/O operations. The device number rangs is 0 to 31 and is used to target I/O. The SA is a command to be sent to the indicated device, usually to place it in a particular mode. If the SA is not needed, the Y register should pass $FF. SETLFS is often used along with SETNAM and SETBNK calls prior to OPENs. See the Kernal OPEN, LOAD and SAVE calls for examples.
 
 ## 65466 $FFBD SETNAM <a name="FFBd"></a>
-SETNAM sets up the filename or command string for higher-level Kernal I/O calls such as OPEN, LOAD and SAVE. The string (filename or command) length is passed in A and updates FNLEN ($B7). The address of the string is passed in X (low) and Y (high). See the companion call, SETBNK, which specifies in which RAM bank the string is found. If there is no string, SETNAM should still be called and a null ($00) length specified (the address does not matter). SETNAM is often used along with SETBNK and SETLFS calls prior to OPENs. See the Kernal OPEN, LOAD and SAVE calls for examples.
+SETNAM sets up the filename or command string for higher-level Kernal I/O calls such as OPEN, LOAD and SAVE. The string (filename or command) length is passed in A and updates FNLEN ([183/$B7](0000#B7)). The address of the string is passed in X (low) and Y (high). See the companion call, SETBNK, which specifies in which RAM bank the string is found. If there is no string, SETNAM should still be called and a null ($00) length specified (the address does not matter). SETNAM is often used along with SETBNK and SETLFS calls prior to OPENs. See the Kernal OPEN, LOAD and SAVE calls for examples.
 
 ## 65472 $FFC0 OPEN <a name="FFC0"></a>
 OPEN prepares a logical file for I/O operations. It creates a unique entry in the Kernal logical file tables LAT ($0362), FAT ($036C) and SAT ($0376) using its index LDTND ([152/$98](0000#98)) and data supplied by the user via SETLFS. There can be up to then logical files OPENed simultaneously. OPEN performs device-specific opening tasks for serial, cassette and RS-232 devices, including clearing the previous status and transmitting any given filename or command string supplied by the user via SETNAM and SETBNK. The I/O status is updated appropriately and can be read via READST.
