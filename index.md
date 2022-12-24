@@ -12,6 +12,8 @@
 
 ### Memory reference
 * [$0000-$00FF - Zero Page](0000)
+* [$117E-$11D5 - Sprite movement control data](117E)
+* [$11D6-$11EA - Shadow registers](11D6)
 * [$C000-$CFFF - Screen editor ROM](C000)
 * [$D000-$D030 - VIC Chip Registers](D000)
 * [$D400-$D41C - SID Chip Registers](D400)

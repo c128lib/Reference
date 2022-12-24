@@ -717,4 +717,5 @@ interrupt routines.
 
 ## See also
 
+* [$11D6-$11EA - Shadow registers](11D6)
 * [$D000-$D030 - VIC Chip Registers](D000)
