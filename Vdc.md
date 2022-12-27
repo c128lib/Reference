@@ -1,4 +1,8 @@
-# VDC (video display controller)
+---
+layout: default
+title: VDC (video display controller)
+---
+# 
 
 The VDC (video display controller), officially designated the
 8563, is a custom chip designed by Commodore's engineers

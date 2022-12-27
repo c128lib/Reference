@@ -1,3 +1,7 @@
+---
+layout: default
+title: Screen editor ROM
+---
 # Screen editor ROM
 
 If the 128 is your first computer, or if you have upgraded to

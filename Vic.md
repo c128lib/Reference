@@ -1,3 +1,7 @@
+---
+layout: default
+title: VIC (Video Interface Controller)
+---
 # VIC (Video Interface Controller)
 
 The chip whose registers appear in the $D000-$D030 area of the I/O block

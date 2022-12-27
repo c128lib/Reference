@@ -1,3 +1,7 @@
+---
+layout: default
+title: SID (Sound Interface Device)
+---
 # SID (Sound Interface Device)
 
 The SID (Sound Interface Device) chip, officially designated

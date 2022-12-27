@@ -1,3 +1,7 @@
+---
+layout: default
+title: Kernal
+---
 # Kernal
 
 ## 65351 $FF47 SPIN SPOUT <a name="FF47"></a>

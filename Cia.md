@@ -1,3 +1,7 @@
+---
+layout: default
+title: CIA (Complex Interface Adapter)
+---
 # CIA (Complex Interface Adapter)
 
 The CIA (complex interface adapter) chips perform the majority of the
