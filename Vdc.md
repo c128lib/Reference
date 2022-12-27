@@ -613,7 +613,7 @@ screen. You should find that when the pen is pointed at the
 leftmost character position, you get a reading of about 27-29
 in register [17/$11](#11). This implies that the rightmost character
 position should give readings of about 106-108. Actually, you
-may get higher readings—120 or more. In fact, even if you
+may get higher readings-120 or more. In fact, even if you
 hold the pen perfectly still you may see the character position
 vary up or down by 4 or 5. The moral is that the light pen is
 much better at reading vertical than horizontal positions.
@@ -622,7 +622,7 @@ whether the pen is within a range of horizontal positions. For
 example, if you read the horizontal position and store the
 result in the variable H, then an expression such as
 
-H = INT((H — 30) / 8)
+H = INT((H - 30) / 8)
 
 will return a range of values 0-9 indicating
 roughly which one of ten eight-column horizontal areas the
@@ -875,7 +875,7 @@ bytes. The size of the bitmap (in bytes) is determined by the
 number of active horizontal positions times the number of
 vertical positions times the number of scan lines per vertical
 position. For the standard screen setup, this means that 80 * 25 *
-8, or 16,000 bytes, are required—almost all of the available
+8, or 16,000 bytes, are required-almost all of the available
 VDC memory. At eight pixels per byte, there are 128,000 individual
 pixels on the graphic display.
 
@@ -1154,7 +1154,7 @@ determines the source address for copy operations, the address
 from which data will be copied. Like all other address register
 pairs in the VDC, the first register (32/$20) holds the high
 byte of the address and the second (33/$21) holds the low
-byte—the opposite of the normal 8502 address format.
+byte-the opposite of the normal 8502 address format.
 
 The registers should be loaded with the desired source starting address
 before the copy operation is initiated. Upon completion

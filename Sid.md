@@ -96,7 +96,7 @@ instrument has a characteristic ADSR envelope.
 ![ADSR Envelope](resources/008-09-f-adsr-envelope.png)
 
 The attack is the time required for the note to rise from silence
-to maximum volume after it is begun—for example, after a string
+to maximum volume after it is begun-for example, after a string
 is picked or bowed or struck. Decay is the time required for the
 note to drop from maximum volume to its sustain level, where it
 remains until it begins to die away to silence again (the release
