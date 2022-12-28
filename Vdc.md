@@ -2,7 +2,7 @@
 layout: default
 title: VDC (video display controller)
 ---
-# 
+# VDC (video display controller)
 
 The VDC (video display controller), officially designated the
 8563, is a custom chip designed by Commodore's engineers
@@ -512,7 +512,7 @@ mask off these bits and see only the valid bits of the register,
 use AND 31 in BASIC or AND #$1F in machine language.
 
 ## <a name="0C"></a><a name="0D"></a> 12 $0C 13 $0D
-###Starting address for screen memory
+### Starting address for screen memory
 For standard text mode, the value in this register pair determines
 the starting address for screen memory, the area which
 holds screen codes specifying which character will be displayed
@@ -1173,7 +1173,7 @@ onto the active portion of the screen, any text under the
 blanked area is only covered, not erased. The value in register
 34/$22 determines the rightmost blanked column, and the
 value in register 35/$23 determines the leftmost blanked column.
-The blanked area extends the entire height of the screen
+The blanked area extends the entire height of the screen.
 The value in register 34/$22 must be less than the value
 in register [0/$00](#00); otherwise, the entire display will be
 blanked. The value in 34/$22 here must also be greater than
@@ -1187,7 +1187,8 @@ corresponds to the leftmost column of the standard screen and a
 value of 85/$55 corresponds to the rightmost column.
 
 ## <a name="24"></a> 36 $24
-Number of memory refresh cycles per scan line
+### Number of memory refresh cycles per scan line
+
 **Bits 0-3**: the value in these bits determines the number of
 memory refresh cycles per scan line. The RAM chip used for
 the VDC's video memory is a type known as dynamic RAM.
@@ -1211,7 +1212,7 @@ mask off these bits and see only the valid bits of the register,
 use AND 15 in BASIC or AND #$0F in machine language.
 
 ### 37-63 $25-$3F Unused
-Since the external address register at 54784/$D600 allows a
+Since the external address register at [54784/$D600](D600#D600) allows a
 six-bit register number, these register addresses can also be
 specified. However, none of these internal registers are used,
 and writing to them has no effect. All register numbers in this
