@@ -9,10 +9,16 @@
     <title>{{ page.title }}</title>
 
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
-    {% include head-custom.html %}
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   </head>
   <body>
-    <div class="container-lg px-3 my-5 markdown-body">
+    {% if page.title and page.title != 'Index' %}
+    <div class="w3-sidebar w3-light-grey w3-bar-block" style="top:0px; padding: 20px 4px 4px 4px">
+      <h3>In this page...</h3>
+      {% include toc.html html=content sanitize=true h_min=1 h_max=2 %}
+    </div>
+    {% endif %}
+    <div class="container-md px-3 my-5 markdown-body" style="margin-left: 210px;">
       {% if page.title and page.title != 'Index' %}
       <div class="header border-top border-gray-light mt-5 pt-3 text-right text-gray">
         <a href="./">home</a>
