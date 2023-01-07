@@ -135,7 +135,7 @@ configurations, by changing the value in the configuration register at location 
 (or $D500). 
 
 Within the selected configuration, and part of the current 64K RAM bank, is a
-16K range reserved for a video bank. The 16K video bank must encompass IK of screen
+16K range reserved for a video bank. The 16K video bank must encompass 1K of screen
 memory, and either 4K of character ROM or an 8K block of memory for the bit map
 data. All these components must be present in order for graphics to operate.
 
