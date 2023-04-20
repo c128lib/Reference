@@ -21,21 +21,15 @@
     </div>
     {% endif %}
     <div class="px-3 my-5 markdown-body" style="margin-left: 210px;">
-      {% if page.title and page.title != 'Index' %}
-      <div class="header border-top border-gray-light mt-5 pt-3 text-right text-gray">
-        <a href="./">home</a>
-      </div>
-      {% endif %}
-
       {{ content }}
 
       {% if page.title and page.title != 'Index' %}
       <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
-        <a href="./">home</a> - No cookies collected
+        <a href="./">home</a> - No cookies collected <small>(but probably GitHub do)</small>
       </div>
       {% else %}
       <div class="footer border-top border-gray-light mt-5 pt-3 text-right text-gray">
-        No cookies collected
+        No cookies collected <small>(but probably GitHub do)</small>
       </div>
       {% endif %}
     </div>
