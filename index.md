@@ -7,7 +7,7 @@ title: Index
 ## Index
 
 ### Memory map
-* [Memory map](MemoryMap)
+* [Memory map and layout](MemoryMap)
 
 ### Components
 * [CIA (Complex Interface Adapter)](Cia)
