@@ -186,22 +186,11 @@ TBD
 TBD
 
 ### $4000-$FF00 (Bank 15): BASIC and Kernal ROM
-TBD
-
-### $4000-$AFFF BASIC ROM 
-
-### $B000-$BFFF Monitor ROM 
-
-### $C000 Screen editor ROM 
-See [Screen editor ROM](C000) for details.
-
-### $D000-$DFFF I/O or character generator ROM
-
-depending on the contents of memory address $D9
-
-### $E000-$FFEF Kernal ROM 
-
-
+* $4000-$AFFF BASIC ROM 
+* $B000-$BFFF Monitor ROM 
+* $C000 [Screen editor ROM](C000)
+* $D000-$DFFF I/O or character generator ROM (depending on the contents of memory address $D9)
+* $E000-$FFEF Kernal ROM 
 
 ### $FF00-$FF04: MMU
 The memory management unit 
@@ -210,9 +199,6 @@ occupies memory addresses $FF00 through $FF04 in all
 16 of the computer's memory banks.
 
 See [Mmu](Mmu) for details.
-
-ADD file:///H:/manuali/c128/Commodore_128_Assembly_Language_Programming.pdf
-Page 165
 
 ## 16K Video banks
 
