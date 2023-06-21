@@ -98,7 +98,7 @@ which instead has reversed character patterns as part of the standard character 
 
 Finally, **bit 7** selects which of the two character sets will be used. The VIC allows only one of the two
 character sets to be used at any one time, but the VDC allows
-ju to select the character set independently for each character
+you to select the character set independently for each character
 position.
 
 The register structure of the VDC chip is rather unusual. It
@@ -129,7 +129,7 @@ both locations follows.
 |[8/$08](#08)|Interlace mode control register|
 |[9/$09](#09)|Number of scan lines per character|
 |[10/$0A](#0A)|Cursor mode control|
-|[11/$0B](#0B)|Ending scan line foT cursor|
+|[11/$0B](#0B)|Ending scan line for cursor|
 |[12/$0C](#0C)|Screen memory starting address (high byte)|
 |[13/$0D](#0D)|Screen memory starting address (low byte)|
 |[14/$0E](#0E)|Cursor position address (high byte)|
