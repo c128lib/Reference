@@ -10,12 +10,15 @@
     <link rel="icon" type="image/png" href="/assets/favicon.png" />
     <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto:wght@100&display=swap" rel="stylesheet">
   </head>
   <body>
     {% if page.title and page.title != 'Index' %}
     <div class="w3-sidebar w3-light-grey w3-bar-block" style="top:0px; padding: 20px 4px 4px 4px">
       <h3>In this page...</h3>
-      {% include toc.html html=content sanitize=true h_min=2 h_max=2 %}
+      {% include toc.html html=content sanitize=true h_min=2 h_max=2 class=toc_content %}
       <br>
       <a href="./">Index</a>
     </div>
