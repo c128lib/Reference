@@ -719,6 +719,101 @@ how to go about changing such registers. Refer to the
 appropriate ROM routine entry for more information on the
 interrupt routines.
 
+## Memory access of the processor and Vic
+
+Processor and VIC are both based on a relatively simple hard-wired design. Both chips make a
+memory access in EVERY clock cycle, even if that is not necessary at all. E.g. if the processor is
+busy executing an internal operation like indexed addressing in one clock cycle, that really
+doesn't require an access to memory, it nevertheless performs a read and discards the read
+byte. The VIC only performs read accesses, while the processor performs both reads and writes.
+
+There are no wait states, no internal caches and no sophisticated access protocols for the bus
+as seen with more modern processors. Every access is done in a single cycle.
+
+The VIC generates the clock frequencies for the system bus and the RAS and CAS signals for
+accessing the dynamic RAM (for both the processor and the VIC). So it has primary control
+over the bus and may "stun" the processor sometime or another when it needs additional
+cycles for memory accesses. Besides this, the VIC takes care of the DRAM refresh by reading
+from 5 refresh addresses in each raster line.
+
+The division of accesses between processor and VIC is basically static: Each clock cycle (one period
+of the ø2 signal) consists of two phases. The VIC accesses in the first phase (ø2 low), the
+processor in the second phase (ø2 high). The AEC signal closely follows ø2. That way the processor
+and VIC can both use the memory alternatively without disturbing each other.
+
+However, the VIC sometimes needs more cycles than made available to it by this scheme.
+This is the case when the VIC accesses the character pointers and the sprite data. In the first
+case it needs 40 additional cycles, in the second case it needs 2 cycles per sprite. BA will then
+go low 3 cycles before the VIC takes over the bus completely (3 cycles is the maximum
+number of successive write accesses of the processor). After 3 cycles, AEC stays low during the
+second clock phase so that the VIC can output its addresses.
+
+The following diagram illustrates the process of the take-over:
+
+<pre>
+      _ _ _ _ _ _ _ _ _ _ _ _ _    _ _ _ _ _ _ _ _ _ _ _ _ _
+ø2   _ _ _ _ _ _ _ _ _ _ _ _ _ ..._ _ _ _ _ _ _ _ _ _ _ _ _
+     ______________                       __________________
+BA                 ____________...________
+      _ _ _ _ _ _ _ _ _ _                  _ _ _ _ _ _ _ _ _
+AEC  _ _ _ _ _ _ _ _ _ _ ______..._________ _ _ _ _ _ _ _ _
+Chip VPVPVPVPVPVPVPVpVpVpVVVVVV...VVVVVVVVVPVPVPVPVPVPVPVP
+          1       |  2  |         3      |        4
+        Normal    |Take-| VIC has taken  |   VIC releases
+     bus activity |over | over the bus   |     the bus
+</pre>
+
+The line "Chip" designates which chip is just accessing the bus (as said before, there is an
+access in every cycle). "V" stands for the VIC, "P" for the processor. The cycles designated with "p"
+are accesses of the processor that are only performed if they are write accesses. The first "p" read
+access stops the processor, at least after the third "p" as the processor never does more than 3 write
+accesses in succession. On a "p" read access the processor addresses are still output on the
+bus because AEC is still high.
+
+The diagram describes the normal process of a bus take-over. By appropriately modifying the
+VIC register [53265/$D011](#D011), it is possible to force a bus take-over at extraordinary times.
+
+## Bad lines
+
+As already mentioned, the VIC needs 40 additional bus cycles when fetching the character
+pointers (i.e. the character codes of one text line from the video matrix), because the 63-65
+bus cycles available for transparent (unnoticed by the processor) access for the VIC during
+the first clock phases within a line are not sufficient to read both the character pointers and
+the pixel data for the characters from memory.
+
+For this reason, the VIC "stun" the
+processor for 40-43 cycles during the first pixel line of each text line to read the character
+pointers. The raster lines in which this happens are usually called "Bad Lines" ("bad" because
+they stop the processor and thus slow down the computer and lead to problems if the
+precise timing of a program is essential, e.g. for the transmission of data to/from a floppy
+drive).
+
+The character pointer access is also done in the bitmap modes, because the video matrix data
+is then used for color information.
+Normally, every eighth line inside the display window, starting with the very first line of the
+graphics, is a Bad Line, i.e the first raster lines of each text line. So the position of the Bad
+Lines depends on the YSCROLL. As you will see later, the whole graphics display and memory
+access scheme depend completely on the position of the Bad Lines.
+It is therefore necessary to introduce a more general definition, namely that of a "Bad Line
+Condition":
+<pre>
+A Bad Line Condition is given at any arbitrary clock cycle, if at the negative edge of
+ø0 at the beginning of the cycle RASTER >= $30 and RASTER <= $f7 and the lower
+three bits of RASTER are equal to YSCROLL and if the DEN bit was set during an
+arbitrary cycle of raster line $30.
+</pre>
+
+This definition has to be taken literally. You can generate and take away a Bad Line condition
+multiple times within an arbitrary raster line in the range of $30-$f7 by modifying YSCROLL,
+and thus make every raster line within the display window completely or partially a Bad Line,
+or trigger or suppress all the other functions that are connected with a Bad Line Condition. If
+YSCROLL=0, a Bad Line Condition occurs in raster line $30 as soon as the DEN bit 
+(register [53265/$D011](#D011), bit 4) is set.
+
+The following three sections describe the function units that are used for displaying the
+graphics. Section 3.6. explains the memory interface that is used to read the graphics data
+and the timing of the accesses within a raster line. 
+
 ## See also
 
 * [$11D6-$11EA - Shadow registers](11D6)
