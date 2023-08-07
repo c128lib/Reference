@@ -391,12 +391,12 @@ design the characters in a 4 X 8 grid, as shown in Figure 8-3.
 Each grid position can hold one of four two-bit values
 representing the four color choices:
 
-| | |
+|Bit values|Color selected|
 |-|-|
 | %00 | Background color 0 (common to all characters) |
 | %01 | Background color 1 (common to all characters) |
 | %10 | Background color 2 (common to all characters) |
-| %11 | Foreground color {independently selectable for all characters, but only eight colors are available) |
+| %11 | Foreground color (independently selectable for all characters, but only eight colors are available) |
 
 Once the design is completed, the byte values for the
 character-pattern definition are calculated just as for
@@ -522,7 +522,7 @@ foreground and background color cannot be specified individually
 for each of the 64,000 pixels on the screen. All 64 pixels
 within an 8-pixel X 8-line area will share foreground and
 background colors. The common areas are arranged in the
-same fashion as screen memory: 25 rows X 40 columns.^ To
+same fashion as screen memory: 25 rows X 40 columns. To
 determine the video matrix location that holds the color
 information for a particular x,y coordinate, use the following
 formula:
@@ -541,7 +541,7 @@ same size, but each pixel will now be twice as wide.
 
 To determine the byte offset (0-7999) within the bitmap and the bit
 pair (0-3) within that byte which correspond to a particular
-^-coordinate pair, use the following formulae:
+coordinate pair, use the following formulae:
 
 <pre>
 byte offset = 40 * (y AND 248) + 2 * (x AND 252) + (y AND 7)
@@ -555,7 +555,7 @@ a value in the range 0-199.
 Of the four color sources in multicolor mode, one is common
 to all pixels on the screen and the other three can be
 selected independently for each common color area. Common
-color areas correspond in size {4 pixels X 8 lines) and layout
+color areas correspond in size (4 pixels X 8 lines) and layout
 (40 X 25) to multicolor character positions. All pixels
 represented by %00 bit patterns in the bitmap will take the color
 specified in the VIC background color register at [53281/$D021](D000#D021).
