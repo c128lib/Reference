@@ -19,7 +19,7 @@ title: Index
 
 ### Memory reference
 * [$0000-$00FF - Zero Page](0000)
-* [$0200-$02FF - Common indirect routines](0200) [#14](https://github.com/c128lib/Reference/issues/14)
+* [$0200-$02FF - Input Buffer, Common indirect routines, Indirect Vectors](0200)
 * [$0300-$03FF - Basic/Kernal indirect vectors, Screen editor tables, Kernal file tables, Basic working storage](0300) [#15](https://github.com/c128lib/Reference/issues/15)
 * [$0A00-$0AFF - Kernal and Screen Editor Working Storage, Monitor Working Storage Area, Kernal Working Storage](0A00) [#16](https://github.com/c128lib/Reference/issues/16)
 * [$0B00-$0BFF - Cassette Buffer and Disk Boot Buffer](0B00) [#17](https://github.com/c128lib/Reference/issues/17)
