@@ -19,8 +19,19 @@ title: Index
 
 ### Memory reference
 * [$0000-$00FF - Zero Page](0000)
-* [$117E-$11D5 - Sprite movement control data](117E)
-* [$11D6-$11EA - Shadow registers](11D6)
+* [$0200-$02FF - Common indirect routines](0200) [#14](https://github.com/c128lib/Reference/issues/14)
+* [$0300-$03FF - Basic/Kernal indirect vectors, Screen editor tables, Kernal file tables, Basic working storage](0300) [#15](https://github.com/c128lib/Reference/issues/15)
+* [$0A00-$0AFF - Kernal and Screen Editor Working Storage, Monitor Working Storage Area, Kernal Working Storage](0A00) [#16](https://github.com/c128lib/Reference/issues/16)
+* [$0B00-$0BFF - Cassette Buffer and Disk Boot Buffer](0B00) [#17](https://github.com/c128lib/Reference/issues/17)
+* [$0E00-$0FFF - Sprite Pattern Storage Area](0E00) [#18](https://github.com/c128lib/Reference/issues/18)
+* [$1000-$10FF - Programmable Key Definition String Area](1000) [#19](https://github.com/c128lib/Reference/issues/19)
+* [$1100-$01FF - BASIC Working Storage](1100) [#20](https://github.com/c128lib/Reference/issues/20)
+* [$117E-$11D5 - Sprite movement control data](117E) (removing soon...)
+* [$11D6-$11EA - Shadow registers](11D6) (removing soon...)
+* [$1200-$12FF - BASIC General-Purpose Working Storage](1200) [#21](https://github.com/c128lib/Reference/issues/21)
+* [$4000-$AEFF - BASIC Entry Vectors](4000) [#22](https://github.com/c128lib/Reference/issues/22)
+* [$AF00-$AFFF - BASIC Jump Table](AF00) [#23](https://github.com/c128lib/Reference/issues/23)
+* [$B000-$BFFF - Monitor Jump Table](B000) [#24](https://github.com/c128lib/Reference/issues/24)
 * [$C000-$CFFF - Screen editor ROM](C000)
 * [$D000-$D030 - VIC Chip Registers](D000)
 * [$D400-$D41C - SID Chip Registers](D400)
@@ -28,8 +39,10 @@ title: Index
 * [$D600-$D601 - VDC Chip Registers](D600)
 * [$DC00-$DC0F - CIA 1 (Complex Interface Adapter)](DC00)
 * [$DD00-$DD0F - CIA 2 (Complex Interface Adapter)](DD00)
+* [$DF00-$00FF - RAM Expansion Controller Chip Registers](DF00) [#5](https://github.com/c128lib/Reference/issues/5)
+* [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000) [#25](https://github.com/c128lib/Reference/issues/25)
 * [$FF00-$FF04 - Mmu Chip Registers](FF00)
-* [$FF47-$FFF3 - Kernal](FF47)
+* [$FF47-$FFF3 - Kernal](FF47) (removing soon...)
 
 ### Commodore related resources
 This is a list of resources that you use to create the reference.
