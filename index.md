@@ -24,7 +24,7 @@ title: Index
 * [$0A00-$0AFF - Kernal and Screen Editor Working Storage, Monitor Working Storage Area, Kernal Working Storage](0A00) [#16](https://github.com/c128lib/Reference/issues/16)
 * [$0B00-$0BFF - Cassette Buffer and Disk Boot Buffer](0B00)
 * [$0E00-$0FFF - Sprite Pattern Storage Area](0E00)
-* [$1000-$10FF - Programmable Key Definition String Area](1000) [#19](https://github.com/c128lib/Reference/issues/19)
+* [$1000-$10FF - Programmable Key Definition String Area](1000)
 * [$1100-$01FF - BASIC Working Storage](1100) [#20](https://github.com/c128lib/Reference/issues/20)
 * [$117E-$11D5 - Sprite movement control data](117E) (removing soon...)
 * [$11D6-$11EA - Shadow registers](11D6) (removing soon...)
