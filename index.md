@@ -26,7 +26,7 @@ title: Index
 * [$0E00-$0FFF - Sprite Pattern Storage Area](0E00)
 * [$1000-$10FF - Programmable Key Definition String Area](1000)
 * [$1100-$11FF - BASIC Working Storage](1100)
-* [$1200-$12FF - BASIC General-Purpose Working Storage](1200) [#21](https://github.com/c128lib/Reference/issues/21)
+* [$1200-$12FF - BASIC General-Purpose Working Storage](1200)
 * [$4000-$AEFF - BASIC Entry Vectors](4000) [#22](https://github.com/c128lib/Reference/issues/22)
 * [$AF00-$AFFF - BASIC Jump Table](AF00) [#23](https://github.com/c128lib/Reference/issues/23)
 * [$B000-$BFFF - Monitor Jump Table](B000) [#24](https://github.com/c128lib/Reference/issues/24)
