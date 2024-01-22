@@ -73,108 +73,118 @@ maintaining the Kernal, BASIC and I/O.
 ## Memory layout
 
 ### $0000-$00FF Zero page Ram
-In both the Commodore 64 and 
-the Commodore 128, the block of memory that extends from $0000 to 
-$00FF is known as page zero. Page zero appears in this segment of 
-memory in all 16 of the C-128's memory banks, so you don't need to 
-use any bank-switching techniques to access page zero in a C-128 
-program. 
+In both the Commodore 64 and
+the Commodore 128, the block of memory that extends from $0000 to
+$00FF is known as page zero. Page zero appears in this segment of
+memory in all 16 of the C-128's memory banks, so you don't need to
+use any bank-switching techniques to access page zero in a C-128
+program.
 
-Page zero is a very important block of memory because data 
-stored there can be accessed using a 1-byte operand- a procedure 
-that saves both memory and processing time. In addition, two addressing modes- indirect indexed addressing and indexed indirect 
-addressing- will not work unless their operands have zero page addresses. 
+Page zero is a very important block of memory because data
+stored there can be accessed using a 1-byte operand- a procedure
+that saves both memory and processing time. In addition, two addressing modes- indirect indexed addressing and indexed indirect
+addressing- will not work unless their operands have zero page addresses.
 
-Because zero page addresses offer important benefits, page zero 
-is a desirable district on the memory map of the Commodore 128. 
-The engineers who designed the C-128 claimed most of it for themselves to set up the computer's operating system and BASIC interpreter. Consequently, very little space on page zero is available for 
-use by user-written C-128 programs. 
+Because zero page addresses offer important benefits, page zero
+is a desirable district on the memory map of the Commodore 128.
+The engineers who designed the C-128 claimed most of it for themselves to set up the computer's operating system and BASIC interpreter. Consequently, very little space on page zero is available for
+use by user-written C-128 programs.
 
-When you're writing a program for the Commodore 128, as 
+When you're writing a program for the Commodore 128, as
 we'll see a little later in this chapter, there is a way to increase the
-amount of space available on page zero by using some fancy bank-switching techniques. But if you don't want to go through the trouble 
-of doing that, it's absolutely essential to find at least a few free 
-memory locations on page zero. Unless you take special steps to 
-increase the number of memory locations, that's how many free 
+amount of space available on page zero by using some fancy bank-switching techniques. But if you don't want to go through the trouble
+of doing that, it's absolutely essential to find at least a few free
+memory locations on page zero. Unless you take special steps to
+increase the number of memory locations, that's how many free
 memory locations you'll find on page zero: a few.
 
 See [Zero page](0000) for details.
 
-There are only five bytes on page zero 
-that have been left free for use in user-written programs: $FA, $FB, 
-$FC, $FD, and $FE. Despite this scarcity of page zero space, however, a sharp-eyed programmer can usually find other zero page 
-addresses that can be safely used in assembly language programs. For 
-example, many of the addresses on page zero are reserved for use by 
-the C-128's built-in BASIC 7.0 interpreter, and a number of others are 
-only used by the floating-point math routines built into the com- 
-puter's operating system. Many of the registers in these categories 
-can be used by user-written programs, if the programs aren't designed to be called from BASIC and don't require the C-128's floating-point math package. 
+There are only five bytes on page zero
+that have been left free for use in user-written programs: $FA, $FB,
+$FC, $FD, and $FE. Despite this scarcity of page zero space, however, a sharp-eyed programmer can usually find other zero page
+addresses that can be safely used in assembly language programs. For
+example, many of the addresses on page zero are reserved for use by
+the C-128's built-in BASIC 7.0 interpreter, and a number of others are
+only used by the floating-point math routines built into the com-
+puter's operating system. Many of the registers in these categories
+can be used by user-written programs, if the programs aren't designed to be called from BASIC and don't require the C-128's floating-point math package.
 
 ### $0100-$01FF: 8502 Stack
-The RAM space that extends from 
-$0100 through $01FF in the Commodore 128 is reserved for use by 
-the 8502 stack. The stack appears in this segment of RAM in all 16 of 
+The RAM space that extends from
+$0100 through $01FF in the Commodore 128 is reserved for use by
+the 8502 stack. The stack appears in this segment of RAM in all 16 of
 the C-128's memory banks, so you don't have to do any bank-switching
-operations to access the stack. However, bank-switching operations can be used to move the 
-C-128 stack, thus permitting you to assign individual stacks to individual programs. 
+operations to access the stack. However, bank-switching operations can be used to move the
+C-128 stack, thus permitting you to assign individual stacks to individual programs.
 
-The stack is a section of memory that the Commodore 128 uses to keep track of the return 
-addresses of machine language subroutines and interrupts (tempo- 
-rary interruptions in normal program processing). The stack is also 
-used for temporary storage of the values of memory registers during 
-operations that would otherwise change those values and thus destroy them. The stack is frequently used by the C-128 operating 
+The stack is a section of memory that the Commodore 128 uses to keep track of the return
+addresses of machine language subroutines and interrupts (tempo-
+rary interruptions in normal program processing). The stack is also
+used for temporary storage of the values of memory registers during
+operations that would otherwise change those values and thus destroy them. The stack is frequently used by the C-128 operating
 system, and is also available for use in user-written programs.
 
 ### $0200-$03FF: Kernal RAM and Free RAM
-The block of memory 
-that extends from $0200 through $03FF contains important RAM 
-vectors and routines, and is shared by all 16 of the computer's mem- 
-ory banks. So this block of memory is always accessible to user- 
-written programs, no matter which memory bank is active. 
+The block of memory
+that extends from $0200 through $03FF contains important RAM
+vectors and routines, and is shared by all 16 of the computer's mem-
+ory banks. So this block of memory is always accessible to user-
+written programs, no matter which memory bank is active.
+
+See reference for [0200](0200) and [0300](0300).
 
 ### $0400-$07FF: Video Memory RAM (Text Mode) and Color RAM (Bit-Mapped Mode)
-In all 16 memory banks of the Commodore 128, the block of memory that extends from $0400 through 
-$07FF is ordinarily used as a screen map for 40-column text- that is, 
-for the storage of data that generates 40-column text displays. Other 
-blocks of memory can be used for the same purpose, but the block of 
-memory at addresses $0400 through $07FF is the C-64/C-128's de- 
-fault screen map; it is the RAM block used as a screen map when you 
-first turn on the C-64 or the C-128. 
+In all 16 memory banks of the Commodore 128, the block of memory that extends from $0400 through
+$07FF is ordinarily used as a screen map for 40-column text- that is,
+for the storage of data that generates 40-column text displays. Other
+blocks of memory can be used for the same purpose, but the block of
+memory at addresses $0400 through $07FF is the C-64/C-128's de-
+fault screen map; it is the RAM block used as a screen map when you
+first turn on the C-64 or the C-128.
 
-The $0400 through $07FF memory block is not used as a screen 
-map, though, when the C-128 is in its high-resolution, or bit-mapped, 
-graphics mode. When you use high-resolution graphics, this segment 
-of memory is too small to hold a complete screen map. A 40-colunm 
-screen map uses only 1,000 bytes of memory, but a high-resolution 
-screen map requires 8,000 bytes. So, when you operate the C-128 in 
-high-resolution graphics mode, a larger block of memory must be 
-designated as a screen map, and the $0400 through $07FF memory 
-block can then be used to control the colors that appear on the 
-screen. 
+The $0400 through $07FF memory block is not used as a screen
+map, though, when the C-128 is in its high-resolution, or bit-mapped,
+graphics mode. When you use high-resolution graphics, this segment
+of memory is too small to hold a complete screen map. A 40-colunm
+screen map uses only 1,000 bytes of memory, but a high-resolution
+screen map requires 8,000 bytes. So, when you operate the C-128 in
+high-resolution graphics mode, a larger block of memory must be
+designated as a screen map, and the $0400 through $07FF memory
+block can then be used to control the colors that appear on the
+screen.
 
 ### $0800-$1BFF (Bank 0): BASIC and Kernal Working Storage
-The memory space that extends from $0800 to $1BFF in bank is 
-reserved for use by BASIC and kernel routines. However, several 
-blocks of RAM in this area are often available for use in user-written 
-programs. They are: 
+The memory space that extends from $0800 to $1BFF in bank is
+reserved for use by BASIC and kernel routines. However, several
+blocks of RAM in this area are often available for use in user-written
+programs. They are:
 
-* $0B00 through $0BFF. This 255-byte block of 
-RAM acts as a buffer when a data cassette recorder is being 
-used. But it can be used as free RAM in programs that do not 
-make use of a cassette recorder. 
-* $0C00 through $0DFF. This 512-byte block of 
-RAM (which immediately follows block $0B00 through 
-$0BFF in the C-128's memory) is normally set aside for use 
-as a text buffer in programs that use the C-128's RS-232 
-serial port. But in programs that do not make use of the 
-serial port, it is available as free RAM. 
-* $0E00 through $0FFF. This 512-byte memory segment of RAM (which comes after the $0C00 through $0DFF 
-block) is used for storing sprite definitions. In programs that 
-don't use sprites, it can be used as free RAM. 
-* $1300 through $1BFF. This block of memory can 
-provide more than 2K of free RAM to programs that do not 
-use foreign language keys or the C-128's function keys. This 
-segment of memory is used by many of the assembly language programs in this volume. 
+* $0B00 through $0BFF. This 255-byte block of
+RAM acts as a buffer when a data cassette recorder is being
+used. But it can be used as free RAM in programs that do not
+make use of a cassette recorder.
+* $0C00 through $0DFF. This 512-byte block of
+RAM (which immediately follows block $0B00 through
+$0BFF in the C-128's memory) is normally set aside for use
+as a text buffer in programs that use the C-128's RS-232
+serial port. But in programs that do not make use of the
+serial port, it is available as free RAM.
+* $0E00 through $0FFF. This 512-byte memory segment of RAM (which comes after the $0C00 through $0DFF
+block) is used for storing sprite definitions. In programs that
+don't use sprites, it can be used as free RAM.
+* $1300 through $1BFF. This block of memory can
+provide more than 2K of free RAM to programs that do not
+use foreign language keys or the C-128's function keys. This
+segment of memory is used by many of the assembly language programs in this volume.
+
+See reference for:
+* [$0A00-$0AFF - Kernal and Screen Editor Working Storage, Monitor Working Storage Area, Kernal Working Storage](0A00)
+* [$0B00-$0BFF - Cassette Buffer and Disk Boot Buffer](0B00)
+* [$0E00-$0FFF - Sprite Pattern Storage Area](0E00)
+* [$1000-$10FF - Programmable Key Definition String Area](1000)
+* [$1100-$11FF - BASIC Working Storage](1100)
+* [$1200-$12FF - BASIC General-Purpose Working Storage](1200)
 
 ### $1C00-$FEFF (Bank 0): BASIC Program Text Storage
 TBD
@@ -186,16 +196,22 @@ TBD
 TBD
 
 ### $4000-$FF00 (Bank 15): BASIC and Kernal ROM
-* $4000-$AFFF BASIC ROM 
-* $B000-$BFFF Monitor ROM 
-* $C000 [Screen editor ROM](C000)
-* $D000-$DFFF I/O or character generator ROM (depending on the contents of memory address $D9)
-* $E000-$FFEF Kernal ROM 
+* $4000-$AFFF BASIC ROM (reference [4000](4000) and [AF00](AF00))
+* [$B000-$BFFF Monitor ROM](B000)
+* [$C000-$CFFF - Screen editor ROM](C000)
+* [$D000-$D030 - VIC Chip Registers](D000)
+* [$D400-$D41C - SID Chip Registers](D400)
+* [$D500-$D50B - Mmu Chip Registers](D500)
+* [$D600-$D601 - VDC Chip Registers](D600)
+* [$DC00-$DC0F - CIA 1 (Complex Interface Adapter)](DC00)
+* [$DD00-$DD0F - CIA 2 (Complex Interface Adapter)](DD00)
+* [$DF00-$DFFF - RAM Expansion Controller Chip Registers](DF00) [#5](https://github.
+* [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000)
 
 ### $FF00-$FF04: MMU
-The memory management unit 
-(MMU) register, which controls the memory resources of the Commodore 128, 
-occupies memory addresses $FF00 through $FF04 in all 
+The memory management unit
+(MMU) register, which controls the memory resources of the Commodore 128,
+occupies memory addresses $FF00 through $FF04 in all
 16 of the computer's memory banks.
 
 See [Mmu](Mmu) for details.
@@ -262,7 +278,7 @@ Language Monitor, sixteen different memory configurations are available in a 64K
 To change the configuration, issue the BASIC BANK command, or precede the four
 digit hexadecimal address in the Machine Language Monitor with an additional hexadecimal digit 0 through F. Outside of BASIC or the monitor, you can select other
 configurations, by changing the value in the configuration register at location $FF00
-(or $D500). 
+(or $D500).
 
 Within the selected configuration, and part of the current 64K RAM bank, is a
 16K range reserved for a video bank. The 16K video bank must encompass 1K of screen
