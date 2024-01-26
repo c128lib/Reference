@@ -27,7 +27,7 @@ title: Index
 * [$1000-$10FF - Programmable Key Definition String Area](1000)
 * [$1100-$11FF - BASIC Working Storage](1100)
 * [$1200-$12FF - BASIC General-Purpose Working Storage](1200)
-* [$4000-$AEFF - BASIC Entry Vectors](4000) [#22](https://github.com/c128lib/Reference/issues/22)
+* [$4000-$AEFF - BASIC Entry Vectors](4000)
 * [$AF00-$AFFF - BASIC Jump Table](AF00)
 * [$B000-$BFFF - Monitor Jump Table](B000) [#24](https://github.com/c128lib/Reference/issues/24)
 * [$C000-$CFFF - Screen editor ROM](C000)
