@@ -19,3 +19,27 @@
   color: #fafafa;
   background-color: #1788b8;
 }
+div .tooltip_code {
+  transition: background-color 0.4s;
+  height: 26px;
+  background-color: #D9D9D9;
+  overflow: clip;
+  width: 560px;
+  padding: 4px 4px 4px 4px;
+  border-radius: 5px;
+  color: black;
+}
+div .tooltip_code:hover {
+  height: 200px;
+  overflow: auto;
+  background-color: #C3FF99;
+  margin-bottom: -174px;
+  position: relative;
+  cursor: pointer;
+}
+div pre {
+  background-color: #777777 !important;
+  color: #C3FF99;
+  margin-left: 20px;
+  margin-right: 20px;
+}

@@ -1,0 +1,5 @@
+---
+layout: disasm
+title: $4000
+---
+4000: 4C 23 40  JMP $4023   // Basic Cold Start
