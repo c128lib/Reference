@@ -1,0 +1,18 @@
+B050: 20 7D FF  JSR $FF7D   // Primm
+B053: 0D 20 20 20 20 50 43 20 // '{CR}    pc '
+B05B: 20 53 52 20 41 43 20 58 // ' sr ac x'
+B063: 52 20 59 52 20 53 50 0D // 'r yr sp{CR}'
+B06B: 3B 20 1B 51 00          // '; {ESC}q{0}'
+B070: A5 02     LDA $02     // Bank Number, Jump to SYS Address
+B072: 20 D2 B8  JSR $B8D2   // Byte to 2 Ascii
+B075: 8A TXA
+B076: 20 D2 FF  JSR $FFD2   // (ibsout)      Output Vector, chrout [EF79]
+B079: A5 03     LDA $03     // SYS address low, MLM register PC
+B07B: 20 C2 B8  JSR $B8C2   // Output 2-Digit Byte
+B07E: A0 02     LDY #$02
+
+B080: B9 02 00  LDA $02,Y   // Bank Number, Jump to SYS Address
+B083: 20 A5 B8  JSR $B8A5   // Display 2-digit Byte
+B086: C8        INY
+B087: C0 08     CPY #$08
+B089: 90 F5     BCC $B080
