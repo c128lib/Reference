@@ -1,0 +1,8 @@
+B11A: 8E B2 0A  STX $0AB2
+B11D: A6 68     LDX $68
+B11F: A9 66     LDA #$66
+B121: 78        SEI
+B122: 20 74 FF  JSR $FF74   // indfet Bank LDA (fetchvec),y
+B125: 58        CLI
+B126: AE B2 0A  LDX $0AB2
+B129: 60        RTS

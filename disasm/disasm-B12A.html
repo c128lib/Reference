@@ -1,0 +1,9 @@
+B12A: 8E B2 0A  STX $0AB2
+B12D: A2 66     LDX #$66
+B12F: 8E B9 02  STX $02B9
+B132: A6 68     LDX $68
+B134: 78        SEI
+B135: 20 77 FF  JSR $FF77 // indsta Bank STA (stavec),y
+B138: 58        CLI
+B139: AE B2 0A  LDX $0AB2
+B13C: 60        RTS
