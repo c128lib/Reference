@@ -1,0 +1,14 @@
+B8D2: 48        PHA
+B8D3: 20 DC B8  JSR $B8DC
+B8D6: AA        TAX
+B8D7: 68        PLA
+B8D8: 4A        LSR A
+B8D9: 4A        LSR A
+B8DA: 4A        LSR A
+B8DB: 4A        LSR A
+B8DC: 29 0F     AND #$0F
+B8DE: C9 0A     CMP #$0A
+B8E0: 90 02     BCC $B8E4
+B8E2: 69 06     ADC #$06
+B8E4: 69 30     ADC #$30
+B8E6: 60        RTS

@@ -1,0 +1,18 @@
+B1AB: B0 1C     BCS $B1C9   // Print 'esc-o-up'
+B1AD: 20 01 B9  JSR $B901   // Copy Add0 to Add2
+B1B0: A0 00     LDY #$00
+B1B2: 20 A7 B7  JSR $B7A7
+B1B5: B0 12     BCS $B1C9   // Print 'esc-o-up'
+B1B7: A5 60     LDA $60
+B1B9: 20 2A B1  JSR $B12A   // Write Banked Memory
+B1BC: C8        INY
+B1BD: 24 D7     BIT $D7     // 40 / 80 columns:  0 = 40, 128 = 80
+B1BF: 10 04     BPL $B1C5
+B1C1: C0 10     CPY #$10
+B1C3: 90 ED     BCC $B1B2
+B1C5: C0 08     CPY #$08
+B1C7: 90 E9     BCC $B1B2
+B1C9: 20 7D FF  JSR $FF7D   // primm Print Immediate
+B1CC: 1B 4F 91 00           // '{ESC}o{UP}{0}'
+B1D0: 20 E8 B1  JSR $B1E8   // Display Memory
+B1D3: 4C 8B B0  JMP $B08B   // Get Command

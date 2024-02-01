@@ -1,0 +1,34 @@
+B1E8: 20 B4 B8  JSR $B8B4   // New Line
+B1EB: A9 3E     LDA #$3E
+B1ED: 20 D2 FF  JSR $FFD2   // (ibsout) Output Vector, chrout [EF79]
+B1F0: 20 92 B8  JSR $B892   // Display 5-Digit Address
+B1F3: A0 00     LDY #$00
+B1F5: F0 03     BEQ $B1FA
+B1F7: 20 A8 B8  JSR $B8A8   // Print Space
+B1FA: 20 1A B1  JSR $B11A   // Read Banked Memory
+B1FD: 20 C2 B8  JSR $B8C2   // Output 2-Digit Byte
+B200: C8        INY
+B201: C0 08     CPY #$08
+B203: 24 D7     BIT $D7     // 40 / 80 columns:  0 = 40, 128 = 80
+B205: 10 02     BPL $B209
+B207: C0 10     CPY #$10
+B209: 90 EC     BCC $B1F7
+B20B: 20 7D FF  JSR $FF7D   // primm Print Immediate
+B20E: 3A 12 00              // ':{RVSON}{0}'
+B211: A0 00     LDY #$00
+B213: 20 1A B1  JSR $B11A   // Read Banked Memory
+B216: 48        PHA
+B217: 29 7F     AND #$7F
+B219: C9 20     CMP #$20
+B21B: 68        PLA
+B21C: B0 02     BCS $B220
+B21E: A9 2E     LDA #$2E
+B220: 20 D2 FF  JSR $FFD2   // (ibsout) Output Vector, chrout [EF79]
+B223: C8        INY
+B224: 24 D7     BIT $D7     // 40 / 80 columns:  0 = 40, 128 = 80
+B226: 10 04     BPL $B22C
+B228: C0 10     CPY #$10
+B22A: 90 E7     BCC $B213
+B22C: C0 08     CPY #$08
+B22E: 90 E3     BCC $B213
+B230: 60        RTS

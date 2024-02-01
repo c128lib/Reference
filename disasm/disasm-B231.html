@@ -1,0 +1,69 @@
+B231: A9 00     LDA #$00
+B233: 2C        .BYTE $2C
+B234: A9 80     LDA #$80
+B236: 85 93     STA $93     // Work value, monitor, LOAD / SAVE 0 = LOAD, 1 = VERIFY
+B238: A9 00     LDA #$00
+B23A: 8D B3 0A  STA $0AB3
+B23D: 20 83 B9  JSR $B983   // Calculate Step/Area
+B240: B0 05     BCS $B247
+B242: 20 A7 B7  JSR $B7A7
+B245: 90 03     BCC $B24A
+B247: 4C BC B0  JMP $B0BC   // Error
+B24A: 24 93     BIT $93     // Work value, monitor, LOAD / SAVE 0 = LOAD, 1 = VERIFY
+B24C: 10 2C     BPL $B27A
+B24E: 38        SEC
+B24F: A5 66     LDA $66
+B251: E5 60     SBC $60
+B253: A5 67     LDA $67
+B255: E5 61     SBC $61
+B257: B0 21     BCS $B27A
+B259: A5 63     LDA $63
+B25B: 65 60     ADC $60
+B25D: 85 60     STA $60
+B25F: A5 64     LDA $64
+B261: 65 61     ADC $61
+B263: 85 61     STA $61
+B265: A5 65     LDA $65
+B267: 65 62     ADC $62
+B269: 85 62     STA $62
+B26B: A2 02     LDX #$02
+B26D: BD B7 0A  LDA $0AB7,X
+B270: 95 66     STA $66,X
+B272: CA        DEX
+B273: 10 F8     BPL $B26D
+B275: A9 80     LDA #$80
+B277: 8D B3 0A  STA $0AB3
+B27A: 20 B4 B8  JSR $B8B4   // New Line
+B27D: A0 00     LDY #$00
+B27F: 20 E1 FF  JSR $FFE1   // (istop) Test-Stop Vector [F66E]
+B282: F0 47     BEQ $B2CB
+B284: 20 1A B1  JSR $B11A   // Read Banked Memory
+B287: A2 60     LDX #$60
+B289: 8E B9 02  STX $02B9
+B28C: 8E C8 02  STX $02C8
+B28F: A6 62     LDX $62
+B291: 78        SEI
+B292: 24 93     BIT $93     // Work value, monitor, LOAD / SAVE 0 = LOAD, 1 = VERIFY
+B294: 10 03     BPL $B299
+B296: 20 77 FF  JSR $FF77   // indsta Bank STA (stavec),y
+B299: A6 62     LDX $62
+B29B: 20 7A FF  JSR $FF7A   // indcmp Bank CMP (cmpvec),y
+B29E: 58        CLI
+B29F: F0 09     BEQ $B2AA
+B2A1: 20 92 B8  JSR $B892   // Display 5-Digit Address
+B2A4: 20 A8 B8  JSR $B8A8   // Print Space
+B2A7: 20 A8 B8  JSR $B8A8   // Print Space
+B2AA: 2C B3 0A  BIT $0AB3
+B2AD: 30 0B     BMI $B2BA
+B2AF: E6 60     INC $60
+B2B1: D0 10     BNE $B2C3   // Add 1 to Op 3
+B2B3: E6 61     INC $61
+B2B5: D0 0C     BNE $B2C3   // Add 1 to Op 3
+B2B7: 4C BC B0  JMP $B0BC   // Error
+B2BA: 20 22 B9  JSR $B922   // Subtract Add0
+B2BD: 20 60 B9  JSR $B960   // Decrement Pointer
+B2C0: 4C C6 B2  JMP $B2C6   // Do Next Address
+B2C3: 20 50 B9  JSR $B950   // Increment Pointer
+B2C6: 20 3C B9  JSR $B93C   // Subtract Add1
+B2C9: B0 B4     BCS $B27F
+B2CB: 4C 8B B0  JMP $B08B
