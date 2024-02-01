@@ -29,7 +29,7 @@ title: Index
 * [$1200-$12FF - BASIC General-Purpose Working Storage](1200)
 * [$4000-$AEFF - BASIC Entry Vectors](4000)
 * [$AF00-$AFFF - BASIC Jump Table](AF00)
-* [$B000-$BFFF - Monitor Jump Table](B000) [#24](https://github.com/c128lib/Reference/issues/24)
+* [$B000-$BFFF - Monitor Jump Table](B000)
 * [$C000-$CFFF - Screen editor ROM](C000)
 * [$D000-$D030 - VIC Chip Registers](D000)
 * [$D400-$D41C - SID Chip Registers](D400)
