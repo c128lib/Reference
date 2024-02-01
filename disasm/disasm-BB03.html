@@ -1,0 +1,50 @@
+BB03: A0 FF     LDY #$FF
+BB05: A6 7A     LDX $7A
+BB07: CA        DEX
+BB08: C8        INY
+BB09: E8        INX
+BB0A: BD 00 02  LDA $0200,X
+BB0D: D0 F9     BNE $BB08
+BB0F: 98        TYA
+BB10: A6 7A     LDX $7A
+BB12: A0 02     LDY #$02
+BB14: 20 BD FF  JSR $FFBD   // setnam Set Filename
+BB17: A9 00     LDA #$00
+BB19: A6 60     LDX $60
+BB1B: A0 60     LDY #$60
+BB1D: 20 BA FF  JSR $FFBA   // setlfs Set Logical File Parameters
+BB20: 20 C0 FF  JSR $FFC0   // (iopen) Open Vector [EFBD]
+BB23: B0 CF     BCS $BAF4
+BB25: A2 00     LDX #$00
+BB27: 20 C6 FF  JSR $FFC6   // (ichkin) Set Input [F106]
+BB2A: 20 B4 B8  JSR $B8B4   // New Line
+BB2D: A0 03     LDY #$03
+BB2F: 84 63     STY $63
+BB31: 20 CF FF  JSR $FFCF   // (ibasin) Input Vector, chrin [EF06]
+BB34: 85 60     STA $60
+BB36: A5 90     LDA $90     // Status word ST
+BB38: D0 BA     BNE $BAF4
+BB3A: 20 CF FF  JSR $FFCF   // (ibasin) Input Vector, chrin [EF06]
+BB3D: 85 61     STA $61
+BB3F: A5 90     LDA $90     // Status word ST
+BB41: D0 B1     BNE $BAF4
+BB43: C6 63     DEC $63
+BB45: D0 EA     BNE $BB31
+BB47: 20 07 BA  JSR $BA07   // Convert to Decimal
+BB4A: A9 00     LDA #$00
+BB4C: A2 08     LDX #$08
+BB4E: A0 03     LDY #$03
+BB50: 20 5D BA  JSR $BA5D   // Output Address
+BB53: A9 20     LDA #$20
+BB55: 20 D2 FF  JSR $FFD2   // (ibsout) Output Vector, chrout [EF79]
+BB58: 20 CF FF  JSR $FFCF   // (ibasin) Input Vector, chrin [EF06]
+BB5B: F0 09     BEQ $BB66
+BB5D: A6 90     LDX $90     // Status word ST
+BB5F: D0 93     BNE $BAF4
+BB61: 20 D2 FF  JSR $FFD2   // (ibsout) Output Vector, chrout [EF79]
+BB64: 90 F2     BCC $BB58
+BB66: 20 B4 B8  JSR $B8B4   // New Line
+BB69: 20 E1 FF  JSR $FFE1   // (istop) Test-Stop Vector [F66E]
+BB6C: F0 86     BEQ $BAF4
+BB6E: A0 02     LDY #$02
+BB70: D0 BD     BNE $BB2F
