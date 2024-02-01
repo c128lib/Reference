@@ -14,6 +14,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto:wght@300&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <style>
+      @font-face {
+        font-family: 'Commodore64';
+        src:  url('{{ "/assets/C64_Pro_Mono-STYLE.woff2" | append: site.github.build_revision | relative_url }}') format('woff2'),
+              url('{{ "/assets/C64_Pro_Mono-STYLE.woff" | append: site.github.build_revision | relative_url }}') format('woff');
+      }
+    </style>
   </head>
   <body>
     {% if page.title and page.title != 'Index' %}
