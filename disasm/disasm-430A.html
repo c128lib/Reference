@@ -1,0 +1,95 @@
+430A: 6C 04 03  JMP ($0304)  // Crunch BASIC Tokens Link [430D]
+
+// Crunch BASIC Tokens
+
+430D: A5 3D  LDA $3D   // Textpointer: BASIC work point (chrget)
+430F: 48  PHA
+4310: A5 3E  LDA $3E
+4312: 48  PHA
+
+4313: 20 86 03  JSR $0386  // CHRGOT entry
+4316: 4C 1C 43  JMP $431C
+
+4319: 20 80 03  JSR $0380  // CHRGET
+
+431C: 90 FB  BCC $4319
+431E: 6C 0C 03  JMP ($030C)  // Crunch FE Hook [4321]
+
+// Crunch FE
+
+4321: B0 03  BCS $4326
+4323: 4C B2 43  JMP $43B2
+
+4326: C9 00  CMP #$00
+4328: F0 77  BEQ $43A1
+432A: C9 3A  CMP #$3A
+432C: F0 EB  BEQ $4319
+432E: C9 3F  CMP #$3F
+4330: D0 04  BNE $4336
+4332: A9 99  LDA #$99
+4334: D0 50  BNE $4386
+
+4336: C9 80  CMP #$80
+4338: 90 0B  BCC $4345
+433A: C9 FF  CMP #$FF
+433C: F0 DB  BEQ $4319
+433E: A0 01  LDY #$01
+4340: 20 CC 43  JSR $43CC  // Move Down Input Buffer
+4343: F0 CE  BEQ $4313
+
+4345: C9 22  CMP #$22
+4347: D0 0D  BNE $4356
+
+4349: 20 80 03  JSR $0380  // CHRGET
+434C: C9 00  CMP #$00
+434E: F0 51  BEQ $43A1
+4350: C9 22  CMP #$22
+4352: F0 C5  BEQ $4319
+4354: D0 F3  BNE $4349
+
+4356: A9 46  LDA #$46
+4358: A0 09  LDY #$09
+435A: 20 E2 43  JSR $43E2  // Check Keyword Match
+435D: 90 06  BCC $4365
+435F: A9 81  LDA #$81
+4361: A2 00  LDX #$00
+4363: F0 4B  BEQ $43B0
+
+4365: A9 46  LDA #$46
+4367: A0 C9  LDY #$C9
+4369: 20 E2 43  JSR $43E2  // Check Keyword Match
+436C: 90 06  BCC $4374
+436E: A9 81  LDA #$81
+4370: A2 FF  LDX #$FF
+4372: D0 3C  BNE $43B0
+
+4374: A9 44     LDA #$44
+4376: A0 17     LDY #$17
+4378: 20 E2 43  JSR $43E2   // Check Keyword Match
+437B: 90 9C     BCC $4319
+437D: C0 00     CPY #$00
+437F: F0 03     BEQ $4384
+4381: 20 CC 43  JSR $43CC   // Move Down Input Buffer
+4384: A5 0D     LDA $0D
+4386: A0 00     LDY #$00
+4388: 91 3D     STA ($3D),Y // Textpointer: BASIC work point (chrget)
+438A: C9 8F     CMP #$8F
+438C: F0 0D     BEQ $439B
+438E: C9 83     CMP #$83
+4390: D0 87     BNE $4319
+4392: 20 80 03  JSR $0380   // CHRGET
+4395: 20 8F 52  JSR $528F   // Perform [data/bend]
+4398: 4C 13 43  JMP $4313
+439B: 20 80 03  JSR $0380   // CHRGET
+439E: 20 9D 52  JSR $529D   // Perform [rem]
+43A1: A6 3D     LDX $3D     // Textpointer: BASIC work point (chrget)
+43A3: 68        PLA
+43A4: 85 3E     STA $3E
+43A6: 68        PLA
+43A7: 85 3D     STA $3D     // Textpointer: BASIC work point (chrget)
+43A9: 38        SEC
+43AA: 8A        TXA
+43AB: E5 3D     SBC $3D     // Textpointer: BASIC work point (chrget)
+43AD: A8        TAY
+43AE: C8        INY
+43AF: 60        RTS

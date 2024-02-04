@@ -1,0 +1,7 @@
+418D: A9 00     LDA #$00
+418F: A0 07     LDY #$07
+4191: BE D9 6D  LDX $6DD9,Y // Sprite Motion Table Offsets
+4194: 9D 7E 11  STA $117E,X // Sprite Motion Tables (8 x 11 bytes)
+4197: 88        DEY
+4198: 10 F7     BPL $4191
+419A: 60        RTS

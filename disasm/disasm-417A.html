@@ -1,0 +1,8 @@
+417A: 20 45 A8  JSR $A845   // Set Bank 15
+417D: A2 03     LDX #$03
+417F: BD 89 41  LDA $4189,X // Registers For $D501
+4182: 9D 01 D5  STA $D501,X
+4185: CA        DEX
+4186: 10 F7     BPL $417F
+4188: 60        RTS
+4189: 3F 7F 01 41           // '?..a'

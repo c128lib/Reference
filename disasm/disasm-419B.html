@@ -1,0 +1,16 @@
+419B: A0 00     LDY #$00
+419D: B9 BB 41  LDA $41BB,Y // Startup Message
+41A0: C9 40     CMP #$40
+41A2: D0 0E     BNE $41B2
+41A4: 24 D7     BIT $D7     // 40 / 80 columns:  0 = 40, 128 = 80
+41A6: 10 0D     BPL $41B5
+41A8: A2 13     LDX #$13
+41AA: A9 20     LDA #$20
+41AC: 20 69 92  JSR $9269   // Call 'chrout'
+41AF: CA        DEX
+41B0: D0 F8     BNE $41AA
+41B2: 20 69 92  JSR $9269   // Call 'chrout'
+41B5: C8        INY
+41B6: C0 96     CPY #$96
+41B8: D0 E3     BNE $419D
+41BA: 60        RTS

@@ -1,0 +1,39 @@
+4279: E6 3D     INC $3D     // Textpointer: BASIC work point (chrget)
+427B: D0 02     BNE $427F
+427D: E6 3E     INC $3E
+427F: 8D 01 FF  STA $FF01
+4282: A0 00     LDY #$00
+4284: B1 3D     LDA ($3D),Y // Textpointer: BASIC work point (chrget)
+4286: 8D 03 FF  STA $FF03
+4289: C9 3A     CMP #$3A
+428B: B0 0A     BCS $4297
+428D: C9 20     CMP #$20
+428F: F0 E8     BEQ $4279   // Chrget for $0380
+4291: 38        SEC
+4292: E9 30     SBC #$30
+4294: 38        SEC
+4295: E9 D0     SBC #$D0
+4297: 60        RTS
+4298: 8D A6 03  STA $03A6
+429B: 8D 01 FF  STA $FF01
+429E: B1 00     LDA ($00),Y
+42A0: 8D 03 FF  STA $FF03
+42A3: 60        RTS
+42A4: 8D B2 03  STA $03B2
+42A7: 8D 02 FF  STA $FF02
+42AA: B1 00     LDA ($00),Y
+42AC: 8D 04 FF  STA $FF04
+42AF: 60        RTS
+42B0: 8D 02 FF  STA $FF02
+42B3: B1 24     LDA ($24),Y
+42B5: 8D 04 FF  STA $FF04
+42B8: 60        RTS
+42B9: 8D 01 FF  STA $FF01
+42BC: B1 26     LDA ($26),Y
+42BE: 8D 03 FF  STA $FF03
+42C1: 60        RTS
+42C2: 8D 01 FF  STA $FF01
+42C5: B1 3D     LDA ($3D),Y // Textpointer: BASIC work point (chrget)
+42C7: 8D 03 FF  STA $FF03
+42CA: 60        RTS
+42CB: 00 00 00              // '{0}{0}{0}'

@@ -1,0 +1,15 @@
+43B0: 65 0D     ADC $0D
+43B2: 48        PHA
+43B3: 88        DEY
+43B4: 20 CC 43  JSR $43CC   // Move Down Input Buffer
+43B7: A9 FE     LDA #$FE
+43B9: E8        INX
+43BA: D0 02     BNE $43BE
+43BC: A9 CE     LDA #$CE
+43BE: A0 00     LDY #$00
+43C0: 91 3D     STA ($3D),Y // Textpointer: BASIC work point (chrget)
+43C2: C8        INY
+43C3: 68        PLA
+43C4: 91 3D     STA ($3D),Y //  Textpointer: BASIC work point (chrget)
+43C6: 20 80 03  JSR $0380   // CHRGET
+43C9: 4C 19 43  JMP $4319
