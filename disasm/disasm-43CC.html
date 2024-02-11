@@ -1,0 +1,13 @@
+43CC: 18        CLC
+43CD: 98        TYA
+43CE: 65 3D     ADC $3D     // Textpointer: BASIC work point (chrget)
+43D0: 85 24     STA $24
+43D2: A5 3E     LDA $3E
+43D4: 69 00     ADC #$00
+43D6: 85 25     STA $25
+43D8: A0 FF     LDY #$FF
+43DA: C8        INY
+43DB: B1 24     LDA ($24),Y
+43DD: 91 3D     STA ($3D),Y // Textpointer: BASIC work point (chrget)
+43DF: D0 F9     BNE $43DA
+43E1: 60        RTS

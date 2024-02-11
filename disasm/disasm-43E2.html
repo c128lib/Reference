@@ -1,0 +1,31 @@
+43E2: 85 25     STA $25
+43E4: 84 24     STY $24
+43E6: A0 00     LDY #$00
+43E8: 84 0D     STY $0D
+43EA: 88        DEY
+43EB: C8        INY
+43EC: B1 3D     LDA ($3D),Y // Textpointer: BASIC work point (chrget)
+43EE: 38        SEC
+43EF: F1 24     SBC ($24),Y
+43F1: F0 F8     BEQ $43EB
+43F3: C9 80     CMP #$80
+43F5: F0 1B     BEQ $4412
+43F7: B1 24     LDA ($24),Y
+43F9: 30 03     BMI $43FE
+43FB: C8        INY
+43FC: D0 F9     BNE $43F7
+43FE: C8        INY
+43FF: E6 0D     INC $0D
+4401: 18        CLC
+4402: 98        TYA
+4403: 65 24     ADC $24
+4405: 85 24     STA $24
+4407: 90 02     BCC $440B
+4409: E6 25     INC $25
+440B: 18        CLC
+440C: A0 00     LDY #$00
+440E: B1 24     LDA ($24),Y
+4410: D0 DA     BNE $43EC
+4412: 05 0D     ORA $0D
+4414: 85 0D     STA $0D
+4416: 60        RTS
