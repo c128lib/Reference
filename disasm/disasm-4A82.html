@@ -1,0 +1,17 @@
+4A82: AA        TAX
+4A83: A0 00     LDY #$00
+4A85: A9 4B     LDA #$4B
+4A87: 85 26     STA $26
+4A89: A9 48     LDA #$48
+4A8B: 85 27     STA $27
+4A8D: CA        DEX
+4A8E: 30 0E     BMI $4A9E
+4A90: B1 26     LDA ($26),Y
+4A92: 48        PHA
+4A93: E6 26     INC $26
+4A95: D0 02     BNE $4A99
+4A97: E6 27     INC $27
+4A99: 68        PLA
+4A9A: 10 F4     BPL $4A90
+4A9C: 30 EF     BMI $4A8D
+4A9E: 60        RTS
