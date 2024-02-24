@@ -1,0 +1,70 @@
+4BF7: C9 CE     CMP #$CE
+4BF9: F0 59     BEQ $4C54
+4BFB: C9 D5     CMP #$D5
+4BFD: B0 AC     BCS $4BAB
+4BFF: C9 CB     CMP #$CB
+4C01: 90 02     BCC $4C05
+4C03: E9 01     SBC #$01
+4C05: 48        PHA
+4C06: AA        TAX
+4C07: 20 80 03  JSR $0380   // CHRGET
+4C0A: E0 D3     CPX #$D3
+4C0C: F0 08     BEQ $4C16
+4C0E: E0 CB     CPX #$CB
+4C10: B0 29     BCS $4C3B
+4C12: E0 C8     CPX #$C8
+4C14: 90 25     BCC $4C3B
+4C16: 20 59 79  JSR $7959   // -Check Left Parenthesis
+4C19: 20 EF 77  JSR $77EF   // Evaluate Expression
+4C1C: 20 5C 79  JSR $795C   // -Check Comma
+4C1F: 20 DD 77  JSR $77DD   // Confirm String
+4C22: 68        PLA
+4C23: C9 D3     CMP #$D3
+4C25: F0 59     BEQ $4C80
+4C27: AA        TAX
+4C28: A5 67     LDA $67
+4C2A: 48        PHA
+4C2B: A5 66     LDA $66
+4C2D: 48        PHA
+4C2E: 8A        TXA
+4C2F: 48        PHA
+4C30: 20 F4 87  JSR $87F4   // -Eval Byte Parameter
+4C33: 68        PLA
+4C34: A8        TAY
+4C35: 8A        TXA
+4C36: 48        PHA
+4C37: 98        TYA
+4C38: 4C 3F 4C  JMP $4C3F
+4C3B: 20 50 79  JSR $7950   // Eval Within Parens
+4C3E: 68        PLA
+4C3F: 38        SEC
+4C40: E9 B4     SBC #$B4
+4C42: 0A        ASL A
+4C43: A8        TAY
+4C44: B9 D9 47  LDA $47D9,Y
+4C47: 85 58     STA $58
+4C49: B9 D8 47  LDA $47D8,Y // Function Vectors
+4C4C: 85 57     STA $57
+4C4E: 20 56 00  JSR $56
+4C51: 4C DA 77  JMP $77DA   // Confirm Numeric
+4C54: 20 80 03  JSR $0380   // CHRGET
+4C57: F0 2A     BEQ $4C83
+4C59: C9 0A     CMP #$0A
+4C5B: F0 0B     BEQ $4C68
+4C5D: 48        PHA
+4C5E: 20 80 03  JSR $0380   // CHRGET
+4C61: 20 59 79  JSR $7959   // -Check Left Parenthesis
+4C64: 20 EF 77  JSR $77EF   // Evaluate Expression
+4C67: 68        PLA
+4C68: C9 02     CMP #$02
+4C6A: 90 08     BCC $4C74
+4C6C: C9 0B     CMP #$0B
+4C6E: B0 04     BCS $4C74
+4C70: 69 D1     ADC #$D1
+4C72: D0 CB     BNE $4C3F
+4C74: 38        SEC
+4C75: 20 7D 4C  JSR $4C7D
+4C78: B0 09     BCS $4C83
+4C7A: 4C DA 77  JMP $77DA   // Confirm Numeric
+4C7D: 6C FC 02  JMP ($02FC) // Function Execute Hook [4C78]
+4C80: 4C C1 99  JMP $99C1   // Evaluate &lt;instr&gt;
