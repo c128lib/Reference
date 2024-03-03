@@ -72,6 +72,8 @@ maintaining the Kernal, BASIC and I/O.
 
 ## Memory layout
 
+![Memory layout](resources/memory-layout.png)
+
 ### $0000-$00FF Zero page Ram
 In both the Commodore 64 and
 the Commodore 128, the block of memory that extends from $0000 to
@@ -106,8 +108,8 @@ $FC, $FD, and $FE. Despite this scarcity of page zero space, however, a sharp-ey
 addresses that can be safely used in assembly language programs. For
 example, many of the addresses on page zero are reserved for use by
 the C-128's built-in BASIC 7.0 interpreter, and a number of others are
-only used by the floating-point math routines built into the com-
-puter's operating system. Many of the registers in these categories
+only used by the floating-point math routines built into the computer's
+operating system. Many of the registers in these categories
 can be used by user-written programs, if the programs aren't designed to be called from BASIC and don't require the C-128's floating-point math package.
 
 ### $0100-$01FF: 8502 Stack
@@ -119,8 +121,8 @@ operations to access the stack. However, bank-switching operations can be used t
 C-128 stack, thus permitting you to assign individual stacks to individual programs.
 
 The stack is a section of memory that the Commodore 128 uses to keep track of the return
-addresses of machine language subroutines and interrupts (tempo-
-rary interruptions in normal program processing). The stack is also
+addresses of machine language subroutines and interrupts (temporary
+interruptions in normal program processing). The stack is also
 used for temporary storage of the values of memory registers during
 operations that would otherwise change those values and thus destroy them. The stack is frequently used by the C-128 operating
 system, and is also available for use in user-written programs.
@@ -128,9 +130,9 @@ system, and is also available for use in user-written programs.
 ### $0200-$03FF: Kernal RAM and Free RAM
 The block of memory
 that extends from $0200 through $03FF contains important RAM
-vectors and routines, and is shared by all 16 of the computer's mem-
-ory banks. So this block of memory is always accessible to user-
-written programs, no matter which memory bank is active.
+vectors and routines, and is shared by all 16 of the computer's memory banks.
+So this block of memory is always accessible to user-written
+programs, no matter which memory bank is active.
 
 See reference for [0200](0200) and [0300](0300).
 
@@ -139,8 +141,8 @@ In all 16 memory banks of the Commodore 128, the block of memory that extends fr
 $07FF is ordinarily used as a screen map for 40-column text- that is,
 for the storage of data that generates 40-column text displays. Other
 blocks of memory can be used for the same purpose, but the block of
-memory at addresses $0400 through $07FF is the C-64/C-128's de-
-fault screen map; it is the RAM block used as a screen map when you
+memory at addresses $0400 through $07FF is the C-64/C-128's default
+screen map; it is the RAM block used as a screen map when you
 first turn on the C-64 or the C-128.
 
 The $0400 through $07FF memory block is not used as a screen
@@ -205,7 +207,7 @@ TBD
 * [$D600-$D601 - VDC Chip Registers](D600)
 * [$DC00-$DC0F - CIA 1 (Complex Interface Adapter)](DC00)
 * [$DD00-$DD0F - CIA 2 (Complex Interface Adapter)](DD00)
-* [$DF00-$DFFF - RAM Expansion Controller Chip Registers](DF00) [#5](https://github.
+* [$DF00-$DFFF - RAM Expansion Controller Chip Registers](DF00)
 * [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000)
 
 ### $FF00-$FF04: MMU
