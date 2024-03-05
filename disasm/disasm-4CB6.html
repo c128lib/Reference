@@ -1,0 +1,61 @@
+
+4CB6: 20 DE 77  JSR $77DE
+4CB9: B0 13     BCS $4CCE
+4CBB: A5 6F     LDA $6F
+4CBD: 09 7F     ORA #$7F
+4CBF: 25 6B     AND $6B
+4CC1: 85 6B     STA $6B
+4CC3: A9 6A     LDA #$6A
+4CC5: A0 00     LDY #$00
+4CC7: 20 87 8C  JSR $8C87   // Compare FAC#1 to Memory
+4CCA: AA        TAX
+4CCB: 4C 01 4D  JMP $4D01
+4CCE: A9 00     LDA #$00
+4CD0: 85 0F     STA $0F
+4CD2: C6 4F     DEC $4F
+4CD4: 20 81 87  JSR $8781
+4CD7: 85 63     STA $63
+4CD9: 86 64     STX $64
+4CDB: 84 65     STY $65
+4CDD: A5 6D     LDA $6D
+4CDF: A4 6E     LDY $6E
+4CE1: 20 85 87  JSR $8785
+4CE4: 86 6D     STX $6D
+4CE6: 84 6E     STY $6E
+4CE8: AA        TAX
+4CE9: 38        SEC
+4CEA: E5 63     SBC $63
+4CEC: F0 08     BEQ $4CF6
+4CEE: A9 01     LDA #$01
+4CF0: 90 04     BCC $4CF6
+4CF2: A6 63     LDX $63
+4CF4: A9 FF     LDA #$FF
+4CF6: 85 68     STA $68
+4CF8: A0 FF     LDY #$FF
+4CFA: E8        INX
+4CFB: C8        INY
+4CFC: CA        DEX
+4CFD: D0 07     BNE $4D06
+4CFF: A6 68     LDX $68
+4D01: 30 1B     BMI $4D1E
+4D03: 18        CLC
+4D04: 90 18     BCC $4D1E
+4D06: A9 6D     LDA #$6D
+4D08: 20 AB 03  JSR $03AB   // Fetch From RAM Bank 1
+4D0B: 48        PHA
+4D0C: A9 64     LDA #$64
+4D0E: 20 AB 03  JSR $03AB   // Fetch From RAM Bank 1
+4D11: 85 79     STA $79
+4D13: 68        PLA
+4D14: C5 79     CMP $79
+4D16: F0 E3     BEQ $4CFB
+4D18: A2 FF     LDX #$FF
+4D1A: B0 02     BCS $4D1E
+4D1C: A2 01     LDX #$01
+4D1E: E8        INX
+4D1F: 8A        TXA
+4D20: 2A        ROL A
+4D21: 25 14     AND $14
+4D23: F0 02     BEQ $4D27
+4D25: A9 FF     LDA #$FF
+4D27: 4C 68 8C  JMP $8C68   // Byte Fixed-Float
