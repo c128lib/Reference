@@ -9,6 +9,9 @@ title: Index
 ### Memory map
 * [Memory map and layout](MemoryMap)
 
+### Instruction set
+* [Instruction set details](InstructionSet)
+
 ### Components
 * [CIA (Complex Interface Adapter)](Cia)
 * [MMU (Memory Management Unit)](Mmu)
