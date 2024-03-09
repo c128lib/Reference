@@ -5,7 +5,7 @@ title: Instruction set
 
 # Opcodes list
 
-<A name=ADC></A>
+<a name=ADC></a>
 
 ## ADC (ADd with Carry)
 Affects Flags: N V Z C
@@ -23,14 +23,13 @@ Affects Flags: N V Z C
 
 + add 1 cycle if page boundary crossed
 
-ADC results are dependant on the setting of the <A
-href="#DFLAG">decimal flag</A>. In decimal
-mode, addition is carried out on the assumption that the values involved are
-packed BCD (Binary Coded Decimal).
+ADC results are dependant on the setting of the <a href="#DFLAG">decimal flag</a>. 
+In decimal mode, addition is carried out on the assumption that the values
+involved are packed BCD (Binary Coded Decimal).
 
 There is no way to add without carry.
 
-<A name=AND></A>
+<a name=AND></a>
 
 ## AND (bitwise AND with accumulator)
 Affects Flags: N Z
@@ -48,7 +47,7 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=ASL></A>
+<a name=ASL></a>
 
 ## ASL (Arithmetic Shift Left)
 Affects Flags: N Z C
@@ -64,7 +63,7 @@ Affects Flags: N Z C
 ASL shifts all bits left one position. 0 is shifted into bit 0 and the
 original bit 7 is shifted into the Carry.
 
-<A name=BIT></A>
+<a name=BIT></a>
 
 ## BIT (test BITs)
 Affects Flags: N V Z
@@ -94,16 +93,16 @@ Beware: a BIT instruction used in this way as a NOP does have effects: the flags
 may be modified, and the read of the absolute address, if it happens to access an
 I/O device, may cause an unwanted action.
 
-<A name=BCC></A> <A name=BCS></A> <A name=BEQ></A> <A name=BNE></A>
-<A name=BMI></A> <A name=BPL></A> <A name=BVC></A> <A name=BVS></A>
-<A name=BRA></A>
+<a name=BCC></a> <a name=BCS></a> <a name=BEQ></a> <a name=BNE></a>
+<a name=BMI></a> <a name=BPL></a> <a name=BVC></a> <a name=BVS></a>
+<a name=BRA></a>
 
 ## Branch Instructions
 Affects Flags: none
 
 All branches are relative mode and have a length of two bytes. Syntax is "Bxx
 Displacement" or (better) "Bxx Label". See the notes on the <A
-href="#PC">Program Counter</A> for more on
+href="#PC">Program Counter</a> for more on
 displacements.
 
 Branches are dependant on the status of the flag bits when the opcode is
@@ -123,7 +122,7 @@ branch is taken and add one more if the branch crosses a page boundary.
 
 There is no BRA (BRanch Always) instruction but it can be easily emulated
 by branching on the basis of a known condition. One of the best flags to use for
-this purpose is the <A href="#VFLAG">oVerflow</A> which is unchanged
+this purpose is the <a href="#VFLAG">oVerflow</a> which is unchanged
 by all but addition and subtraction operations.
 
 A page boundary crossing occurs when the branch destination is on a different
@@ -145,7 +144,7 @@ address of) LABEL and the NOP are on different pages. This means that
 the BVC instruction will take 3 cycles no matter what address it is located
 at.
 
-<A name=BRK></A>
+<a name=BRK></a>
 
 ## BRK (BReaK)
 Affects Flags: B
@@ -155,11 +154,11 @@ Affects Flags: B
 |Implied|BRK|$00|1|7|
 
 BRK causes a non-maskable interrupt and increments the program counter by
-one. Therefore an <A href="#RTI">RTI</A> will
+one. Therefore an <a href="#RTI">RTI</a> will
 go to the address of the BRK +2 so that BRK may be used to replace a
 two-byte instruction for debugging and the subsequent RTI will be correct.
 
-<A name=CMP></A>
+<a name=CMP></a>
 
 ## CMP (CoMPare accumulator)
 Affects Flags: N Z C
@@ -182,7 +181,7 @@ in the accumulator is equal or greater than the compared value, the Carry will
 be set. The equal (Z) and negative (N) flags will be set based on equality or lack
 thereof and the sign (i.e. A&gt;=$80) of the accumulator.
 
-<A name=CPX></A>
+<a name=CPX></a>
 
 ## CPX (ComPare X register)
 Affects Flags: N Z C
@@ -193,10 +192,10 @@ Affects Flags: N Z C
 |Zero Page|CPX $44|$E4|2|3|
 |Absolute|CPX $4400|$EC|3|4|
 
-Operation and flag results are identical to equivalent mode accumulator <A
-href="#CMP">CMP</A> ops.
+Operation and flag results are identical to equivalent mode accumulator
+<a href="#CMP">CMP</a> ops.
 
-<A name=CPY></A>
+<a name=CPY></a>
 
 ## CPY (ComPare Y register)
 Affects Flags: N Z C
@@ -207,10 +206,10 @@ Affects Flags: N Z C
 |Zero Page|CPY $44|$C4|2|3|
 |Absolute|CPY $4400|$CC|3|4|
 
-Operation and flag results are identical to equivalent mode accumulator <A
-href="#CMP">CMP</A> ops.
+Operation and flag results are identical to equivalent mode accumulator
+<a href="#CMP">CMP</a> ops.
 
-<A name=DEC></A>
+<a name=DEC></a>
 
 ## DEC (DECrement memory)
 Affects Flags: N Z
@@ -222,7 +221,7 @@ Affects Flags: N Z
 |Absolute|DEC $4400|$CE|3|6|
 |Absolute,X|DEC $4400,X|$DE|3|7|
 
-<A name=EOR></A>
+<a name=EOR></a>
 
 ## EOR (bitwise Exclusive OR)
 Affects Flags: N Z
@@ -240,8 +239,8 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=CLC></A> <A name=SEC></A> <A name=CLD></A> <A name=SED></A>
-<A name=CLI></A> <A name=SEI></A> <A name=CLV></A>
+<a name=CLC></a> <a name=SEC></a> <a name=CLD></a> <a name=SED></a>
+<a name=CLI></a> <a name=SEI></a> <a name=CLV></a>
 
 ## Flag (Processor Status) Instructions
 Affect Flags: as noted
@@ -260,19 +259,19 @@ two machine cycles.
 |SED (SEt Decimal)|$F8|
 
 Notes:
-<A name=IFLAG></A> The Interrupt flag is used to prevent (SEI) or
+<a name=IFLAG></a> The Interrupt flag is used to prevent (SEI) or
 enable (CLI) maskable interrupts (aka IRQ's). It does not signal the presence or
 absence of an interrupt condition. The 6502 will set this flag automatically in
 response to an interrupt and restore it to its prior status on completion of the
 interrupt service routine. If you want your interrupt service routine to permit
 other maskable interrupts, you must clear the I flag in your code.
 
-<A name=DFLAG></A> The Decimal flag controls how the 6502 adds and
+<a name=DFLAG></a> The Decimal flag controls how the 6502 adds and
 subtracts. If set, arithmetic is carried out in packed binary coded decimal.
 This flag is unchanged by interrupts and is unknown on power-up. The implication
 is that a CLD should be included in boot or interrupt coding.
 
-<A name=VFLAG></A> The Overflow flag is generally misunderstood and
+<a name=VFLAG></a> The Overflow flag is generally misunderstood and
 therefore under-utilised. After an ADC or SBC instruction, the overflow flag
 will be set if the twos complement result is less than -128 or greater than
 +127, and it will cleared otherwise. In twos complement, $80 through $FF
@@ -297,7 +296,7 @@ affected by increments, decrements, shifts and logical operations i.e. only
 ADC, BIT, CLV, PLP, RTI and SBC affect it. There is no opcode to set the
 overflow but a BIT test on an RTS instruction will do the trick.
 
-<A name=INC></A>
+<a name=INC></a>
 
 ## INC (INCrement memory)
 Affects Flags: N Z
@@ -309,7 +308,7 @@ Affects Flags: N Z
 |Absolute|INC $4400|$EE|3|6|
 |Absolute,X|INC $4400,X|$FE|3|7|
 
-<A name=JMP></A>
+<a name=JMP></a>
 
 ## JMP (JuMP)
 Affects Flags: none
@@ -330,7 +329,7 @@ contains $50, the result of JMP ($30FF) will be a transfer of control to $4080
 rather than $5080 as you intended i.e. the 6502 took the low byte of the address
 from $30FF and the high byte from $3000.
 
-<A name=JSR></A>
+<a name=JSR></a>
 
 ## JSR (Jump to SubRoutine)
 Affects Flags: none
@@ -341,9 +340,9 @@ Affects Flags: none
 
 JSR pushes the address-1 of the next operation on to the stack before
 transferring program control to the following address. Subroutines are normally
-terminated by a <A href="#RTS">RTS</A> opcode.
+terminated by a <a href="#RTS">RTS</a> opcode.
 
-<A name=LDA></A>
+<a name=LDA></a>
 
 ## LDA (LoaD Accumulator)
 Affects Flags: N Z
@@ -361,7 +360,7 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=LDX></A>
+<a name=LDX></a>
 
 ## LDX (LoaD X register)
 Affects Flags: N Z
@@ -376,7 +375,7 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=LDY></A>
+<a name=LDY></a>
 
 ## LDY (LoaD Y register)
 Affects Flags: N Z
@@ -391,7 +390,7 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=LSR></A>
+<a name=LSR></a>
 
 ## LSR (Logical Shift Right)
 Affects Flags: N Z C
@@ -407,7 +406,7 @@ Affects Flags: N Z C
 LSR shifts all bits right one position. 0 is shifted into bit 7 and the
 original bit 0 is shifted into the Carry.
 
-<A name=WRAP></A>
+<a name=WRAP></a>
 
 ## Wrap-Around
 Use caution with indexed zero page operations as they are subject to
@@ -450,7 +449,7 @@ use of zero or zero page values will result in assembled code with zero page
 opcodes when you wanted absolute codes. With $FFFF, the problem is in
 addresses+1 as you wrap around to page 0.
 
-<A name=PC></A>
+<a name=PC></a>
 
 ## Program Counter
 
@@ -469,7 +468,7 @@ so, effectively the program counter points to the address that is 8 bytes beyond
 the address of the branch opcode; and a backward branch of $FA (256-6) goes to
 an address 4 bytes before the branch instruction.
 
-<A name=TIMES></A>
+<a name=TIMES></a>
 
 ## Execution Times
 Opcode execution times are measured in machine cycles; one machine cycle
@@ -477,7 +476,7 @@ equals one clock cycle. Many instructions require one extra cycle for
 execution if a page boundary is crossed; these are indicated by a + following
 the time values shown.
 
-<A name=NOP></A>
+<a name=NOP></a>
 
 ## NOP (No OPeration)
 Affects Flags: none
@@ -489,7 +488,7 @@ Affects Flags: none
 NOP is used to reserve space for future modifications or effectively REM
 out existing code.
 
-<A name=ORA></A>
+<a name=ORA></a>
 
 ## ORA (bitwise OR with Accumulator)
 Affects Flags: N Z
@@ -507,8 +506,8 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=TAX></A> <A name=TXA></A> <A name=TAY></A> <A name=TYA></A>
-<A name=INX></A> <A name=DEX></A> <A name=INY></A> <A name=DEY></A>
+<a name=TAX></a> <a name=TXA></a> <a name=TAY></a> <a name=TYA></a>
+<a name=INX></a> <a name=DEX></a> <a name=INY></a> <a name=DEY></a>
 
 ## Register Instructions
 Affect Flags: N Z
@@ -527,7 +526,7 @@ two machine cycles.
 |DEY (DEcrement Y)|$88|
 |INY (INcrement Y)|$C8|
 
-<A name=ROL></A>
+<a name=ROL></a>
 
 ## ROL (ROtate Left)
 Affects Flags: N Z C
@@ -543,7 +542,7 @@ Affects Flags: N Z C
 ROL shifts all bits left one position. The Carry is shifted into bit 0 and
 the original bit 7 is shifted into the Carry.
 
-<A name=ROR></A>
+<a name=ROR></a>
 
 ## ROR (ROtate Right)
 Affects Flags: N Z C
@@ -559,7 +558,7 @@ Affects Flags: N Z C
 ROR shifts all bits right one position. The Carry is shifted into bit 7
 and the original bit 0 is shifted into the Carry.
 
-<A name=RTI></A>
+<a name=RTI></a>
 
 ## RTI (ReTurn from Interrupt)
 Affects Flags: all
@@ -573,7 +572,7 @@ from the stack in that order (interrupts push the PC first and then the PSW).
 Note that unlike RTS, the return address on the stack is the actual address
 rather than the address-1.
 
-<A name=RTS></A>
+<a name=RTS></a>
 
 ## RTS (ReTurn from Subroutine)
 Affects Flags: none
@@ -584,7 +583,7 @@ Affects Flags: none
 
 RTS pulls the top two bytes off the stack (low byte first) and transfers
 program control to that address+1. It is used, as expected, to exit a subroutine
-invoked via <A href="#JSR">JSR</A> which
+invoked via <a href="#JSR">JSR</a> which
 pushed the address-1.
 
 RTS is frequently used to implement a jump table where addresses-1 are pushed
@@ -610,7 +609,7 @@ EXEC
  RTS
 </pre>
 
-<A name=SBC></A>
+<a name=SBC></a>
 
 ## SBC (SuBtract with Carry)
 Affects Flags: N V Z C
@@ -636,7 +635,7 @@ There is no way to subtract without the carry which works as an inverse
 borrow. i.e, to subtract you set the carry before the operation. If the carry is
 cleared by the operation, it indicates a borrow occurred.
 
-<A name=STA></A>
+<a name=STA></a>
 
 ## STA (STore Accumulator)
 Affects Flags: none
@@ -651,9 +650,8 @@ Affects Flags: none
 |Indirect,X|STA ($44,X)|$81|2|6|
 |Indirect,Y|STA ($44),Y|$91|2|6|
 
-<A name=TXS></A> <A name=TSX></A> <A name=PHA></A> <A
-name=PLA></A> <A name=PHP></A> <A name=PLP></A> <A
-name=STACK></A>
+<a name=TXS></a> <a name=TSX></a> <a name=PHA></a> <a name=PLA></a>
+<a name=PHP></a> <a name=PLP></a> <a name=STACK></a>
 
 ## Stack Instructions
 
@@ -671,7 +669,7 @@ other microprocessors. With the 6502, the stack is always on page one
 |PHP (PusH Processor status)|$08|3|
 |PLP (PuLl Processor status)|$28|4|
 
-<A name=STX></A>
+<a name=STX></a>
 
 ## STX (STore X register)
 Affects Flags: none
@@ -682,7 +680,7 @@ Affects Flags: none
 |Zero Page,Y|STX $44,Y|$96|2|4|
 |Absolute|STX $4400|$8E|3|4|
 
-<A name=STY></A>
+<a name=STY></a>
 
 ## STY (STore Y register)
 Affects Flags: none
@@ -695,7 +693,7 @@ Affects Flags: none
 
 # Illegal opcodes
 
-<A name=ALR></A>
+<a name=ALR></a>
 
 ## ALR, ASR (AND + LSR)
 Affects Flags: N Z C
@@ -707,7 +705,7 @@ Affects Flags: N Z C
 This opcode ANDs the contents of the A register with an immediate value and
 then LSRs the result.
 
-<A name=ANC></A>
+<a name=ANC></a>
 
 ## ANC (AND + ROL)
 Affects Flags: N Z C
@@ -722,7 +720,7 @@ moves bit 7 of A into the Carry flag. This opcode works basically
 identically to AND #immediate except that the Carry flag is set to the same
 state that the Negative flag is set to.
 
-<A name=ANE></A>
+<a name=ANE></a><a name=XAA></a>
 
 ## ANE, XAA
 <span class="badge badge-error">Instable</span>
@@ -746,7 +744,7 @@ value is $ff (both take the magic constant out of the equation)! (Or, more
 accurately, these are safe if all bits that could be 0 in A are 0 in either
 the immediate value or X or both.)
 
-<A name=ARR></A>
+<a name=ARR></a>
 
 ## ARR (AND + ROR)
 Affects Flags: N V (D) Z C
@@ -758,7 +756,7 @@ Affects Flags: N V (D) Z C
 This opcode ANDs the contents of the A register with an immediate value and
 then RORs the result.
 
-<A name=DCP></A>
+<a name=DCP></a><a name=DCM></a>
 
 ## DCP, DCM (DEC + CMP)
 Affects Flags: N Z C
@@ -776,7 +774,7 @@ Affects Flags: N Z C
 This opcode DECs the contents of a memory location and then CMPs the result
 with the A register.
 
-<A name=ISC></A><A name=ISB></A><A name=INS></A>
+<a name=ISC></a><a name=ISB></a><a name=INS></a>
 
 ## ISC, ISB, INS (SBC + INC)
 Affects Flags: N V (D) Z C
@@ -794,7 +792,7 @@ Affects Flags: N V (D) Z C
 This opcode INCs the contents of a memory location and then SBCs the result
 from the A register.
 
-<A name=LAS></A><A name=LAR></a>
+<a name=LAS></a><a name=LAR></a>
 
 ## LAS, LAR (TSX + TXA + AND + TAX + TXS)
 <span class="badge badge-warning">Unreliable</span>
@@ -811,7 +809,7 @@ register, and the stack pointer.
 
 Unreliability: LAS is called as 'probably unreliable'
 
-<A name=LAX></a>
+<a name=LAX></a>
 
 ## LAX (LDA + LDX)
 Affected flags: N Z
@@ -828,7 +826,10 @@ Affected flags: N Z
 This opcode loads both the accumulator and the X register with the contents
 of a memory location.
 
-## LAX immediate or ATX or LXA or OAL or ANX
+<a name=LAX_Imm></a><a name=ATX></a><a name=LXA></a><a name=OAL></a>
+<a name=ANX></a>
+
+## LAX immediate, ATX, LXA, OAL, ANX
 <span class="badge badge-error">Instable</span>
 
 Affected flags: N Z
@@ -840,16 +841,17 @@ Affected flags: N Z
 This opcode ORs the A register with CONST, ANDs the result with an immediate
 value, and then stores the result in both A and X.
 
-Instability: CONST is chip- and/or temperature
+Instability: CONST is chip and/or temperature
 dependent (common values may be $ee, $00, $ff,…). Some dependency on the RDY line.
 Bit 0 and Bit 4 are “weaker” than the other bits, and may
-drop to 0 in the first cycle of DMA when RDY goes low.<br>
+drop to 0 in the first cycle of DMA when RDY goes low.
+
 Do not use LAX #imm with any immediate value other than 0, or when the
 accumulator value is $ff (both take the magic constant out of the equation)!
 (Or, more accurately, these are safe if all bits that could be 0 in A are 0
 in the immediate value.)
 
-<A name=RLA></a>
+<a name=RLA></a>
 
 ## RLA (ROL + AND)
 Affected flags: N Z C
@@ -868,7 +870,7 @@ Rotate one bit left in memory, then AND accumulator with memory.
 * Carry is shifted in as LSB and bit 7 is shifted into Carry
 * N and Z are set according to the AND
 
-<A name=RRA></a>
+<a name=RRA></a>
 
 ## RRA (ROR + ADC)
 Affected flags: N V (D) Z C
@@ -888,7 +890,7 @@ Rotate one bit right in memory, then add memory to accumulator (with carry)
 bit 7 by the ROR
 * then all flags are set according to the ADC
 
-<A name=SAX></a>
+<a name=SAX></a><a name=AXS></a><a name=AAX></a>
 
 ## SAX, AXS, AAX (STA + STX)
 Affected flags: None
@@ -906,7 +908,7 @@ register) and stores the result in memory.
 Note that SAX does not affect any flags in the processor status register,
 and does not modify A/X. It would also not use the stack.
 
-<A name=SBX></a>
+<a name=SBX></a><a name=AXS></a><a name=SAX></a>
 
 ## SBX, AXS, SAX (CMP + DEX)
 Affected flags: N Z C
@@ -931,7 +933,7 @@ table lookups and arithmetic in a tight interrupt routine there's no need
 to clear the decimal flag in case you've got some code running that operates
 in decimal mode.
 
-<A name=SHA></a>
+<a name=SHA></a><a name=AHX></a><a name=AXA></a>
 
 ## SHA, AHX, AXA (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
@@ -953,7 +955,7 @@ Instability:
 of the target address is incremented by one (as expected), and then ANDed with
 (A & X).
 
-<A name=SHX></a>
+<a name=SHX></a><a name=SXA></a><a name=XAS></a>
 
 ## SHX, SXA, XAS (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
@@ -974,7 +976,7 @@ Instability:
 highbyte of the target address is incremented by one (as expected), and then
 ANDed with X.
 
-<A name=SHY></a>
+<a name=SHY></a><a name=SYA></a><a name=SAY></a>
 
 ## SHY, SYA, SAY (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
@@ -995,7 +997,7 @@ the 4th cycle.
 highbyte of the target address is incremented by one (as expected), and then
 ANDed with Y.
 
-<A name=SLO></a>
+<a name=SLO></a><a name=ASO></a>
 
 ## SLO, ASO (ASL + ORA)
 Affected flags: N Z C
@@ -1014,7 +1016,7 @@ Shift left one bit in memory, then OR accumulator with memory.
 * The leftmost bit is shifted into the carry flag
 * N and Z are set after the ORA
 
-<A name=SRE></a>
+<a name=SRE></a><a name=LSE></a>
 
 ## SRE, LSE (LSR + EOR)
 Affected flags: N Z C
@@ -1033,7 +1035,7 @@ Shift right one bit in memory, then EOR accumulator with memory.
 * LSB is shifted into the carry flag
 * N and Z are set after the EOR
 
-<A name=TAS></a>
+<a name=TAS></a><a name=XAS></a><a name=SHS></a>
 
 ## TAS, XAS, SHS (STA + TXS)
 <span class="badge badge-warning">Instable</span>
@@ -1056,9 +1058,9 @@ in the 4th cycle.
 highbyte of the target address is incremented by one (as expected), and then
 ANDed with (A & X).
 
-<A name=USBC></a>
+<a name=USBC></a><a name=USB></a>
 
-## USBC (SBC + NOP)
+## USBC, USB (SBC + NOP)
 Affected flags: N V (D) Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1066,4 +1068,4 @@ Affected flags: N V (D) Z C
 |Immediate  |USBC #$44  |$EB|2|2|
 
 Subtract immediate value from accumulator with carry. Same as the regular
-<A href="#SBC">SBC</A>.
+<a href="#SBC">SBC</a>.
