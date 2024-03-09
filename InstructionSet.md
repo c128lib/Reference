@@ -81,22 +81,22 @@ respectively in the value stored at the tested address.
 BIT is often used to skip one or two following bytes as in:
 
 <PRE>
-CLOSE1 LDX #$10   If entered here, we
-       .BYTE $2C  effectively perform
-CLOSE2 LDX #$20   a BIT test on $20A2,
-       .BYTE $2C  another one on $30A2,
-CLOSE3 LDX #$30   and end up with the X
-CLOSEX LDA #12    register still at $10
-       STA ICCOM,X upon arrival here.
+CLOSE1 LDX #$10     If entered here, we
+       .BYTE $2C    effectively perform
+CLOSE2 LDX #$20     a BIT test on $20A2,
+       .BYTE $2C    another one on $30A2,
+CLOSE3 LDX #$30     and end up with the X
+CLOSEX LDA #12      register still at $10
+       STA ICCOM,X  upon arrival here.
 </pre>
 
 Beware: a BIT instruction used in this way as a NOP does have effects: the flags
 may be modified, and the read of the absolute address, if it happens to access an
 I/O device, may cause an unwanted action.
 
-<A name=BCC></A> <A name=BCS></A> <A name=BEQ></A> <A
-name=BNE></A> <A name=BMI></A> <A name=BPL></A> <A
-name=BVC></A> <A name=BVS></A> <A name=BRA></A>
+<A name=BCC></A> <A name=BCS></A> <A name=BEQ></A> <A name=BNE></A>
+<A name=BMI></A> <A name=BPL></A> <A name=BVC></A> <A name=BVS></A>
+<A name=BRA></A>
 
 ## Branch Instructions
 Affects Flags: none
@@ -106,7 +106,7 @@ Displacement" or (better) "Bxx Label". See the notes on the <A
 href="#PC">Program Counter</A> for more on
 displacements.
 
-Branches are dependant on the status of the flag bits when the op code is
+Branches are dependant on the status of the flag bits when the opcode is
 encountered. A branch not taken requires two machine cycles. Add one if the
 branch is taken and add one more if the branch crosses a page boundary.
 
@@ -239,9 +239,9 @@ Affects Flags: N Z
 |Indirect,Y|EOR ($44),Y|$51|2|5+|
 
 \+ add 1 cycle if page boundary crossed
-<A name=CLC></A> <A name=SEC></A> <A name=CLD></A> <A
-name=SED></A> <A name=CLI></A> <A name=SEI></A> <A
-name=CLV></A>
+
+<A name=CLC></A> <A name=SEC></A> <A name=CLD></A> <A name=SED></A>
+<A name=CLI></A> <A name=SEI></A> <A name=CLV></A>
 
 ## Flag (Processor Status) Instructions
 Affect Flags: as noted
@@ -294,7 +294,7 @@ the overflow flag is 1 (+127 + +1 = +128), and after:
 
 the overflow flag is 0 (-127 + -1 = -128). The overflow flag is not
 affected by increments, decrements, shifts and logical operations i.e. only
-ADC, BIT, CLV, PLP, RTI and SBC affect it. There is no op code to set the
+ADC, BIT, CLV, PLP, RTI and SBC affect it. There is no opcode to set the
 overflow but a BIT test on an RTS instruction will do the trick.
 
 <A name=INC></A>
@@ -341,8 +341,7 @@ Affects Flags: none
 
 JSR pushes the address-1 of the next operation on to the stack before
 transferring program control to the following address. Subroutines are normally
-terminated by a <A href="#RTS">RTS</A> op
-code.
+terminated by a <A href="#RTS">RTS</A> opcode.
 
 <A name=LDA></A>
 
@@ -435,7 +434,7 @@ additional cycle). All of the ZeroPage,X and ZeroPage,Y instructions except
 STX ZeroPage,Y and STY ZeroPage,X have a corresponding Absolute,X and
 |Absolute,Y instruction. Unfortunately, a lot of 6502 assemblers don't have an
 easy way to force Absolute addressing, i.e. most will assemble a LDA $0080,X
-as B5 80.  One way to overcome this is to insert the bytes using the .BYTE
+as B5 80. One way to overcome this is to insert the bytes using the .BYTE
 pseudo-op (on some 6502 assemblers this pseudo-op is called DB or DFB,
 consult the assembler documentation) as follows:
 <pre>
@@ -456,7 +455,7 @@ addresses+1 as you wrap around to page 0.
 ## Program Counter
 
 When the 6502 is ready for the next instruction it increments the program
-counter before fetching the instruction. Once it has the op code, it increments
+counter before fetching the instruction. Once it has the opcode, it increments
 the program counter by the length of the operand, if any. This must be accounted
 for when calculating branches or when pushing bytes to create a false return
 address (i.e. jump table addresses are made up of addresses-1 when it is
@@ -473,7 +472,7 @@ an address 4 bytes before the branch instruction.
 <A name=TIMES></A>
 
 ## Execution Times
-Op code execution times are measured in machine cycles; one machine cycle
+Opcode execution times are measured in machine cycles; one machine cycle
 equals one clock cycle. Many instructions require one extra cycle for
 execution if a page boundary is crossed; these are indicated by a + following
 the time values shown.
@@ -508,9 +507,8 @@ Affects Flags: N Z
 
 \+ add 1 cycle if page boundary crossed
 
-<A name=TAX></A> <A name=TXA></A> <A name=TAY></A> <A
-name=TYA></A> <A name=INX></A> <A name=DEX></A> <A
-name=INY></A> <A name=DEY></A>
+<A name=TAX></A> <A name=TXA></A> <A name=TAY></A> <A name=TYA></A>
+<A name=INX></A> <A name=DEX></A> <A name=INY></A> <A name=DEY></A>
 
 ## Register Instructions
 Affect Flags: N Z
@@ -706,7 +704,7 @@ Affects Flags: N Z C
 |-|-|-|-|-|
 |Immediate|ALR #$44|$4B|2|2|
 
-This opcode ANDs the contents of the A register with an immediate value and 
+This opcode ANDs the contents of the A register with an immediate value and
 then LSRs the result.
 
 <A name=ANC></A>
@@ -719,15 +717,16 @@ Affects Flags: N Z C
 |Immediate|ANC #$44|$0B|2|2|
 |Immediate|ANC #$44|$2B|2|2|
 
-ANC ANDs the contents of the A register with an immediate value and then 
-moves bit 7 of A into the Carry flag. This opcode works basically 
-identically to AND #immediate except that the Carry flag is set to the same 
+ANC ANDs the contents of the A register with an immediate value and then
+moves bit 7 of A into the Carry flag. This opcode works basically
+identically to AND #immediate except that the Carry flag is set to the same
 state that the Negative flag is set to.
 
 <A name=ANE></A>
 
 ## ANE, XAA
 <span class="badge badge-error">Instable</span>
+
 Affects Flags: N Z
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -756,7 +755,7 @@ Affects Flags: N V (D) Z C
 |-|-|-|-|-|
 |Immediate|ARR #$44|$6B|2|2|
 
-This opcode ANDs the contents of the A register with an immediate value and 
+This opcode ANDs the contents of the A register with an immediate value and
 then RORs the result.
 
 <A name=DCP></A>
@@ -774,7 +773,7 @@ Affects Flags: N Z C
 |Indirect,X|DCP ($44,X)|$C3|2|8|
 |Indirect,Y|DCP ($44),Y|$D3|2|8|
 
-This opcode DECs the contents of a memory location and then CMPs the result 
+This opcode DECs the contents of a memory location and then CMPs the result
 with the A register.
 
 <A name=ISC></A><A name=ISB></A><A name=INS></A>
@@ -792,7 +791,7 @@ Affects Flags: N V (D) Z C
 |Indirect,X|ISC ($44,X)|$FF|2|8|
 |Indirect,Y|ISC ($44),Y|$FB|2|8|
 
-This opcode INCs the contents of a memory location and then SBCs the result 
+This opcode INCs the contents of a memory location and then SBCs the result
 from the A register.
 
 <A name=LAS></A><A name=LAR></a>
@@ -806,9 +805,9 @@ Affects Flags: N Z
 |-|-|-|-|-|
 |Absolute,Y|LAS $4400,Y|$BB|3|4+|
 
-This opcode ANDs the contents of a memory location with the contents of the 
-stack pointer register and stores the result in the accumulator, the X 
-register, and the stack pointer.  
+This opcode ANDs the contents of a memory location with the contents of the
+stack pointer register and stores the result in the accumulator, the X
+register, and the stack pointer.
 
 Unreliability: LAS is called as 'probably unreliable'
 
@@ -826,7 +825,7 @@ Affected flags: N Z
 |Indirect,X|LAX ($44,X)|$AF|2|6|
 |Indirect,Y|LAX ($44),Y|$BF|2|5+|
 
-This opcode loads both the accumulator and the X register with the contents 
+This opcode loads both the accumulator and the X register with the contents
 of a memory location.
 
 ## LAX immediate or ATX or LXA or OAL or ANX
@@ -841,8 +840,8 @@ Affected flags: N Z
 This opcode ORs the A register with CONST, ANDs the result with an immediate
 value, and then stores the result in both A and X.
 
-Instability: CONST is chip- and/or temperature 
-dependent (common values may be $ee, $00, $ff,…). Some dependency on the RDY line. 
+Instability: CONST is chip- and/or temperature
+dependent (common values may be $ee, $00, $ff,…). Some dependency on the RDY line.
 Bit 0 and Bit 4 are “weaker” than the other bits, and may
 drop to 0 in the first cycle of DMA when RDY goes low.<br>
 Do not use LAX #imm with any immediate value other than 0, or when the
@@ -885,7 +884,7 @@ Affected flags: N V (D) Z C
 |Indirect,Y |RRA ($44),Y|$73|2|8|
 
 Rotate one bit right in memory, then add memory to accumulator (with carry)
-* Bit 1 is shifted out into the carry flag and Carry flag is shifted into 
+* Bit 1 is shifted out into the carry flag and Carry flag is shifted into
 bit 7 by the ROR
 * then all flags are set according to the ADC
 
@@ -917,9 +916,9 @@ Affected flags: N Z C
 |Immediate  |SBX #$44   |$CB|2|2|
 
 SBX ANDs the contents of the A and X registers (leaving the contents of A intact),
-subtracts an immediate value, and then stores the result in X. 
+subtracts an immediate value, and then stores the result in X.
 It actually works just like the CMP instruction, except
-that CMP does not store the result of the subtraction it performs in any register. 
+that CMP does not store the result of the subtraction it performs in any register.
 
 * This subtract operation is not affected by the state of the Carry flag,
 though it does affect the Carry flag. It does not affect the Overflow flag.
@@ -974,7 +973,7 @@ Instability:
 * When adding Y to the target address causes a page boundary crossing, the
 highbyte of the target address is incremented by one (as expected), and then
 ANDed with X.
- 
+
 <A name=SHY></a>
 
 ## SHY, SYA, SAY (STA + STX + STY)
@@ -1066,4 +1065,5 @@ Affected flags: N V (D) Z C
 |-|-|-|-|-|
 |Immediate  |USBC #$44  |$EB|2|2|
 
-Subtract immediate value from accumulator with carry. Same as the regular SBC.
+Subtract immediate value from accumulator with carry. Same as the regular
+<A href="#SBC">SBC</A>.
