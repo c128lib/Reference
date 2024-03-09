@@ -5,8 +5,7 @@
   font-size: 90%;
   font-weight: 600;
   line-height: 1;
-  text-align: center;
-  white-space: nowrap;
+  text-align: left;
   vertical-align: baseline;
   border-radius: 0.25rem;
   transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -18,6 +17,14 @@
 .badge-info {
   color: #fafafa;
   background-color: #1788b8;
+}
+.badge-warning {
+  color: #fafafa;
+  background-color: #ff8c00;
+}
+.badge-error {
+  color: #fafafa;
+  background-color: #E03333;
 }
 .sticky-tooltip {
   border-radius: 5px;

@@ -3,6 +3,8 @@ layout: default
 title: Instruction set
 ---
 
+# Opcodes list
+
 <A name=ADC></A>
 
 ## ADC (ADd with Carry)
@@ -692,3 +694,376 @@ Affects Flags: none
 |Zero Page|STY $44|$84|2|3|
 |Zero Page,X|STY $44,X|$94|2|4|
 |Absolute|STY $4400|$8C|3|4|
+
+# Illegal opcodes
+
+<A name=ALR></A>
+
+## ALR, ASR (AND + LSR)
+Affects Flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate|ALR #$44|$4B|2|2|
+
+This opcode ANDs the contents of the A register with an immediate value and 
+then LSRs the result.
+
+<A name=ANC></A>
+
+## ANC (AND + ROL)
+Affects Flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate|ANC #$44|$0B|2|2|
+|Immediate|ANC #$44|$2B|2|2|
+
+ANC ANDs the contents of the A register with an immediate value and then 
+moves bit 7 of A into the Carry flag. This opcode works basically 
+identically to AND #immediate except that the Carry flag is set to the same 
+state that the Negative flag is set to.
+
+<A name=ANE></A>
+
+## ANE, XAA
+<span class="badge badge-error">Instable</span>
+Affects Flags: N Z
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate|ANE #$44|$8B|2|2|
+
+This opcode ORs the A register with CONST, ANDs the result with X. ANDs the result
+with an immediate value, and then stores the result in A.
+
+Instability:
+CONST is chip- and/or temperature
+dependent (common values may be $ee, $00, $ff …). Some dependency on the RDY line.
+Bit 0 and Bit 4 are “weaker” than the other bits, and may drop to 0 in the
+first cycle of DMA when RDY goes low.<br>
+Do not use ANE with any immediate value other than 0, or when the accumulator
+value is $ff (both take the magic constant out of the equation)! (Or, more
+accurately, these are safe if all bits that could be 0 in A are 0 in either
+the immediate value or X or both.)
+
+<A name=ARR></A>
+
+## ARR (AND + ROR)
+Affects Flags: N V (D) Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate|ARR #$44|$6B|2|2|
+
+This opcode ANDs the contents of the A register with an immediate value and 
+then RORs the result.
+
+<A name=DCP></A>
+
+## DCP, DCM (DEC + CMP)
+Affects Flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page|DCP $44|$C7|2|5|
+|Zero Page,X|DCP $44,X|$D7|2|6|
+|Absolute|DCP $4400|$CF|3|6|
+|Absolute,X|DCP $4400,X|$DF|3|7|
+|Absolute,Y|DCP $4400,Y|$DB|3|7|
+|Indirect,X|DCP ($44,X)|$C3|2|8|
+|Indirect,Y|DCP ($44),Y|$D3|2|8|
+
+This opcode DECs the contents of a memory location and then CMPs the result 
+with the A register.
+
+<A name=ISC></A><A name=ISB></A><A name=INS></A>
+
+## ISC, ISB, INS (SBC + INC)
+Affects Flags: N V (D) Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page|ISC $44|$E7|2|5|
+|Zero Page,X|ISC $44,X|$F7|2|6|
+|Absolute|ISC $4400|$E3|3|6|
+|Absolute,X|ISC $4400,X|$F3|3|7|
+|Absolute,Y|ISC $4400,Y|$EF|3|7|
+|Indirect,X|ISC ($44,X)|$FF|2|8|
+|Indirect,Y|ISC ($44),Y|$FB|2|8|
+
+This opcode INCs the contents of a memory location and then SBCs the result 
+from the A register.
+
+<A name=LAS></A><A name=LAR></a>
+
+## LAS, LAR (TSX + TXA + AND + TAX + TXS)
+<span class="badge badge-warning">Unreliable</span>
+
+Affects Flags: N Z
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Absolute,Y|LAS $4400,Y|$BB|3|4+|
+
+This opcode ANDs the contents of a memory location with the contents of the 
+stack pointer register and stores the result in the accumulator, the X 
+register, and the stack pointer.  
+
+Unreliability: LAS is called as 'probably unreliable'
+
+<A name=LAX></a>
+
+## LAX (LDA + LDX)
+Affected flags: N Z
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page|LAX $44|$A7|2|3|
+|Zero Page,Y|LAX $44,X|$B7|2|4|
+|Absolute|LAX $4400|$A3|3|4|
+|Absolute,Y|LAX $4400,Y|$B3|3|4+|
+|Indirect,X|LAX ($44,X)|$AF|2|6|
+|Indirect,Y|LAX ($44),Y|$BF|2|5+|
+
+This opcode loads both the accumulator and the X register with the contents 
+of a memory location.
+
+## LAX immediate or ATX or LXA or OAL or ANX
+<span class="badge badge-error">Instable</span>
+
+Affected flags: N Z
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate|LAX #$44|$AB|2|2|
+
+This opcode ORs the A register with CONST, ANDs the result with an immediate
+value, and then stores the result in both A and X.
+
+Instability: CONST is chip- and/or temperature 
+dependent (common values may be $ee, $00, $ff,…). Some dependency on the RDY line. 
+Bit 0 and Bit 4 are “weaker” than the other bits, and may
+drop to 0 in the first cycle of DMA when RDY goes low.<br>
+Do not use LAX #imm with any immediate value other than 0, or when the
+accumulator value is $ff (both take the magic constant out of the equation)!
+(Or, more accurately, these are safe if all bits that could be 0 in A are 0
+in the immediate value.)
+
+<A name=RLA></a>
+
+## RLA (ROL + AND)
+Affected flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page  |RLA $44    |$27|2|5|
+|Zero Page,X|RLA $44,X  |$37|2|6|
+|Absolute   |RLA $4400  |$2F|3|6|
+|Absolute,X |RLA $4400,Y|$3F|3|7|
+|Absolute,Y |RLA $4400,Y|$3B|3|7|
+|Indirect,X |RLA ($44,X)|$23|2|8|
+|Indirect,Y |RLA ($44),Y|$33|2|8|
+
+Rotate one bit left in memory, then AND accumulator with memory.
+* Carry is shifted in as LSB and bit 7 is shifted into Carry
+* N and Z are set according to the AND
+
+<A name=RRA></a>
+
+## RRA (ROR + ADC)
+Affected flags: N V (D) Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page  |RRA $44    |$67|2|5|
+|Zero Page,X|RRA $44,X  |$77|2|6|
+|Absolute   |RRA $4400  |$6F|3|6|
+|Absolute,X |RRA $4400,Y|$7F|3|7|
+|Absolute,Y |RRA $4400,Y|$7B|3|7|
+|Indirect,X |RRA ($44,X)|$63|2|8|
+|Indirect,Y |RRA ($44),Y|$73|2|8|
+
+Rotate one bit right in memory, then add memory to accumulator (with carry)
+* Bit 1 is shifted out into the carry flag and Carry flag is shifted into 
+bit 7 by the ROR
+* then all flags are set according to the ADC
+
+<A name=SAX></a>
+
+## SAX, AXS, AAX (STA + STX)
+Affected flags: None
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page  |SAX $44    |$87|2|3|
+|Zero Page,Y|SAX $44,X  |$97|2|4|
+|Absolute   |SAX $4400  |$8F|3|4|
+|Indirect,X |SAX ($44,X)|$83|2|6|
+
+AND the contents of the A and X registers (without changing the contents of either
+register) and stores the result in memory.
+
+Note that SAX does not affect any flags in the processor status register,
+and does not modify A/X. It would also not use the stack.
+
+<A name=SBX></a>
+
+## SBX, AXS, SAX (CMP + DEX)
+Affected flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate  |SBX #$44   |$CB|2|2|
+
+SBX ANDs the contents of the A and X registers (leaving the contents of A intact),
+subtracts an immediate value, and then stores the result in X. 
+It actually works just like the CMP instruction, except
+that CMP does not store the result of the subtraction it performs in any register. 
+
+* This subtract operation is not affected by the state of the Carry flag,
+though it does affect the Carry flag. It does not affect the Overflow flag.
+(Flags are set like with CMP, not SBC)
+* N and Z are set according to the value ending up in X
+
+Another property of this opcode is that it doesn't respect the decimal mode,
+since it is derived from CMP rather than SBC. So if you need to perform
+table lookups and arithmetic in a tight interrupt routine there's no need
+to clear the decimal flag in case you've got some code running that operates
+in decimal mode.
+
+<A name=SHA></a>
+
+## SHA, AHX, AXA (STA + STX + STY)
+<span class="badge badge-warning">Instable</span>
+
+Affected flags: None
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Indirect,Y |SHA ($44),Y|$93|2|6|
+|Absolute,Y |SHA $4400,Y|$9F|3|5|
+
+This opcode stores the result of A AND X AND the high byte of the target address of
+the operand +1 in memory.
+
+Instability:
+* The value written is ANDed with &{H+1}, except when the RDY line goes low
+ in the 4th (opcode $9f) or 5th (opcode $93) cycle.
+* When adding Y to the target address causes a page boundary crossing, the highbyte
+of the target address is incremented by one (as expected), and then ANDed with
+(A & X).
+
+<A name=SHX></a>
+
+## SHX, SXA, XAS (STA + STX + STY)
+<span class="badge badge-warning">Instable</span>
+
+Affected flags: None
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Absolute,Y |SHX $4400,Y|$9E|3|5|
+
+AND X register with the high byte of the target address of the argument + 1. Store the
+result in memory.
+
+Instability:
+* The value written is ANDed with &{H+1}, except when the RDY line goes low
+ in the 4th cycle.
+* When adding Y to the target address causes a page boundary crossing, the
+highbyte of the target address is incremented by one (as expected), and then
+ANDed with X.
+ 
+<A name=SHY></a>
+
+## SHY, SYA, SAY (STA + STX + STY)
+<span class="badge badge-warning">Instable</span>
+
+Affected flags: None
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Absolute,X |SHY $4400,Y|$9C|3|5|
+
+AND Y register with the high byte of the target address of the argument + 1.
+Store the result in memory.
+
+Instability:
+* The value written is ANDed with &{H+1}, except when the RDY line goes low in
+the 4th cycle.
+* When adding X to the target address causes a page boundary crossing, the
+highbyte of the target address is incremented by one (as expected), and then
+ANDed with Y.
+
+<A name=SLO></a>
+
+## SLO, ASO (ASL + ORA)
+Affected flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page  |SLO $44    |$87|2|5|
+|Zero Page,X|SLO $44,X  |$17|2|6|
+|Absolute   |SLO $4400  |$0F|3|6|
+|Absolute,X |SLO $4400,Y|$1F|3|7|
+|Absolute,Y |SLO $4400,Y|$1B|3|7|
+|Indirect,X |SLO ($44,X)|$03|2|8|
+|Indirect,Y |SLO ($44),Y|$13|2|8|
+
+Shift left one bit in memory, then OR accumulator with memory.
+* The leftmost bit is shifted into the carry flag
+* N and Z are set after the ORA
+
+<A name=SRE></a>
+
+## SRE, LSE (LSR + EOR)
+Affected flags: N Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Zero Page  |SRE $44    |$47|2|5|
+|Zero Page,X|SRE $44,X  |$57|2|6|
+|Absolute   |SRE $4400  |$4F|3|6|
+|Absolute,X |SRE $4400,Y|$5F|3|7|
+|Absolute,Y |SRE $4400,Y|$5B|3|7|
+|Indirect,X |SRE ($44,X)|$43|2|8|
+|Indirect,Y |SRE ($44),Y|$53|2|8|
+
+Shift right one bit in memory, then EOR accumulator with memory.
+* LSB is shifted into the carry flag
+* N and Z are set after the EOR
+
+<A name=TAS></a>
+
+## TAS, XAS, SHS (STA + TXS)
+<span class="badge badge-warning">Instable</span>
+
+Affected flags: None
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Absolute,Y |TAS $4400,Y|$9B|3|5|
+
+This opcode ANDs the contents of the A and X registers (without changing the contents
+of either register) and transfers the result to the stack pointer. It then ANDs
+that result with the contents of the high byte of the target address of the
+operand +1 and stores that final result in memory.
+
+Instabilities:
+* The value written is ANDed with &{H+1}, except when the RDY line goes low
+in the 4th cycle.
+* When adding Y to the target address causes a page boundary crossing, the
+highbyte of the target address is incremented by one (as expected), and then
+ANDed with (A & X).
+
+<A name=USBC></a>
+
+## USBC (SBC + NOP)
+Affected flags: N V (D) Z C
+
+|Mode|Syntax|Hex|Length|Cycle|
+|-|-|-|-|-|
+|Immediate  |USBC #$44  |$EB|2|2|
+
+Subtract immediate value from accumulator with carry. Same as the regular SBC.
