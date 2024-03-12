@@ -21,9 +21,9 @@ Affects Flags: N V Z C
 |Indirect,X|ADC ($44,X)|$61|2|6|
 |Indirect,Y|ADC ($44),Y|$71|2|5+|
 
-+ add 1 cycle if page boundary crossed
+\+ add 1 cycle if page boundary crossed
 
-ADC results are dependant on the setting of the <a href="#DFLAG">decimal flag</a>. 
+ADC results are dependant on the setting of the <a href="#DFLAG">decimal flag</a>.
 In decimal mode, addition is carried out on the assumption that the values
 involved are packed BCD (Binary Coded Decimal).
 
@@ -738,7 +738,8 @@ Instability:
 CONST is chip- and/or temperature
 dependent (common values may be $ee, $00, $ff …). Some dependency on the RDY line.
 Bit 0 and Bit 4 are “weaker” than the other bits, and may drop to 0 in the
-first cycle of DMA when RDY goes low.<br>
+first cycle of DMA when RDY goes low.
+
 Do not use ANE with any immediate value other than 0, or when the accumulator
 value is $ff (both take the magic constant out of the equation)! (Or, more
 accurately, these are safe if all bits that could be 0 in A are 0 in either
@@ -747,7 +748,7 @@ the immediate value or X or both.)
 <a name=ARR></a>
 
 ## ARR (AND + ROR)
-Affects Flags: N V (D) Z C
+Affects Flags: N V Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -777,7 +778,7 @@ with the A register.
 <a name=ISC></a><a name=ISB></a><a name=INS></a>
 
 ## ISC, ISB, INS (SBC + INC)
-Affects Flags: N V (D) Z C
+Affects Flags: N V Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -873,20 +874,20 @@ Rotate one bit left in memory, then AND accumulator with memory.
 <a name=RRA></a>
 
 ## RRA (ROR + ADC)
-Affected flags: N V (D) Z C
+Affected flags: N V Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Zero Page  |RRA $44    |$67|2|5|
 |Zero Page,X|RRA $44,X  |$77|2|6|
 |Absolute   |RRA $4400  |$6F|3|6|
-|Absolute,X |RRA $4400,Y|$7F|3|7|
+|Absolute,X |RRA $4400,X|$7F|3|7|
 |Absolute,Y |RRA $4400,Y|$7B|3|7|
 |Indirect,X |RRA ($44,X)|$63|2|8|
 |Indirect,Y |RRA ($44),Y|$73|2|8|
 
 Rotate one bit right in memory, then add memory to accumulator (with carry)
-* Bit 1 is shifted out into the carry flag and Carry flag is shifted into
+* Bit 0 is shifted out into the carry flag and carry flag is shifted into
 bit 7 by the ROR
 * then all flags are set according to the ADC
 
@@ -1061,7 +1062,7 @@ ANDed with (A & X).
 <a name=USBC></a><a name=USB></a>
 
 ## USBC, USB (SBC + NOP)
-Affected flags: N V (D) Z C
+Affected flags: N V Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
