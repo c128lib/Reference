@@ -748,7 +748,7 @@ the immediate value or X or both.)
 <a name=ARR></a>
 
 ## ARR (AND + ROR)
-Affects Flags: N V Z C
+Affects Flags: N Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -784,11 +784,11 @@ Affects Flags: N V Z C
 |-|-|-|-|-|
 |Zero Page|ISC $44|$E7|2|5|
 |Zero Page,X|ISC $44,X|$F7|2|6|
-|Absolute|ISC $4400|$E3|3|6|
-|Absolute,X|ISC $4400,X|$F3|3|7|
-|Absolute,Y|ISC $4400,Y|$EF|3|7|
-|Indirect,X|ISC ($44,X)|$FF|2|8|
-|Indirect,Y|ISC ($44),Y|$FB|2|8|
+|Absolute|ISC $4400|$EF|3|6|
+|Absolute,X|ISC $4400,X|$FF|3|7|
+|Absolute,Y|ISC $4400,Y|$FB|3|7|
+|Indirect,X|ISC ($44,X)|$E3|2|8|
+|Indirect,Y|ISC ($44),Y|$F3|2|8|
 
 This opcode INCs the contents of a memory location and then SBCs the result
 from the A register.
@@ -819,10 +819,10 @@ Affected flags: N Z
 |-|-|-|-|-|
 |Zero Page|LAX $44|$A7|2|3|
 |Zero Page,Y|LAX $44,X|$B7|2|4|
-|Absolute|LAX $4400|$A3|3|4|
-|Absolute,Y|LAX $4400,Y|$B3|3|4+|
-|Indirect,X|LAX ($44,X)|$AF|2|6|
-|Indirect,Y|LAX ($44),Y|$BF|2|5+|
+|Absolute|LAX $4400|$AF|3|4|
+|Absolute,Y|LAX $4400,Y|$BF|3|4+|
+|Indirect,X|LAX ($44,X)|$A3|2|6|
+|Indirect,Y|LAX ($44),Y|$B3|2|5+|
 
 This opcode loads both the accumulator and the X register with the contents
 of a memory location.
