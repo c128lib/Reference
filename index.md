@@ -7,10 +7,12 @@ title: Index
 ## Index
 
 ### Memory map
+* [Startup sequence](StartupSequence) (wip - need more information)
 * [Memory map and layout](MemoryMap)
 
 ### Instruction set
 * [Instruction set details](InstructionSet)
+<!--* [Opcode layout](OpcodeLayout)-->
 
 ### Components
 * [CIA (Complex Interface Adapter)](Cia)
