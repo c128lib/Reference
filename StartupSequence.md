@@ -3,6 +3,8 @@ layout: default
 title: Startup sequence
 ---
 
+# Startup sequence
+
 When you first turn on power, the Z80 microprocessor has control before the 8502 is
 allowed to take over. 
 The initialization steps performed by the Z80 include copying two routines into block
@@ -12,8 +14,7 @@ control to the Z80; the other, at 65504-65519/$FFE0-$FFEF, is a Z80 machine lang
 routine to surrender control to the 8502.
 
 If the Z80 reset routine does
-not find a CP/M boot disk in the drive (or a Commodore 64
-cartridge or the Commodore key held down), it jumps to a
+not find a Commodore 64 cartridge or the Commodore key held down, it jumps to a
 routine it has copied into 65504/$FFE0 in block 0 RAM. That
 routine ends by setting bit 0 of $D505 to %1 to return control to the
 8502 for 128 mode. 
@@ -31,7 +32,7 @@ START always receives control and immediately performs the following actions:
 7. SECURE: Check and initialize the SYSTEM vector.
 8. [POLL](#POLL): Check for a ROM cartridge. 
 
-## POLL <a name="POLL"></a>
+### POLL <a name="POLL"></a>
 POLL first scans for any installed C64 cartridges. They are recognized by
 either the GAME or EXROM signal being pulled low. If so, GO64 is executed
 (see the Kernal jump entry for details). Polling for C64 cartridges is actually
@@ -132,10 +133,96 @@ disk.
 
 TODO: what happens before this?
 
-<pre>
-E263: A9 F7     LDA #$F7
-E265: 8D 05 D5  STA $D505
-E268: 6C FC FF  JMP ($FFFC) // FFFC contains FF3D
+Z80 is in control now.
+
+<!--
+0000 3e3e       LD    a,3eh
+0002 3200ff     LD    (0ff00h),a  // Set MMU to 3E
+0005 c33b00     JP    003bh
+
+003b 012fd0     LD    bc,0d02fh
+003e 11fcff    LD      de,0fffch  // Load Reset vector to de
+0041 ed51      OUT     (c),d
+0043 03        inc     bc
+0044 ed59      OUT     (c),e      // Value of reset vector is written to port c
+0046 0105d5    LD      bc,0d505h  // Load MMUMCR to bc
+0049 3eb0      LD      a,0b0h     // Load b0 to a
+004b ed79      OUT     (c),a      
+004d ed78      in      a,(c)
+004f 2f        cpl
+0050 e630      and     30h
+-->
+
+``` Assembly
+007C: 21 b4 0f    LD      hl,0fb4h      // Copies from $0fb4 (-11)
+007F: 01 0a d5    LD      bc,0d50ah     // to $d50a (-11)
+0082: 16 0b       LD      d,0bh         // $0b (11) bytes
+0084: 7e          LD      a,(hl)        // (It's a decrement copy)
+0085: ed 79       OUT     (c),a
+0087: 2b          DEC     hl
+0088: 0d          DEC     c
+0089: 15          DEC     d
+008A: 20 f8       JR      nz,1084h
+
+008C: 21 1a 0d    LD      hl,0d1ah      // Copies from $0d1a
+008F: 11 00 11    LD      de,1100h      // to $1100
+0092: 01 08 00    LD      bc,0008h      // $08 bytes
+0095: ed b0       LDIR   
+
+0097: 21 e5 0e    LD      hl,0EE5h      // Copies from $0ee5
+009A: 11 d0 ff    LD      de,0FFD0h     // to $ffd0 
+009D: 01 1f 00    LD      bc,001Fh      // $1f (31) bytes
+00A0: ed b0       LDIR                  // This is the copy of z80 and 8502
+                                        // surrender routine from kernal to memory
+
+00A2: 21 00 11    LD      hl,1100h
+00A5: 22 fa ff    LD      (0FFFAh),hl
+00A8: 22 fc ff    LD      (0FFFCh),hl
+00AB: 22 fe ff    LD      (0FFFEh),hl
+00AE: 22 dd ff    LD      (0FFDDh),hl
+00B1: c3 e0 ff    JP      0FFE0h        // Jump to z80 surrender to 8502 cpu
+
+// Data values used in routine at 108c
+0D1A: a9 00       LDA #$00
+0D1C: 8d 00 ff    STA $FF00 
+0D1F: 6c fc ff    JMP ($FFFC)
+
+// Data values used in routine at 1097 (8502 and z80 surrender routines)
+0EE5: 78          SEI
+0EE6: a9 b0       LDA #$B0
+0EE8: 8d 05 d5    STA $D505
+0EEB: ea          NOP
+0EEC: 4c 00 30    JMP $3000
+0EEF: ea          NOP
+0EF0: f3          DI 
+0EF1: 3e 3e       LD  a,3eh
+0EF3: 32 00 ff    LD  (0ff00h),a
+0EF6: 01 05 d5    LD  bc,0d505h
+0EF9: 3e b1       LD  a,0b1h
+0EFB: ed 79       OUT (c),a
+0EFD: 00          NOP     
+0EFE: cf          RST 08h
+
+// Data values used in routine at 107c (MMU init values)
+0FAA: 3f // $D500
+0FAB: 3f // $D501
+0FAC: 7f // $D502
+0FAD: 3e // $D503
+0FAE: 7e // $D504
+0FAF: b0 // $D505
+0FB0: 0b // $D506
+0FB1: 00 // $D507
+0FB2: 00 // $D508
+0FB3: 01 // $D509
+0FB4: 00 // $D50A
+```
+
+From this point, 8502 is in control.
+
+``` Assembly
+1100: A9 F7     LDA #$F7
+1102: 8D 05 D5  STA $D505
+1105: 6C FC FF  JMP ($FFFC) // FFFC contains FF3D
 
 FF3D: A9 00     LDA #$00
 FF3F: 8D 00 FF  STA $FF00   // Set bank 15
@@ -195,7 +282,7 @@ E048: 4C 4B E2  JMP $E24B   // Switch to C64 mode
 4042: 4C 1C 40  JMP $401C
 
 401C: 58        CLI
-401D: 4C 37 4D	JMP $4D37	  // Error or Ready
+401D: 4C 37 4D	JMP $4D37   // Error or Ready
 
 4D37: A2 80     LDX #$80
 4D39: 2C        .BYTE $2C   // Means BIT $10A2
@@ -214,4 +301,4 @@ E048: 4C 4B E2  JMP $E24B   // Switch to C64 mode
 
 4DC3: 6C 02 03	JMP ($0302) // BASIC Warm Start Link (0302 contains $4DC6)
 
-</pre>
+```
