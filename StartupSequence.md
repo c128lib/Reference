@@ -216,22 +216,21 @@ Z80 is in control now.
 007C: 21 b4 0f    LD      hl,0FB4h      // Copies from $0fb4 (-11)
 007F: 01 0a d5    LD      bc,0D50Ah     // to $d50a (-11)
 0082: 16 0b       LD      d,0Bh         // $0b (11) bytes
-0084: 7e          LD      a,(hl)        // (It's a decrement copy)
-0085: ed 79       OUT     (c),a
+0084: 7e          LD      a,(hl)        // It's a decrement copy
+0085: ed 79       OUT     (c),a         // for Mmu init
 0087: 2b          DEC     hl
 0088: 0d          DEC     c
 0089: 15          DEC     d
-008A: 20 f8       JR      nz,1084h
+008A: 20 f8       JR      nz,0084h
 
 008C: 21 1a 0d    LD      hl,0D1Ah      // Copies from $0d1a
 008F: 11 00 11    LD      de,1100h      // to $1100
 0092: 01 08 00    LD      bc,0008h      // $08 bytes
 0095: ed b0       LDIR
-
 0097: 21 e5 0e    LD      hl,0EE5h      // Copies from $0ee5
 009A: 11 d0 ff    LD      de,0FFD0h     // to $ffd0
 009D: 01 1f 00    LD      bc,001Fh      // $1f (31) bytes
-00A0: ed b0       LDIR                  // This is the copy of z80 and 8502
+00A0: ed b0       LDIR                  // These are the copy of z80 and 8502
                                         // surrender routine from kernal to memory
 
 00A2: 21 00 11    LD      hl,1100h
@@ -278,12 +277,12 @@ Z80 is in control now.
 
 From this point, 8502 is in control.
 
-8502 is starting for the first time so he sets program counter to
+8502 is starting for the first time so program counter is set to
 <pre>
 .PC = $FFFD * 256 + $FFFC
 </pre>
 
-So, z80 sets location $FFFC to $1100 in ram which is visible during z80 surrender.
+Z80 sets location $FFFC to $1100 in ram which is visible during z80 surrender.
 When 8502 starts by checking $FFFC, will start from $1100, set bank 15
 (activating Kernal rom) and then proceed to RESET routine.
 
