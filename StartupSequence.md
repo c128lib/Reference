@@ -5,6 +5,8 @@ title: Startup sequence
 
 # Startup sequence
 
+## Operations summary
+
 When you first turn on power, the Z80 microprocessor has control before the 8502 is
 allowed to take over.
 The initialization steps performed by the Z80 include copying two routines into block
@@ -16,10 +18,10 @@ routine to surrender control to the 8502.
 If the Z80 reset routine does
 not find a Commodore 64 cartridge or the Commodore key held down, it jumps to a
 routine it has copied into 65504/$FFE0 in block 0 RAM. That
-routine ends by setting bit 0 of $D505 to %1 to return control to the
+routine ends by setting bit 0 of [$D505](D500#D505) to %1 to return control to the
 8502 for 128 mode.
 
-TODO: where is code for this and other operations before 8502 wakes up
+TODO: summary operation before 8502 start working
 
 When the 8502 finally starts after a reset, the Kernal initialization routine
 START always receives control and immediately performs the following actions:
@@ -82,7 +84,7 @@ The balance of the C128 initialization is:
 IOINIT is perhaps the major function of the Reset handler. It initializes both CIA's
 (timers, keyboard, serial port, user port, cassette) and the 8502 port (keyboard,
 cassette, VIC bank). It distinguishes a PAL system from an NTSC one and sets
-PALCNT ($A03) if PAL. The VIC, SID and 8563 devices are initialized, including
+PALCNT ([$0A03](0A00#0A03)) if PAL. The VIC, SID and 8563 devices are initialized, including
 the downloading of character definitions to 8563 display RAM (if necessary). The
 system 60Hz IRQ source (the VIC raster) is started. IOINIT is callable by the user
 via the jump table.
@@ -101,7 +103,7 @@ skipped. Only if the STOP key is depressed and this was a "warm" reset
 RAMTAS clears all page-zero RAM, allocates the cassette and RS-232
 buffers, sets pointers to the top and bottom of system RAM (RAM-0), and
 installs the [SYSTEM_VECTOR](0A00#0A00) that points to BASIC cold
-start ($4000). Lastly it sets a flag, [DEJAVU](0A00#0A02) ($A02), to indicate
+start ([$4000](4000#4000)). Lastly it sets a flag, [DEJAVU](0A00#0A02) ($A02), to indicate
 to other routines
 that system RAM has been initialized. This is the difference between a "cold"
 and a "warm" system. If DEJAVU contains $A5, the system is "warm" and
@@ -189,33 +191,33 @@ Z80 is in control now.
 0050: e6 30       AND     30h
 0052: 28 05       JR      z,0059h
 
-0054: 3e f1       LD      a,0F1h
+0054: 3e f1       LD      a,0F1h        // TODO: check this
 0056: ed 79       OUT     (c),a
 0058: c7          RST     00h
 0059: 01 0f dc    LD      bc,0DC0Fh
-005c: 3e 08       LD      a,08h
-005e: ed 79       OUT     (c),a
-0060: 0d          DEC     c
-0061: ed 79       OUT     (c),a
-0063: 0e 03       LD      c,03h
+005C: 3e 08       LD      a,08h
+005E: ed 79       OUT     (c),a
+0060: 0d          DEC     c             // Set D1CRA and D1CRB timer to
+0061: ed 79       OUT     (c),a         // one-shot mode
+0063: 0e 03       LD      c,03h         // Set bc to DC03
 0065: af          XOR     a
 0066: ed 79       OUT     (c),a
-0068: 0d          DEC     c
+0068: 0d          DEC     c             // Set bc to DC02
 0069: 3d          DEC     a
-006a: ed 79       OUT     (c),a
-006c: 0d          DEC     c
-006d: 0d          DEC     c
-006e: 3e 7f       LD      a,7fh
+006A: ed 79       OUT     (c),a
+006C: 0d          DEC     c             // Set bc to DC01
+006D: 0d          DEC     c             // Set bc to DC00
+006E: 3e 7f       LD      a,7fh
 0070: ed 79       OUT     (c),a
 0072: 03          INC     bc
 0073: ed 78       IN      a,(c)
 0075: e6 20       AND     20h
-0077: 01 05 d5    LD      bc,0D505h
-007a: 28 d8       JR      z,0054h
+0077: 01 05 d5    LD      bc,0D505h     // Check for Commodore key pressed
+007A: 28 d8       JR      z,0054h
 
-007C: 21 b4 0f    LD      hl,0FB4h      // Copies from $0fb4 (-11)
-007F: 01 0a d5    LD      bc,0D50Ah     // to $d50a (-11)
-0082: 16 0b       LD      d,0Bh         // $0b (11) bytes
+007C: 21 b4 0f    LD      hl,0FB4h      // Copies from $0FB4 (-11)
+007F: 01 0a d5    LD      bc,0D50Ah     // to $D50A (-11)
+0082: 16 0b       LD      d,0Bh         // $0B (11) bytes
 0084: 7e          LD      a,(hl)        // It's a decrement copy
 0085: ed 79       OUT     (c),a         // for Mmu init
 0087: 2b          DEC     hl
@@ -223,12 +225,12 @@ Z80 is in control now.
 0089: 15          DEC     d
 008A: 20 f8       JR      nz,0084h
 
-008C: 21 1a 0d    LD      hl,0D1Ah      // Copies from $0d1a
+008C: 21 1a 0d    LD      hl,0D1Ah      // Copies from $0D1A
 008F: 11 00 11    LD      de,1100h      // to $1100
 0092: 01 08 00    LD      bc,0008h      // $08 bytes
 0095: ed b0       LDIR
-0097: 21 e5 0e    LD      hl,0EE5h      // Copies from $0ee5
-009A: 11 d0 ff    LD      de,0FFD0h     // to $ffd0
+0097: 21 e5 0e    LD      hl,0EE5h      // Copies from $0EE5
+009A: 11 d0 ff    LD      de,0FFD0h     // to $FFD0
 009D: 01 1f 00    LD      bc,001Fh      // $1f (31) bytes
 00A0: ed b0       LDIR                  // These are the copy of z80 and 8502
                                         // surrender routine from kernal to memory
@@ -240,12 +242,12 @@ Z80 is in control now.
 00AE: 22 dd ff    LD      (0FFDDh),hl
 00B1: c3 e0 ff    JP      0FFE0h        // Jump to z80 surrender to 8502 cpu
 
-// Data values used in routine at 108c
+// Data values used in routine at 008C
 0D1A: a9 00       LDA #$00
 0D1C: 8d 00 ff    STA $FF00
 0D1F: 6c fc ff    JMP ($FFFC)
 
-// Data values used in routine at 1097 (8502 and z80 surrender routines)
+// Data values used in routine at 0097 (8502 and z80 surrender routines)
 0EE5: 78          SEI
 0EE6: a9 b0       LDA #$B0
 0EE8: 8d 05 d5    STA $D505
@@ -261,7 +263,7 @@ Z80 is in control now.
 0EFD: 00          NOP
 0EFE: cf          RST 08h
 
-// Data values used in routine at 107c (MMU init values)
+// Data values used in routine at 007c (MMU init values)
 0FAA: 3f // $D500
 0FAB: 3f // $D501
 0FAC: 7f // $D502
@@ -275,9 +277,8 @@ Z80 is in control now.
 0FB4: 00 // $D50A
 ```
 
-From this point, 8502 is in control.
-
-8502 is starting for the first time so program counter is set to
+From this point, 8502 is in control. 8502 is starting for the first time so
+program counter is set to
 <pre>
 .PC = $FFFD * 256 + $FFFC
 </pre>
