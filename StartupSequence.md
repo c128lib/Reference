@@ -9,30 +9,28 @@ title: Startup sequence
 
 When you first turn on power, the Z80 microprocessor has control before the 8502 is
 allowed to take over.
-The initialization steps performed by the Z80 include copying two routines into block
-0 RAM.
-One, at 65488-65503/$FFD0-$FFDF, is an 8502 machine language routine to surrender
-control to the Z80; the other, at 65504-65519/$FFE0-$FFEF, is a Z80 machine language
-routine to surrender control to the 8502.
 
-If the Z80 reset routine does
-not find a Commodore 64 cartridge or the Commodore key held down, it jumps to a
-routine it has copied into 65504/$FFE0 in block 0 RAM. That
-routine ends by setting bit 0 of [$D505](D500#D505) to %1 to return control to the
-8502 for 128 mode.
+If the Z80 reset routine does not find a Commodore 64 cartridge or the Commodore key
+held down:
 
-TODO: summary operation before 8502 start working
+1. Sets initial values for MMU registers ($D500-$D50A)
+2. Copies two surrending routine (for Z80-8502 switchover, one, at 65488-65503/$FFD0-$FFDF, is an 8502 machine language routine to surrender control to the Z80; the other, at 65504-65519/$FFE0-$FFEF, is a Z80 machine language routine to surrender control to the 8502)
+3. Prepare starting address and starting code for 8502
+4. Surrends control to 8502 by jumping to a routine copied into 65504/$FFE0 in block 0 RAM
 
-When the 8502 finally starts after a reset, the Kernal initialization routine
+That routine ends by setting bit 0 of [$D505](D500#D505) to %1 to return control
+to the 8502 for 128 mode.
+
+When the 8502 finally starts, the Kernal initialization routine
 START always receives control and immediately performs the following actions:
-1. Brings the system map into context.
-2. Disables IRQ's.
-3. Resets the processor stack pointer.
-4. Clears decimal mode.
-5. Initializes the MMU.
-6. INSTALLS the Kernal RAM code.
-7. SECURE: Check and initialize the SYSTEM vector.
-8. [POLL](#POLL): Check for a ROM cartridge.
+1. Brings the system map into context
+2. Disables IRQ's
+3. Resets the processor stack pointer
+4. Clears decimal mode
+5. Initializes the MMU
+6. INSTALLS the Kernal RAM code
+7. SECURE: Check and initialize the SYSTEM vector
+8. [POLL](#POLL): Check for a ROM cartridge
 
 ### POLL <a name="POLL"></a>
 POLL first scans for any installed C64 cartridges. They are recognized by
@@ -133,51 +131,13 @@ disk.
 
 ## Kernal debugging
 
-TODO: decode data from 004D to 007A
-
-Z80 is in control now.
+Z80 is in control now and starts by putting $0000 in program counter.
 
 ``` Assembly
-0000: 3e 3e       LD      a,3eh
+0000: 3e 3e       LD      a,3Eh
 0002: 32 00 ff    LD      (0FF00h),a    // Set MMU to 3E
 0005: c3 3b 00    JP      003Bh
-```
-<!--
-0008: 31 77 3c    LD      sp,3C77h
-000B: 3e 3f       LD      a,3Fh
-000D: c3 8c 01    JP      018Ch
-0010: e1          POP     hl
-0011: 6e          LD      l,(hl)
-0012: c3 20 00    JP      0020h
-0015: 00          NOP
-0016: 00          NOP
-0017: 00          NOP
-0018: e1          POP     hl
-0019: 6e          LD      l,(hl)
-001A: c3 28 00    JP      0028h
-001D: 00          NOP
-001E: 00          NOP
-001F: 00          NOP
-0020: 3a 0f fd    LD      a,(0FD0Fh)
-0023: a7          AND     a
-0024: 28 02       JR      z,0028h
-0026: 2c          INC     l
-0027: 2c          INC     l
-0028: 26 01       LD      h,01h
-002A: 7e          LD      a,(hl)
-002B: 23          INC     hl
-002C: 66          LD      h,(hl)
-002D: 6f          LD      l,a
-002E: e9          JP      (hl)
-002F: 00          NOP
-0030: 30 35       JR      nc,0067h
-0032: 2f          CPL
-0033: 31 32 2f    LD      sp,2F32h
-0036: 38 35       JR      c,006Dh
-0038: c3 fd fd    JP      0FDFDh
--->
 
-``` Assembly
 003B: 01 2f d0    LD      bc,0D02Fh
 003E: 11 fc ff    LD      de,0FFFCh     // Load Reset vector to de
 0041: ed 51       OUT     (c),d
@@ -191,7 +151,7 @@ Z80 is in control now.
 0050: e6 30       AND     30h
 0052: 28 05       JR      z,0059h
 
-0054: 3e f1       LD      a,0F1h        // TODO: check this
+0054: 3e f1       LD      a,0F1h
 0056: ed 79       OUT     (c),a
 0058: c7          RST     00h
 0059: 01 0f dc    LD      bc,0DC0Fh
@@ -207,7 +167,7 @@ Z80 is in control now.
 006A: ed 79       OUT     (c),a
 006C: 0d          DEC     c             // Set bc to DC01
 006D: 0d          DEC     c             // Set bc to DC00
-006E: 3e 7f       LD      a,7fh
+006E: 3e 7f       LD      a,7Fh
 0070: ed 79       OUT     (c),a
 0072: 03          INC     bc
 0073: ed 78       IN      a,(c)
@@ -231,7 +191,7 @@ Z80 is in control now.
 0095: ed b0       LDIR
 0097: 21 e5 0e    LD      hl,0EE5h      // Copies from $0EE5
 009A: 11 d0 ff    LD      de,0FFD0h     // to $FFD0
-009D: 01 1f 00    LD      bc,001Fh      // $1f (31) bytes
+009D: 01 1f 00    LD      bc,001Fh      // $1F (31) bytes
 00A0: ed b0       LDIR                  // These are the copy of z80 and 8502
                                         // surrender routine from kernal to memory
 
@@ -256,7 +216,7 @@ Z80 is in control now.
 0EEF: ea          NOP
 0EF0: f3          DI
 0EF1: 3e 3e       LD  a,3Eh
-0EF3: 32 00 ff    LD  (0ff00h),a
+0EF3: 32 00 ff    LD  (0FF00h),a
 0EF6: 01 05 d5    LD  bc,0D505h
 0EF9: 3e b1       LD  a,0B1h
 0EFB: ed 79       OUT (c),a
