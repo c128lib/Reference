@@ -54,4 +54,4 @@ follows.
 ## See also
 
 * [$D500-$D50B - Mmu Chip Registers](D500)
-* [$FF00-$FF04 - Mmu Chip Registers](FF00)
+* [$FF00-$FF04 - Mmu Chip Registers](E000#FF00)
