@@ -43,9 +43,7 @@ title: Index
 * [$DC00-$DC0F - CIA 1 (Complex Interface Adapter)](DC00)
 * [$DD00-$DD0F - CIA 2 (Complex Interface Adapter)](DD00)
 * [$DF00-$DFFF - RAM Expansion Controller Chip Registers](DF00) [#5](https://github.com/c128lib/Reference/issues/5)
-* [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000) [#25](https://github.com/c128lib/Reference/issues/25)
-* [$FF00-$FF04 - Mmu Chip Registers](FF00)
-* [$FF47-$FFF3 - Kernal](FF47) (removing soon...)
+* [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000)
 
 ### Commodore related resources
 This is a list of resources that you use to create the reference.

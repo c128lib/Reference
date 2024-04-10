@@ -98,7 +98,7 @@ The VIC compensates by restricting the active portion of the display,
 the area where characters and graphics can be displayed,
 to 200 lines in the middle of the raster for both NTSC and
 PAL systems (this can be reduced to 192 lines. For details,
-see the entry for [53265/$D011](D000#D011)). The inactive lines form the
+see the entry for [$D011](D000#D011)). The inactive lines form the
 top and bottom portions of the border, a solid-color frame
 around the active screen.
 
@@ -118,7 +118,7 @@ the multicolor modes have only 160 active pixels per scan line.
 The display is still the same size; the pixels are twice as wide
 (the screen width can also be reduced to 304 standard pixels
 or 152 multicolor pixels. For details, see the entry for
-[53270/$D016](D000#D016)). Just as the VIC draws extra lines above and below the
+[$D016](D000#D016)). Just as the VIC draws extra lines above and below the
 active ones, it also draws extra pixels to the left and right of
 the active ones. The inactive pixels form the sides of the
 solidcolor border.
@@ -155,8 +155,8 @@ All of the information for the VIC screen
 display must be visible within the same video bank. There are
 four possible video banks per 64K block, or a total of eight
 possible video banks in the two RAM blocks in the 128. Bits
-0-1 of the CIA #2 register at [56576/$DD00](DD00) select one of the
-four banks, and bit 6 of the MMU register at [54534/$D506](D506) selects
+0-1 of the CIA #2 register at [$DD00](DD00) select one of the
+four banks, and bit 6 of the MMU register at [$D506](D500#D506) selects
 which 64K-RAM block the video bank will be seen in.
 Refer to the entries for those locations later in this chapter for
 more details. The base (starting) addresses for the banks are as
@@ -197,7 +197,7 @@ The screen memory values are referred to as screen codes, and
 they are not the same as character codes. See Appendix C for
 a list of screen codes and corresponding character patterns.
 The location of screen memory within the current video bank
-is controlled by bits 4-7 of the VIC register at [53272/$D018](D000#D018).
+is controlled by bits 4-7 of the VIC register at [$D018](D000#D018).
 See the entry for that register for details.
 
 The pattern definitions come from another area of memory known as
@@ -215,16 +215,16 @@ which can be independently selected for each character position.
 
 The location of character-pattern memory within the current video bank
 is controlled by bits 1-3 of the VIC register at
-[53272/$D018](D000#D018). See the entry for that register for more details.
+[$D018](D000#D018). See the entry for that register for more details.
 Standard character definitions for the 128 come from the character ROM.
-This ROM is located beginning at address [53248/$D000](D000)
+This ROM is located beginning at address [$D000](D000)
 in the system's address space, but can be made visible
 in any video bank. See the section on character ROM later in
 this chapter for more information.
 
 The background color for %0 bits in all character positions
 is determined by the value in the VIC register at
-[53281/$D021](D000#D021). The foreground color for the %1 bits in each
+[$D021](D000#D021). The foreground color for the %1 bits in each
 character position is determined by values in another 1000-
 byte area of memory known as color memory. As in screen
 memory, each location in color memory corresponds to a character
@@ -258,7 +258,7 @@ Once you switch off the standard ROM-based character set,
 you must provide definitions for every character you wish to
 use. You must begin by selecting the area of RAM where you
 will place the new character set. See the entry for the register
-at [53272/$D018](D000#D018) for details.
+at [$D018](D000#D018) for details.
 
 If you only want to use a few custom characters while retaining
 the majority of the standard
@@ -292,7 +292,7 @@ character memory of the pattern for any character is:
 pattern address = character base address + (8 * screen code)
 
 The character base address is the starting address of character
-memory (see the entry for [53272/$D018](D000#D018)).
+memory (see the entry for [$D018](D000#D018)).
 For example, to replace the British pound symbol (£, screen code 28/$1C) with
 the pattern shown in next figure, you could use statements like
 the following:
@@ -315,7 +315,7 @@ only half as many pixels per pattern, the number of bits required for each defin
 4 pixels * 8 lines = 64 bits).
 
 To select multicolor character mode, you must set bit 4 of
-the VIC register at location [53270/$D018](D000#D016). However, there's a
+the VIC register at location [$D018](D000#D016). However, there's a
 problem here because the screen editor IRQ routine always resets
 this bit to %0 when setting up the text screen (see the section
 below on the screen editor IRQ routine). To prevent this,
@@ -344,11 +344,11 @@ of 8 or greater in the location.
 
 When a multicolor character is drawn, all pixels in the
 pattern represented by %00 bit pairs will be drawn in the
-background color specified in the VIC register at [53281/$D021](D000#D021).
+background color specified in the VIC register at [$D021](D000#D021).
 All pixels represented by %01 bit pairs will be drawn
-in the color specified by the value in the register at [53282/$D022](D000#D022),
+in the color specified by the value in the register at [$D022](D000#D022),
 and all pixels for %10 bit pairs will be drawn in the
-color specified in the register at [53283/$D023](D000#D023).
+color specified in the register at [$D023](D000#D023).
 
 All of these
 registers can take any of the 16 standard colors listed in Vic color
@@ -404,7 +404,7 @@ standard character mode.
 
 ## Extended Background Color Mode
 The third character mode, extended background color mode, is
-selected by setting bit 6 of the VIC register at [53265/$D011](D000#D011) to
+selected by setting bit 6 of the VIC register at [$D011](D000#D011) to
 %1. It also uses the same fundamental elements as standard
 character mode: screen memory, character memory, and color
 memory. As in standard character mode, the extended background color
@@ -459,7 +459,7 @@ mode as GRAPHIC 3 (or, with a text window, as
 GRAPHIC 4).
 
 Standard bitmapped mode is selected when bit 5 of the
-VIC register at [53271/$D017](D000#D017) is set to %1 (but see the section
+VIC register at [$D017](D000#D017) is set to %1 (but see the section
 below on the screen editor IRQ for information about the
 shadow for this bit). This mode provides for 320 horizontal
 pixels per line, each of which can be one of two colors.
@@ -468,7 +468,7 @@ A single bit is required to specify the color of each pixel, so 320 *
 area. At 8 bits per byte, 8000 bytes are required for the bitmap.
 This is half of the available space in the 16K video bank.
 The starting address of the bitmap is specified in bit 3 of the
-register at [53272/$D018](D000#D018).
+register at [$D018](D000#D018).
 The VIC's scheme for mapping the screen is simple for
 the chip (it's a variation of character mode), but it's rather
 complicated for the programmer. As you would expect, the
@@ -558,7 +558,7 @@ selected independently for each common color area. Common
 color areas correspond in size (4 pixels X 8 lines) and layout
 (40 X 25) to multicolor character positions. All pixels
 represented by %00 bit patterns in the bitmap will take the color
-specified in the VIC background color register at [53281/$D021](D000#D021).
+specified in the VIC background color register at [$D021](D000#D021).
 
 As in standard bitmapped mode, the video matrix
 (screen memory) area holds color information. In this case, the
@@ -598,7 +598,7 @@ standard sprites because the multicolor pixels are twice as
 wide.
 
 Sprites can also be doubled in size horizontally or vertically
-(see the registers at [53271/$D017](D000#D017) and [53277/$D01D](D000#D01D)).
+(see the registers at [$D017](D000#D017) and [$D01D](D000#D01D)).
 The rules for defining sprite bit patterns are the same as
 for custom characters in the corresponding screen modes. Each
 standard sprite pixel is represented by one bit in a pattern bitmap,
@@ -619,8 +619,8 @@ can take a different sprite foreground color.
 For multicolor
 sprites, pixels represented by %00 bit patterns are transparent.
 Pixels represented by %01 and %11 patterns take the colors
-specified in the sprite multicolor registers ([53285/$D025](D000#D025) and
-[53286/$D026](D000#D026), respectively). These colors are common to all
+specified in the sprite multicolor registers ([$D025](D000#D025) and
+[$D026](D000#D026), respectively). These colors are common to all
 eight sprites. Multicolor pixels represented by %10 bit patterns
 take the color specified in the sprite foreground color registers.
 The 63 data bytes for the sprite pattern can't be placed
@@ -668,7 +668,7 @@ in this area as follows:
 Even after a sprite is assigned a pattern, it will not appear
 on the screen until it is enabled and moved into the visible
 area of the screen display. Sprites are enabled by setting the
-appropriate bits in the register at [53269/$D015](D000#D015). The position
+appropriate bits in the register at [$D015](D000#D015). The position
 of each sprite on the screen is specified by values in the registers
 at 53248-53264/$D000-$D010. Refer to the discussion of
 those registers for details.
@@ -684,7 +684,7 @@ sprite number, down to sprite 7, which appears behind any
 other sprite it may overlap. The priority of sprites in relationship
 to screen foreground objects is programmable; sprites can
 appear to pass either in front of or behind screen foreground
-pixels. See the discussion of the register at [53275/$D01B](D000#D01B) for
+pixels. See the discussion of the register at [$D01B](D000#D01B) for
 details.
 
 When two sprites overlap, or when a sprite overlaps
@@ -703,7 +703,7 @@ IRQ interrupt sequence, the collection of routines executed
 every 1/60 second (1/50 second in PAL systems), includes two
 separate sections which affect the VIC chip. The screen editor
 IRQ routine [$C194](C000#C194) controls the screen mode and raster interrupt,
-and the BASIC IRQ routine [$A84D](A84D) controls sprite
+and the BASIC IRQ routine [$A84D](4000#A84D) controls sprite
 movement, detects sprite collisions, and reads the light pen.
 
 Because these routines maintain shadows of some VIC registers,
@@ -771,7 +771,7 @@ accesses in succession. On a "P" read access the processor addresses are still o
 bus because AEC is still high.
 
 The diagram describes the normal process of a bus take-over. By appropriately modifying the
-VIC register [53265/$D011](#D011), it is possible to force a bus take-over at extraordinary times.
+VIC register [$D011](D000#D011), it is possible to force a bus take-over at extraordinary times.
 
 ### ø2 - Processor clock output
 This clock signal is the reference for the complete bus timing. Its
@@ -837,7 +837,7 @@ multiple times within an arbitrary raster line in the range of $30-$f7 by modify
 and thus make every raster line within the display window completely or partially a Bad Line,
 or trigger or suppress all the other functions that are connected with a Bad Line Condition. If
 YSCROLL=0, a Bad Line Condition occurs in raster line $30 as soon as the DEN bit 
-(register [53265/$D011](#D011), bit 4) is set.
+(register [$D011](D000#D011), bit 4) is set.
 
 The following three sections describe the function units that are used for displaying the
 graphics. Section 3.6. explains the memory interface that is used to read the graphics data

@@ -169,7 +169,7 @@ The total number of horizontal pixels is given by multiplying the value
 here (plus 1) by the total number of pixels per character position
 (the value in bits 4-7 of register [22/$16](#16) plus 1).
 The default value for this register, established during the
-IOINIT routine [$E109], is 126/$7E, This provides 127
+IOINIT routine [$E109](E000#E109), is 126/$7E, This provides 127
 horizontal character positions. You'll need to reduce this by half if
 you enable the pixel double feature (see the entry for bit 4 of
 register [25/$19](#19)). You may need to increase the value here
@@ -244,7 +244,7 @@ any additional scan lines specified in register [5/$05](#05).
 The proper number of scan lines for the display is a function
 of the video system being used; it's different for NTSC
 (North American) and PAL (European) systems. During the
-IOINIT routine [$E109], the 128 checks the VIC chip to determine
+IOINIT routine [$E109](E000#E109), the 128 checks the VIC chip to determine
 which system is being used (since the VIC isn't programmable
 like the VDC, there is a different version of the
 VIC for each of the two video systems).
@@ -275,7 +275,7 @@ five bits allow up to %11111 = 31/$1F additional scan lines.
 The default character height of eight scan lines is an exact
 multiple of both 264 and 320 (33 * 8 = 264 and 40 * 8 =
 320). Thus, no extra scan lines are required, so this register is
-initialized to 0/$00 by the Kernal IOINIT routine [$E109]. As
+initialized to 0/$00 by the Kernal IOINIT routine [$E109](E000#E109). As
 an example of the use of this register, assume that you increased
 the character height to nine scan lines. For an NTSC
 system, 264 / 9 = 29 with a remainder of 3. Thus, for this
@@ -296,7 +296,7 @@ character positions specified in register [4/$04](#04) can actually be
 used to display characters. The value here must be less than
 the total number specified in register [4/$04](#04). The default value
 established for this register by the Kernal IOINIT routine
-[$E109] is 25/$19, which sets up the standard 25-row display.
+[$E109](E000#E109) is 25/$19, which sets up the standard 25-row display.
 One obstacle to selecting other numbers of rows is that the
 screen editor ROM routines will, by default, assume a 25-line
 screen.
@@ -316,7 +316,7 @@ The value in this register determines the vertical character
 position at which the vertical sync signal will be generated. This
 register can be used to adjust the vertical location of the active
 display area within the screen. The default value for this register,
-established by the IOINIT routine [$E109], is 29/$1D for
+established by the IOINIT routine [$E109](E000#E109), is 29/$1D for
 NTSC (North American) systems or 32/$20 for PAL (European) systems.
 Decreasing the value here will move the active
 display area down the screen, while increasing the value will
@@ -405,7 +405,7 @@ of the active portion of the character position is determined by
 the value in register [23/$17](#17).
 
 The default value for this register, established during the
-IOINIT routine [$E109], is 7/$07, for a total character-position
+IOINIT routine [$E109](E000#E109), is 7/$07, for a total character-position
 height of eight scan lines. In this case, there will be no vertical
 intercharacter spacing because this is less than the active character
 height. (In the default character set, intercharacter spacing
@@ -501,7 +501,7 @@ allow values up to % 11111 = 31/$1F, so the cursor can go as
 low as scan line 30, However, the actual displayed cursor
 height will never be greater than the character-position height
 specified in register [9/$09](#09). The default value for this register,
-established by the IOINIT routine [$E109], is 7/$07, so the
+established by the IOINIT routine [$E109](E000#E109), is 7/$07, so the
 normal bottom scan line of the cursor is scan line 6 of the
 character position.
 
@@ -770,7 +770,7 @@ to %l). For NTSC (North American) systems, the screen is redrawn
 rates are about four times per second when the bit is %0 and
 about twice per second when the bit is %1 .
 The default setting for this bit is %1 , for the slower blinking rate.
-This is established during the IOINIT routine [$E109],
+This is established during the IOINIT routine [$E109](E000#E109),
 part of both the reset and RUN/STOP-RESTORE sequences.
 This setting is not changed by any other ROM routine.
 
@@ -796,7 +796,7 @@ Setting this bit to %0 specifies a fill operation, while setting it
 to %1 specifies a copy operation. See the entry for register
 [30/$1E](#1E) for more information on VDC block operations. This
 bit is set to %0 when the register is initialized during the
-IOINIT routine [$E109].
+IOINIT routine [$E109](E000#E109)(E000#E109).
 
 ## <a name="19"></a> 25 $19
 ### Horizontal smooth scrolling and control
@@ -951,7 +951,7 @@ enabled, the value here determines the color of the screen
 border only.
 
 The default background color value, 0/$00 (black), is
-established by the Kernal IOINIT routine [$E109], part of both
+established by the Kernal IOINIT routine [$E109](E000#E109), part of both
 the reset and RUN/STOP-RESTORE sequences. From BASIC
 the background color can be changed using the statement
 COLOR 6, color number. However, the values for the color
@@ -1000,7 +1000,7 @@ video memory. When the bit is %0, the VDC is configured for
 configured for 4164 chips (64K X 1 bit). Since the 16K VDC
 video memory space in the 128 is provided by two 4416 chips,
 this bit is initialized to %0 by the Kernal IOINIT routine
-[$E109].
+[$E109](E000#E109).
 
 It is theoretically possible to replace the existing chips
 with the 64K variety to quadruple the amount of available
@@ -1041,7 +1041,7 @@ Since the 128 has only 16K of RAM for the VDC, only the
 first two settings are currently valid. Note that there is
 insufficient room in the 128's 16K of VDC video memory for a 16K
 character set plus screen and attribute memory. These bits are
-initialized to %001 by the IOINIT routine [$E109], part of the
+initialized to %001 by the IOINIT routine [$E109](E000#E109), part of the
 reset and RUN/STOP-RESTORE sequences, so the default
 character set starting address is 8192/$2000.
 
@@ -1201,7 +1201,7 @@ The VDC handles this refresh function automatically for
 its video RAM, just as the VIC automatically handles the refreshing
 of system RAM. However, for the VDC, the number
 of refresh cycles provided during each scan line is programmable.
-The IOINIT routine [$E109] initializes these bits to %0101
+The IOINIT routine [$E109](E000#E109) initializes these bits to %0101
 for five refresh cycles per scan line, and there's no reason to
 change that setting.
 
@@ -1212,7 +1212,7 @@ mask off these bits and see only the valid bits of the register,
 use AND 15 in BASIC or AND #$0F in machine language.
 
 ### 37-63 $25-$3F Unused
-Since the external address register at [54784/$D600](D600#D600) allows a
+Since the external address register at [$D600](D600#D600) allows a
 six-bit register number, these register addresses can also be
 specified. However, none of these internal registers are used,
 and writing to them has no effect. All register numbers in this

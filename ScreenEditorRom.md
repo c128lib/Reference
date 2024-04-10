@@ -21,7 +21,7 @@ the earlier Commodore editors from which it is descended.
 In earlier Commodore models, the screen editing routines
 were an integral part of the Kernal ROM, but in the 128 the
 routines have been separated and moved to their own block of
-ROM, occupying locations [49152-53247/$C000-$CFFF](C000). The
+ROM, occupying locations [$C000-$CFFF](C000). The
 routines in this block handle keyboard input and all aspects of
 text screen output for both the 40- and 80-column displays.
 Special features such as bitmapped graphics and sprites are
@@ -29,9 +29,7 @@ handled in BASIC ROM, but editor routines set up the bitmapped and multicolor bi
 
 The 40- and 80-column text displays constitute the main
 output device for the 128, and thereby its primary mechanism
-for communicating with the user. For the fundamentals of
-how each display is generated, refer to the description of the
-respective 40- and 80-column video chips in Chapter 8. Note
+for communicating with the user. Note
 that both video sources remain on at all times, so it's possible
 to connect both a composite and an RGBI or monochrome
 monitor and have simultaneous 40- and 80-column displays.
@@ -90,7 +88,7 @@ keyboard as an integral part of the computer, the system sees
 it as just another peripheral, device 0. The keyboard is the default input device for the 128. It is normally scanned during
 the jiffy IRQ sequence. See the entry for the SCNKEY routine
 [$C55D](C000#C55D) for details. The system's two major Kernal input
-routines, GETIN [$EEEB] and BASIN [$EF06], both call screen
+routines, GETIN [$EEEB](E000#EEEB) and BASIN [$EF06](E000#EF06), both call screen
 editor routines to retrieve input from the keyboard.
 
 An enhanced feature of the 128's keyboard is programmable keys. Definition strings can be assigned to the eight function keys, F1-F8, and to the SHIFT-RUN/STOP combination
@@ -106,4 +104,4 @@ details.
 
 ## See also
 
-* [$C000-$CFFF - Screen editor ROM](C000)
+* [$C000-$CFFF - Screen editor ROM](C000#C000)

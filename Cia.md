@@ -23,7 +23,7 @@ key, and an MMU register line is used to read the 40/80 DISPLAY key.
 All CIA registers are set to zero when the system RESET
 line is pulled low, as when the reset button is pushed. Most of
 the CIA registers are initialized during the IOINIT routine
-[$E109].
+[$E109](E000#E109).
 
 ## CIA 1 Registers
 This CIA is used to read the keyboard, joysticks, and other devices
