@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: index
 title: Index
 ---
 # Commodore 128 Memory map and Reference
