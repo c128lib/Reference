@@ -315,7 +315,7 @@ only half as many pixels per pattern, the number of bits required for each defin
 4 pixels * 8 lines = 64 bits).
 
 To select multicolor character mode, you must set bit 4 of
-the VIC register at location [$D018](D000#D016). However, there's a
+the VIC register at location [$D018](D000#D018). However, there's a
 problem here because the screen editor IRQ routine always resets
 this bit to %0 when setting up the text screen (see the section
 below on the screen editor IRQ routine). To prevent this,
@@ -836,12 +836,12 @@ This definition has to be taken literally. You can generate and take away a Bad 
 multiple times within an arbitrary raster line in the range of $30-$f7 by modifying YSCROLL,
 and thus make every raster line within the display window completely or partially a Bad Line,
 or trigger or suppress all the other functions that are connected with a Bad Line Condition. If
-YSCROLL=0, a Bad Line Condition occurs in raster line $30 as soon as the DEN bit 
+YSCROLL=0, a Bad Line Condition occurs in raster line $30 as soon as the DEN bit
 (register [$D011](D000#D011), bit 4) is set.
 
 The following three sections describe the function units that are used for displaying the
 graphics. Section 3.6. explains the memory interface that is used to read the graphics data
-and the timing of the accesses within a raster line. 
+and the timing of the accesses within a raster line.
 
 ## See also
 

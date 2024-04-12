@@ -796,7 +796,7 @@ Setting this bit to %0 specifies a fill operation, while setting it
 to %1 specifies a copy operation. See the entry for register
 [30/$1E](#1E) for more information on VDC block operations. This
 bit is set to %0 when the register is initialized during the
-IOINIT routine [$E109](E000#E109)(E000#E109).
+IOINIT routine [$E109](E000#E109).
 
 ## <a name="19"></a> 25 $19
 ### Horizontal smooth scrolling and control
@@ -917,23 +917,18 @@ CLR/HOME will clear the display.
 120 SYS RR,,25:RREG A:SYS WR,(A AND 63)OR 128,25
 130 SYS RR,,24:RREG A:SYS WR,A AND 127,24
 140 SYS WR,0,13:SYS WR,0,19:SYS WR,0,31
-150 FOR 1=0 TO 63:SYS WR,255,30:NEXT 1
+150 FOR I=0 TO 63:SYS WR,255,30:NEXT I
 160 X=320:Y=100:BC=0:FC=15
-170 GET KS:ON INSTR( "BF{HOME HCLR j " , KS ) GOTO 180,1
-80,160,140:GOTO 190
-180 BC={BC-(K?="B"))AND 15:FC=(FC-(K$="F"))AND 15:
-SYS WR,FC*16+BC,26
+170 GET K$:ON INSTR( "BF{HOME}{CLR}", K$) GOTO 180,180,160,140:GOTO 190
+180 BC=(BC-(K$="B"))AND 15:FC=(FC-(K$="F"))AND 15:SYS WR,FC*16+BC,26
 190 D=JOY(2) AND 15:IF D=0 THEN 170
-200 Y=Y+(D<3 OR D=8)-(D>3 AND D<7);IF Y<0 THEN Y=l
-99:ELSE IF Y>199 THEN Y=0
-210 X=X-(D>1 AND D<5)+{D>5):IF X<0 THEN X=639:ELSE
-IF X>639 THEN X=0
-220 AD=(Y*80)+INT(X/8):AH=INT(AD/256):AL=AD-(AH*25
-6)
-230 SYS WR, AH ,18:SYS WR,AL,19
+200 Y=Y+(D<3 OR D=8)-(D>3 AND D<7);IF Y<0 THEN Y=199:ELSE IF Y>199 THEN Y=0
+210 X=X-(D>1 AND D<5)+(D>5):IF X<0 THEN X=639:ELSE IF X>639 THEN X=0
+220 AD=(Y*80)+INT(X/8):AH=INT(AD/256):AL=AD-(AH*256)
+230 SYS WR,AH,18:SYS WR,AL,19
 240 SYS RR,,31:RREG A
 250 SYS WR,AH,18:SYS WR,AL,19
-260 SYS WR,A OR 2T(7-(X AND 7)),31
+260 SYS WR,A OR 2^(7-(X AND 7)),31
 270 GOTO 170
 ```
 
@@ -1049,7 +1044,7 @@ Since this area is
 RAM, not ROM, it is necessary to copy character patterns into
 this area of memory if the VDC is to display recognizable
 characters. This step is performed during the IOINIT routine
-by calling the screen editor INIT80 routine [$CE0C].
+by calling the screen editor INIT80 routine [$CE0C](C000#CE0C).
 
 ## <a name="1D"></a> 29 $1D
 ### Underline scan-line control
