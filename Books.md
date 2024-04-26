@@ -12,26 +12,26 @@ Below a list of other Commodore machine, which can be useful too (especially whe
 
 |Book|Name|
 |-|-|
-{% for singlefile in site.static_files %}{% if singlefile.path contains 'assets/images/books/c128/' %}|<img src="{{ singlefile.path }}" width="100">|{{ singlefile.basename }}|
+{% for singlefile in site.static_files %}{% if singlefile.path contains '/assets/images/books/c128/' %}|<img src="{{ singlefile.path | remove_first: "/" }}" width="100">|{{ singlefile.basename }}|
 {% endif %}{% endfor %}
 
 ## Book list for C64
 
 |Book|Name|
 |-|-|
-{% for singlefile in site.static_files %}{% if singlefile.path contains 'assets/images/books/c64' %}|<img src="{{ singlefile.path }}" width="100">|{{ singlefile.basename }}|
+{% for singlefile in site.static_files %}{% if singlefile.path contains '/assets/images/books/c64' %}|<img src="{{ singlefile.path | remove_first: "/" }}" width="100">|{{ singlefile.basename }}|
 {% endif %}{% endfor %}
 
 ## Book list for Vic20
 
 |Book|Name|
 |-|-|
-{% for singlefile in site.static_files %}{% if singlefile.path contains 'assets/images/books/vic20' %}|<img src="{{ singlefile.path }}" width="100">|{{ singlefile.basename }}|
+{% for singlefile in site.static_files %}{% if singlefile.path contains '/assets/images/books/vic20' %}|<img src="{{ singlefile.path | remove_first: "/" }}" width="100">|{{ singlefile.basename }}|
 {% endif %}{% endfor %}
 
 ## Book list for C16/Plus4
 
 |Book|Name|
 |-|-|
-{% for singlefile in site.static_files %}{% if singlefile.path contains 'assets/images/books/c16' %}|<img src="{{ singlefile.path }}" width="100">|{{ singlefile.basename }}|
+{% for singlefile in site.static_files %}{% if singlefile.path contains '/assets/images/books/c16' %}|<img src=<img src="{{ singlefile.path | remove_first: "/" }}" width="100">|{{ singlefile.basename }}|
 {% endif %}{% endfor %}
