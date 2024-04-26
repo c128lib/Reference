@@ -33,5 +33,5 @@ Below a list of other Commodore machine, which can be useful too (especially whe
 
 |Book|Name|
 |-|-|
-{% for singlefile in site.static_files %}{% if singlefile.path contains '/assets/images/books/c16' %}|<img src=<img src="{{ singlefile.path | remove_first: "/" }}" width="100">|{{ singlefile.basename }}|
+{% for singlefile in site.static_files %}{% if singlefile.path contains '/assets/images/books/c16' %}|<img src="{{ singlefile.path | remove_first: "/" }}" width="100">|{{ singlefile.basename }}|
 {% endif %}{% endfor %}
