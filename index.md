@@ -54,6 +54,10 @@ in particular the C64 with which a good part of the architecture is shared.
 
 * [Mapping the Commodore 128](https://www.cubic.org/~doj/c64/mapping128.pdf)
 
+#### Books & magazines known
+
+* [Books](Books)
+
 #### Links
 
 * [Bart's place](https://www.bartsplace.net/topics/cbm.shtml)
