@@ -23,14 +23,11 @@
     </style>
   </head>
   <body>
-    {% if page.title and page.title != 'Index' %}
-    <div class="w3-sidebar w3-light-grey w3-bar-block" style="top:0px; padding: 20px 4px 4px 4px">
-      <h3>In this page...</h3>
-      {% include toc.html html=content sanitize=true h_min=2 h_max=2 %}
-      <br>
-      <a href="./">Index</a>
+    <div class="w3-sidebar w3-black w3-bar-block" style="top:0px; padding: 20px 4px 4px 4px">
+      <img src="/assets/images/logo-squared.png" style="width: 150px">
+      <p>&nbsp;</p>
+      <p><a href="https://github.com/c128lib">c128lib on Github</a></p>
     </div>
-    {% endif %}
     <div class="px-3 my-5 markdown-body" style="margin-left: 210px;">
       {{ content }}
 
