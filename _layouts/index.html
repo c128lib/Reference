@@ -24,7 +24,7 @@
   </head>
   <body>
     <div class="w3-sidebar w3-black w3-bar-block" style="top:0px; padding: 20px 4px 4px 4px">
-      <img src="/assets/images/logo-squared.png" style="width: 150px">
+      <img src='{{ "/assets/images/logo-squared.png" | append: site.github.build_revision | relative_url }}' style="width: 150px">
       <p>&nbsp;</p>
       <p><a href="https://github.com/c128lib">c128lib on Github</a></p>
     </div>
