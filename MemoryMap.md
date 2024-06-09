@@ -55,4 +55,4 @@ TBD
 ## References
 
 * Mapping the Commodore 128 - Ottis Cowper
-* Tips and Tricks for C128 - http://commodore128.mirkosoft.sk/herdware.html
+* Tips and Tricks for C128 - [http://commodore128.mirkosoft.sk/herdware.html](http://commodore128.mirkosoft.sk/herdware.html)
