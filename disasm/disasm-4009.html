@@ -1,9 +1,0 @@
-4009: 20 CC FF  JSR $FFCC  // Restore I/O Vector [F226]
-400C: 20 7A 41  JSR $417A  // Set Preconfig Registers
-400F: 20 8D 41  JSR $418D  // Init Sprite Movement Tabs
-4012: 20 12 41  JSR $4112  // Chime
-4015: 20 38 52  JSR $5238  // Clear Stack & Work Area
-4018: A9 00     LDA #$00
-401A: 85 15     STA $15    // Current I/O prompt flag
-401C: 58        CLI
-401D: 4C 37 4D  JMP $4D37  // Error or Ready

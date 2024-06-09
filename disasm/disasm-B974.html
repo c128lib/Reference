@@ -1,8 +1,0 @@
-B974: B0 0C     BCS $B982
-B976: A5 60     LDA $60
-B978: A4 61     LDY $61
-B97A: A6 62     LDX $62
-B97C: 85 04     STA $04     // SYS address high, MLM register PC
-B97E: 84 03     STY $03     // SYS address low, MLM register PC
-B980: 86 02     STX $02     // Bank Number, Jump to SYS Address
-B982: 60        RTS
