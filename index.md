@@ -8,6 +8,7 @@ title: Index
 
 ### Memory map
 * [Memory map and layout](MemoryMap)
+* [Startup sequence](StartupSequence)
 
 All references have been eliminated and are being reviewed to verify that the user license complies with the proposed contents. The contents will gradually be reinserted after the necessary checks.
 
