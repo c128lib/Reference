@@ -396,6 +396,7 @@ setting the zero and negative flags as appropriate.
 <a name=JMP></a>
 
 ## JMP (JuMP)
+
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Absolute|JMP $5597|$4C|3|3|
@@ -403,7 +404,7 @@ setting the zero and negative flags as appropriate.
 
 |N|V|B|D|I|Z|C|
 |-|-|-|-|-|-|-|
-|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 JMP transfers program execution to the following address (absolute) or to
 the location contained in the following address (indirect). Note that there is
@@ -426,7 +427,7 @@ from $30FF and the high byte from $3000.
 
 |N|V|B|D|I|Z|C|
 |-|-|-|-|-|-|-|
-|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 JSR pushes the address-1 of the next operation on to the stack before
 transferring program control to the following address. Subroutines are normally
@@ -511,7 +512,6 @@ and negative flags as appropriate.
 <a name=LSR></a>
 
 ## LSR (Logical Shift Right)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -520,6 +520,14 @@ and negative flags as appropriate.
 |Zero Page,X|LSR $BE,X|$56|2|6|
 |Absolute|LSR $BEEF|$4E|3|6|
 |Absolute,X|LSR $BEEF,X|$5E|3|7|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
+* N set if bit 7 of result is set
+* Z set if result is zero
+* C set to contents of old bit 0
 
 LSR shifts all bits right one position. 0 is shifted into bit 7 and the
 original bit 0 is shifted into the Carry.
@@ -596,11 +604,14 @@ the time values shown.
 <a name=NOP></a>
 
 ## NOP (No OPeration)
-*Affects flags: none*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Implied|NOP|$EA|1|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 NOP is used to reserve space for future modifications or effectively REM
 out existing code.
@@ -608,7 +619,6 @@ out existing code.
 <a name=ORA></a>
 
 ## ORA (bitwise OR with Accumulator)
-*Affects flags: N Z*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -622,6 +632,15 @@ out existing code.
 |Indirect,Y|ORA ($BE),Y|$11|2|5+|
 
 \+ add 1 cycle if page boundary crossed
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|-|
+
+* N set if bit 7 is set
+* Z set if .A = 0
+
+An inclusive OR is performed, bit by bit, on the accumulator contents using the contents of a byte of memory.
 
 <a name=TAX></a> <a name=TXA></a> <a name=TAY></a> <a name=TYA></a>
 <a name=INX></a> <a name=DEX></a> <a name=INY></a> <a name=DEY></a>
@@ -646,7 +665,6 @@ two machine cycles.
 <a name=ROL></a>
 
 ## ROL (ROtate Left)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -656,13 +674,20 @@ two machine cycles.
 |Absolute|ROL $BEEF|$2E|3|6|
 |Absolute,X|ROL $BEEF,X|$3E|3|7|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
+* N set if bit 7 is set
+* Z set if .A = 0
+* C set to contents of old bit 7
+
 ROL shifts all bits left one position. The Carry is shifted into bit 0 and
 the original bit 7 is shifted into the Carry.
 
 <a name=ROR></a>
 
 ## ROR (ROtate Right)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -672,17 +697,36 @@ the original bit 7 is shifted into the Carry.
 |Absolute|ROR $BEEF|$6E|3|6|
 |Absolute,X|ROR $BEEF,X|$7E|3|7|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
+* N set if bit 7 of the result is set
+* Z set if .A = 0
+* C set to contents of old bit 0
+
 ROR shifts all bits right one position. The Carry is shifted into bit 7
 and the original bit 0 is shifted into the Carry.
 
 <a name=RTI></a>
 
 ## RTI (ReTurn from Interrupt)
-*Affects flags: all*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Implied|RTI|$40|1|6|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|✓|✓|✓|✓|✓|✓|
+
+* N set from stack
+* V set from stack
+* B set from stack
+* D set from stack
+* I set from stack
+* Z set from stack
+* C set from stack
 
 RTI retrieves the Processor Status Word (flags) and the Program Counter
 from the stack in that order (interrupts push the PC first and then the PSW).
@@ -692,11 +736,14 @@ rather than the address-1.
 <a name=RTS></a>
 
 ## RTS (ReTurn from Subroutine)
-*Affects flags: none*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Implied|RTS|$60|1|6|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 RTS pulls the top two bytes off the stack (low byte first) and transfers
 program control to that address+1. It is used, as expected, to exit a subroutine
@@ -729,7 +776,6 @@ EXEC
 <a name=SBC></a>
 
 ## SBC (SuBtract with Carry)
-*Affects flags: N V Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -744,6 +790,15 @@ EXEC
 
 \+ add 1 cycle if page boundary crossed
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|✓|-|-|-|✓|✓|
+
+* N set if bit 7 set
+* V set if sign bit is incorrect
+* Z set if A = 0
+* C Clear if overflow in bit 7
+
 SBC results are dependant on the setting of the decimal flag. In decimal
 mode, subtraction is carried out on the assumption that the values involved are
 packed BCD (Binary Coded Decimal).
@@ -755,7 +810,6 @@ cleared by the operation, it indicates a borrow occurred.
 <a name=STA></a>
 
 ## STA (STore Accumulator)
-*Affects flags: none*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -766,6 +820,12 @@ cleared by the operation, it indicates a borrow occurred.
 |Absolute,Y|STA $BEEF,Y|$99|3|5|
 |Indirect,X|STA ($BE,X)|$81|2|6|
 |Indirect,Y|STA ($BE),Y|$91|2|6|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
+
+Stores the contents of the accumulator into memory.
 
 <a name=TXS></a> <a name=TSX></a> <a name=PHA></a> <a name=PLA></a>
 <a name=PHP></a> <a name=PLP></a> <a name=STACK></a>
@@ -789,7 +849,6 @@ other microprocessors. With the 6502, the stack is always on page one
 <a name=STX></a>
 
 ## STX (STore X register)
-*Affects flags: none*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -797,10 +856,15 @@ other microprocessors. With the 6502, the stack is always on page one
 |Zero Page,Y|STX $BE,Y|$96|2|4|
 |Absolute|STX $BEEF|$8E|3|4|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
+
+Stores the contents of the .X register into memory.
+
 <a name=STY></a>
 
 ## STY (STore Y register)
-*Affects flags: none*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -808,16 +872,25 @@ other microprocessors. With the 6502, the stack is always on page one
 |Zero Page,X|STY $BE,X|$94|2|4|
 |Absolute|STY $BEEF|$8C|3|4|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
+
+Stores the contents of the .Y register into memory.
+
 # Illegal opcodes
 
 <a name=ALR></a>
 
 ## ALR, ASR (AND + LSR)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate|ALR #$BE|$4B|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
 
 This opcode ANDs the contents of the A register with an immediate value and
 then LSRs the result.
@@ -825,12 +898,15 @@ then LSRs the result.
 <a name=ANC></a>
 
 ## ANC (AND + ROL)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate|ANC #$BE|$0B|2|2|
 |Immediate|ANC #$BE|$2B|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
 
 ANC ANDs the contents of the A register with an immediate value and then
 moves bit 7 of A into the Carry flag. This opcode works basically
@@ -842,11 +918,13 @@ state that the Negative flag is set to.
 ## ANE, XAA
 <span class="badge badge-error">Instable</span>
 
-*Affects flags: N Z*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate|ANE #$BE|$8B|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|-|
 
 This opcode ORs the A register with CONST, ANDs the result with X. ANDs the result
 with an immediate value, and then stores the result in A.
@@ -865,11 +943,14 @@ the immediate value or X or both.)
 <a name=ARR></a>
 
 ## ARR (AND + ROR)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate|ARR #$BE|$6B|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
 
 This opcode ANDs the contents of the A register with an immediate value and
 then RORs the result.
@@ -877,7 +958,6 @@ then RORs the result.
 <a name=DCP></a><a name=DCM></a>
 
 ## DCP, DCM (DEC + CMP)
-*Affects flags: N Z C
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -889,13 +969,16 @@ then RORs the result.
 |Indirect,X|DCP ($BE,X)|$C3|2|8|
 |Indirect,Y|DCP ($BE),Y|$D3|2|8|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
 This opcode DECs the contents of a memory location and then CMPs the result
 with the A register.
 
 <a name=ISC></a><a name=ISB></a><a name=INS></a>
 
 ## ISC, ISB, INS (SBC + INC)
-*Affects flags: N V Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -907,6 +990,10 @@ with the A register.
 |Indirect,X|ISC ($BE,X)|$E3|2|8|
 |Indirect,Y|ISC ($BE),Y|$F3|2|8|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|✓|-|-|-|✓|✓|
+
 This opcode INCs the contents of a memory location and then SBCs the result
 from the A register.
 
@@ -915,11 +1002,13 @@ from the A register.
 ## LAS, LAR (TSX + TXA + AND + TAX + TXS)
 <span class="badge badge-warning">Unreliable</span>
 
-*Affects flags: N Z*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Absolute,Y|LAS $BEEF,Y|$BB|3|4+|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|-|
 
 This opcode ANDs the contents of a memory location with the contents of the
 stack pointer register and stores the result in the accumulator, the X
@@ -930,7 +1019,6 @@ Unreliability: LAS is called as 'probably unreliable'
 <a name=LAX></a>
 
 ## LAX (LDA + LDX)
-*Affects flags: N Z*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -941,6 +1029,10 @@ Unreliability: LAS is called as 'probably unreliable'
 |Indirect,X|LAX ($BE,X)|$A3|2|6|
 |Indirect,Y|LAX ($BE),Y|$B3|2|5+|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|-|
+
 This opcode loads both the accumulator and the X register with the contents
 of a memory location.
 
@@ -950,11 +1042,13 @@ of a memory location.
 ## LAX immediate, ATX, LXA, OAL, ANX
 <span class="badge badge-error">Instable</span>
 
-*Affects flags: N Z*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate|LAX #$BE|$AB|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|-|
 
 This opcode ORs the A register with CONST, ANDs the result with an immediate
 value, and then stores the result in both A and X.
@@ -972,7 +1066,6 @@ in the immediate value.)
 <a name=RLA></a>
 
 ## RLA (ROL + AND)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -984,6 +1077,10 @@ in the immediate value.)
 |Indirect,X |RLA ($BE,X)|$23|2|8|
 |Indirect,Y |RLA ($BE),Y|$33|2|8|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
 Rotate one bit left in memory, then AND accumulator with memory.
 * Carry is shifted in as LSB and bit 7 is shifted into Carry
 * N and Z are set according to the AND
@@ -991,7 +1088,6 @@ Rotate one bit left in memory, then AND accumulator with memory.
 <a name=RRA></a>
 
 ## RRA (ROR + ADC)
-*Affects flags: N V Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1003,6 +1099,10 @@ Rotate one bit left in memory, then AND accumulator with memory.
 |Indirect,X |RRA ($BE,X)|$63|2|8|
 |Indirect,Y |RRA ($BE),Y|$73|2|8|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|✓|-|-|-|✓|✓|
+
 Rotate one bit right in memory, then add memory to accumulator (with carry)
 * Bit 0 is shifted out into the carry flag and carry flag is shifted into
 bit 7 by the ROR
@@ -1011,7 +1111,6 @@ bit 7 by the ROR
 <a name=SAX></a><a name=AXS></a><a name=AAX></a>
 
 ## SAX, AXS, AAX (STA + STX)
-*Affects flags: none*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1019,6 +1118,10 @@ bit 7 by the ROR
 |Zero Page,Y|SAX $BE,X  |$97|2|4|
 |Absolute   |SAX $BEEF  |$8F|3|4|
 |Indirect,X |SAX ($BE,X)|$83|2|6|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 AND the contents of the A and X registers (without changing the contents of either
 register) and stores the result in memory.
@@ -1029,11 +1132,14 @@ and does not modify A/X. It would also not use the stack.
 <a name=SBX></a><a name=AXS></a><a name=SAX></a>
 
 ## SBX, AXS, SAX (CMP + DEX)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate  |SBX #$BE   |$CB|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
 
 SBX ANDs the contents of the A and X registers (leaving the contents of A intact),
 subtracts an immediate value, and then stores the result in X.
@@ -1056,12 +1162,14 @@ in decimal mode.
 ## SHA, AHX, AXA (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
 
-*Affects flags: none*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Indirect,Y |SHA ($BE),Y|$93|2|6|
 |Absolute,Y |SHA $BEEF,Y|$9F|3|5|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 This opcode stores the result of A AND X AND the high byte of the target address of
 the operand +1 in memory.
@@ -1078,11 +1186,13 @@ of the target address is incremented by one (as expected), and then ANDed with
 ## SHX, SXA, XAS (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
 
-*Affects flags: none*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Absolute,Y |SHX $BEEF,Y|$9E|3|5|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 AND X register with the high byte of the target address of the argument + 1. Store the
 result in memory.
@@ -1099,11 +1209,13 @@ ANDed with X.
 ## SHY, SYA, SAY (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
 
-*Affects flags: none*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Absolute,X |SHY $BEEF,Y|$9C|3|5|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 AND Y register with the high byte of the target address of the argument + 1.
 Store the result in memory.
@@ -1118,7 +1230,6 @@ ANDed with Y.
 <a name=SLO></a><a name=ASO></a>
 
 ## SLO, ASO (ASL + ORA)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1130,6 +1241,10 @@ ANDed with Y.
 |Indirect,X |SLO ($BE,X)|$03|2|8|
 |Indirect,Y |SLO ($BE),Y|$13|2|8|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
 Shift left one bit in memory, then OR accumulator with memory.
 * The leftmost bit is shifted into the carry flag
 * N and Z are set after the ORA
@@ -1137,7 +1252,6 @@ Shift left one bit in memory, then OR accumulator with memory.
 <a name=SRE></a><a name=LSE></a>
 
 ## SRE, LSE (LSR + EOR)
-*Affects flags: N Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1149,6 +1263,10 @@ Shift left one bit in memory, then OR accumulator with memory.
 |Indirect,X |SRE ($BE,X)|$43|2|8|
 |Indirect,Y |SRE ($BE),Y|$53|2|8|
 
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|-|-|-|-|✓|✓|
+
 Shift right one bit in memory, then EOR accumulator with memory.
 * LSB is shifted into the carry flag
 * N and Z are set after the EOR
@@ -1158,11 +1276,13 @@ Shift right one bit in memory, then EOR accumulator with memory.
 ## TAS, XAS, SHS (STA + TXS)
 <span class="badge badge-warning">Instable</span>
 
-*Affects flags: none*
-
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Absolute,Y |TAS $BEEF,Y|$9B|3|5|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|\-|\-|\-|\-|\-|\-|\-|
 
 This opcode ANDs the contents of the A and X registers (without changing the contents
 of either register) and transfers the result to the stack pointer. It then ANDs
@@ -1179,11 +1299,14 @@ ANDed with (A & X).
 <a name=USBC></a><a name=USB></a>
 
 ## USBC, USB (SBC + NOP)
-*Affects flags: N V Z C*
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
 |Immediate  |USBC #$BE  |$EB|2|2|
+
+|N|V|B|D|I|Z|C|
+|-|-|-|-|-|-|-|
+|✓|✓|-|-|-|✓|✓|
 
 Subtract immediate value from accumulator with carry. Same as the regular
 <a href="#SBC">SBC</a>.
