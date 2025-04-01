@@ -7,7 +7,7 @@ title: Instruction set
 
 <a name=ADC></a>
 
-## ADC (ADd with Carry)
+### ADC (ADd with Carry)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -37,7 +37,7 @@ involved are packed BCD (Binary Coded Decimal).
 
 <a name=AND></a>
 
-## AND (bitwise AND with accumulator)
+### AND (bitwise AND with accumulator)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -64,7 +64,7 @@ using the contents of a byte of memory.
 
 <a name=ASL></a>
 
-## ASL (Arithmetic Shift Left)
+### ASL (Arithmetic Shift Left)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -89,7 +89,7 @@ setting the carry if the result will not fit in 8 bits.
 
 <a name=BIT></a>
 
-## BIT (test BITs)
+### BIT (test BITs)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -177,7 +177,7 @@ at.
 
 <a name=BRK></a>
 
-## BRK (BReaK)
+### BRK (BReaK)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -196,7 +196,7 @@ two-byte instruction for debugging and the subsequent RTI will be correct.
 
 <a name=CMP></a>
 
-## CMP (CoMPare accumulator)
+### CMP (CoMPare accumulator)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -226,7 +226,7 @@ thereof and the sign (i.e. A&gt;=$80) of the accumulator.
 
 <a name=CPX></a>
 
-## CPX (ComPare X register)
+### CPX (ComPare X register)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -247,7 +247,7 @@ Operation and flag results are identical to equivalent mode accumulator
 
 <a name=CPY></a>
 
-## CPY (ComPare Y register)
+### CPY (ComPare Y register)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -268,7 +268,7 @@ Operation and flag results are identical to equivalent mode accumulator
 
 <a name=DEC></a>
 
-## DEC (DECrement memory)
+### DEC (DECrement memory)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -289,7 +289,7 @@ setting the zero and negative flags as appropriate.
 
 <a name=EOR></a>
 
-## EOR (bitwise Exclusive OR)
+### EOR (bitwise Exclusive OR)
 *Affects flags: N Z*
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -374,7 +374,7 @@ overflow but a BIT test on an RTS instruction will do the trick.
 
 <a name=INC></a>
 
-## INC (INCrement memory)
+### INC (INCrement memory)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -395,7 +395,7 @@ setting the zero and negative flags as appropriate.
 
 <a name=JMP></a>
 
-## JMP (JuMP)
+### JMP (JuMP)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -419,7 +419,7 @@ from $30FF and the high byte from $3000.
 
 <a name=JSR></a>
 
-## JSR (Jump to SubRoutine)
+### JSR (Jump to SubRoutine)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -435,7 +435,7 @@ terminated by a <a href="#RTS">RTS</a> opcode.
 
 <a name=LDA></a>
 
-## LDA (LoaD Accumulator)
+### LDA (LoaD Accumulator)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -462,7 +462,7 @@ and negative flags as appropriate.
 
 <a name=LDX></a>
 
-## LDX (LoaD X register)
+### LDX (LoaD X register)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -486,7 +486,7 @@ and negative flags as appropriate.
 
 <a name=LDY></a>
 
-## LDY (LoaD Y register)
+### LDY (LoaD Y register)
 *Affects flags: N Z*
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -511,7 +511,7 @@ and negative flags as appropriate.
 
 <a name=LSR></a>
 
-## LSR (Logical Shift Right)
+### LSR (Logical Shift Right)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -603,7 +603,7 @@ the time values shown.
 
 <a name=NOP></a>
 
-## NOP (No OPeration)
+### NOP (No OPeration)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -618,7 +618,7 @@ out existing code.
 
 <a name=ORA></a>
 
-## ORA (bitwise OR with Accumulator)
+### ORA (bitwise OR with Accumulator)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -664,7 +664,7 @@ two machine cycles.
 
 <a name=ROL></a>
 
-## ROL (ROtate Left)
+### ROL (ROtate Left)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -687,7 +687,7 @@ the original bit 7 is shifted into the Carry.
 
 <a name=ROR></a>
 
-## ROR (ROtate Right)
+### ROR (ROtate Right)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -710,7 +710,7 @@ and the original bit 0 is shifted into the Carry.
 
 <a name=RTI></a>
 
-## RTI (ReTurn from Interrupt)
+### RTI (ReTurn from Interrupt)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -735,7 +735,7 @@ rather than the address-1.
 
 <a name=RTS></a>
 
-## RTS (ReTurn from Subroutine)
+### RTS (ReTurn from Subroutine)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -775,7 +775,7 @@ EXEC
 
 <a name=SBC></a>
 
-## SBC (SuBtract with Carry)
+### SBC (SuBtract with Carry)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -809,7 +809,7 @@ cleared by the operation, it indicates a borrow occurred.
 
 <a name=STA></a>
 
-## STA (STore Accumulator)
+### STA (STore Accumulator)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -848,7 +848,7 @@ other microprocessors. With the 6502, the stack is always on page one
 
 <a name=STX></a>
 
-## STX (STore X register)
+### STX (STore X register)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -864,7 +864,7 @@ Stores the contents of the .X register into memory.
 
 <a name=STY></a>
 
-## STY (STore Y register)
+### STY (STore Y register)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -878,11 +878,11 @@ Stores the contents of the .X register into memory.
 
 Stores the contents of the .Y register into memory.
 
-# Illegal opcodes
+## Illegal opcodes
 
 <a name=ALR></a>
 
-## ALR, ASR (AND + LSR)
+### ALR, ASR (AND + LSR)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -897,7 +897,7 @@ then LSRs the result.
 
 <a name=ANC></a>
 
-## ANC (AND + ROL)
+### ANC (AND + ROL)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -915,7 +915,7 @@ state that the Negative flag is set to.
 
 <a name=ANE></a><a name=XAA></a>
 
-## ANE, XAA
+### ANE, XAA
 <span class="badge badge-error">Instable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -942,7 +942,7 @@ the immediate value or X or both.)
 
 <a name=ARR></a>
 
-## ARR (AND + ROR)
+### ARR (AND + ROR)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -957,7 +957,7 @@ then RORs the result.
 
 <a name=DCP></a><a name=DCM></a>
 
-## DCP, DCM (DEC + CMP)
+### DCP, DCM (DEC + CMP)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -978,7 +978,7 @@ with the A register.
 
 <a name=ISC></a><a name=ISB></a><a name=INS></a>
 
-## ISC, ISB, INS (SBC + INC)
+### ISC, ISB, INS (SBC + INC)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -999,7 +999,7 @@ from the A register.
 
 <a name=LAS></a><a name=LAR></a>
 
-## LAS, LAR (TSX + TXA + AND + TAX + TXS)
+### LAS, LAR (TSX + TXA + AND + TAX + TXS)
 <span class="badge badge-warning">Unreliable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1018,7 +1018,7 @@ Unreliability: LAS is called as 'probably unreliable'
 
 <a name=LAX></a>
 
-## LAX (LDA + LDX)
+### LAX (LDA + LDX)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1039,7 +1039,7 @@ of a memory location.
 <a name=LAX_Imm></a><a name=ATX></a><a name=LXA></a><a name=OAL></a>
 <a name=ANX></a>
 
-## LAX immediate, ATX, LXA, OAL, ANX
+### LAX immediate, ATX, LXA, OAL, ANX
 <span class="badge badge-error">Instable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1065,7 +1065,7 @@ in the immediate value.)
 
 <a name=RLA></a>
 
-## RLA (ROL + AND)
+### RLA (ROL + AND)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1087,7 +1087,7 @@ Rotate one bit left in memory, then AND accumulator with memory.
 
 <a name=RRA></a>
 
-## RRA (ROR + ADC)
+### RRA (ROR + ADC)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1110,7 +1110,7 @@ bit 7 by the ROR
 
 <a name=SAX></a><a name=AXS></a><a name=AAX></a>
 
-## SAX, AXS, AAX (STA + STX)
+### SAX, AXS, AAX (STA + STX)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1131,7 +1131,7 @@ and does not modify A/X. It would also not use the stack.
 
 <a name=SBX></a><a name=AXS></a><a name=SAX></a>
 
-## SBX, AXS, SAX (CMP + DEX)
+### SBX, AXS, SAX (CMP + DEX)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1159,7 +1159,7 @@ in decimal mode.
 
 <a name=SHA></a><a name=AHX></a><a name=AXA></a>
 
-## SHA, AHX, AXA (STA + STX + STY)
+### SHA, AHX, AXA (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1183,7 +1183,7 @@ of the target address is incremented by one (as expected), and then ANDed with
 
 <a name=SHX></a><a name=SXA></a><a name=XAS></a>
 
-## SHX, SXA, XAS (STA + STX + STY)
+### SHX, SXA, XAS (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1206,7 +1206,7 @@ ANDed with X.
 
 <a name=SHY></a><a name=SYA></a><a name=SAY></a>
 
-## SHY, SYA, SAY (STA + STX + STY)
+### SHY, SYA, SAY (STA + STX + STY)
 <span class="badge badge-warning">Instable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1229,7 +1229,7 @@ ANDed with Y.
 
 <a name=SLO></a><a name=ASO></a>
 
-## SLO, ASO (ASL + ORA)
+### SLO, ASO (ASL + ORA)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1251,7 +1251,7 @@ Shift left one bit in memory, then OR accumulator with memory.
 
 <a name=SRE></a><a name=LSE></a>
 
-## SRE, LSE (LSR + EOR)
+### SRE, LSE (LSR + EOR)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
@@ -1273,7 +1273,7 @@ Shift right one bit in memory, then EOR accumulator with memory.
 
 <a name=TAS></a><a name=XAS></a><a name=SHS></a>
 
-## TAS, XAS, SHS (STA + TXS)
+### TAS, XAS, SHS (STA + TXS)
 <span class="badge badge-warning">Instable</span>
 
 |Mode|Syntax|Hex|Length|Cycle|
@@ -1298,7 +1298,7 @@ ANDed with (A & X).
 
 <a name=USBC></a><a name=USB></a>
 
-## USBC, USB (SBC + NOP)
+### USBC, USB (SBC + NOP)
 
 |Mode|Syntax|Hex|Length|Cycle|
 |-|-|-|-|-|
