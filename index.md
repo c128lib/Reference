@@ -19,7 +19,10 @@ title: Index
 All references have been eliminated and are being reviewed to verify that the user license complies with the proposed contents. The contents will gradually be reinserted after the necessary checks.
 
 ### Memory reference
-All references have been eliminated and are being reviewed to verify that the user license complies with the proposed contents. The contents will gradually be reinserted after the necessary checks.
+
+* [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000) (WIP)
+
+Most references have been eliminated and are being reviewed to verify that the user license complies with the proposed contents. The contents will gradually be reinserted after the necessary checks.
 
 ### Commodore related resources
 This is a list of resources that you use to create the reference.
