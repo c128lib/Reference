@@ -20,6 +20,7 @@ All references have been eliminated and are being reviewed to verify that the us
 
 ### Memory reference
 
+* [$0000-$00FF - Zero Page](0000) (WIP)
 * [$E000-$FFFF - Kernal Rom, Standard Commodore Jump Table](E000) (WIP)
 
 Most references have been eliminated and are being reviewed to verify that the user license complies with the proposed contents. The contents will gradually be reinserted after the necessary checks.
@@ -50,3 +51,5 @@ An article from Marko Mäkelä about Vic2 (and Vic2e) memory access
 
 * [The MOS 6567/6569 video controller (VIC-II) and its application in the Commodore 64](https://ist.uwaterloo.ca/~schepers/MJK/ascii/VIC-Article.txt)
 An article from Christian Bauer about Vic2
+
+* [unusedinode](http://unusedino.de/ec64/technical.html) some tech info about C64
